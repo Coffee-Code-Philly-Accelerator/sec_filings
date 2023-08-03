@@ -1,6 +1,6 @@
 # sec_filings
 
-##Rough steps to get started
+## Rough steps to get started
 1. Create the sec filings links excel work book by using the links from sec website page for given cik
   a. www.sec.gov/edgar/searchedgar/companysearch
   b. Need to automate creation of weblinks and filing and reporting dates with form type
