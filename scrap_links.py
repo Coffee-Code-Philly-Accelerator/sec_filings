@@ -33,6 +33,7 @@ def init_logger() -> None:
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
     logging.getLogger('openai').setLevel(logging.WARNING)
     logging.getLogger('urllib3').setLevel(logging.WARNING)
+    logging.getLogger('selenium').setLevel(logging.WARNING)
 
     FORMAT = "%(name)s[%(process)d] " + \
         "%(processName)s(%(threadName)s) " + \
@@ -85,7 +86,8 @@ def main()->None:
     soup = BeautifulSoup(table.get_attribute('innerHTML'))
     with open(os.path.join('urls',url.split("=")[-1]+".txt"),'w') as url_out:
         for a in soup.find_all('a', href=True):
-            url_out.write('\n%s' % url.split('.edgar')[0]+a['href'])
+            url_out.write('\n%s' % url.split('edgar')[0]+a['href'])
+            logging.debug('\n%s' % url.split('edgar')[0]+a['href'])
 
     driver.close()
 
