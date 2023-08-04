@@ -1,3 +1,10 @@
+# my ignore
+*.zip
+*.exe
+*.csv
+*.html
+*.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
