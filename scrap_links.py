@@ -59,6 +59,8 @@ def main()->None:
     init_logger()
     args = arguements()
     url = args.url
+    options = Options()
+    options.binary_location = r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
     driver = webdriver.Firefox(executable_path="geckodriver.exe")
     driver.get(url)
     
