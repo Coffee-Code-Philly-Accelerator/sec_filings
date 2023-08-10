@@ -4,6 +4,7 @@ import time
 import pandas as pd 
 import argparse
 import re
+import datetime
 from collections import Counter
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -17,7 +18,6 @@ def arguements()->argparse.ArgumentParser:
         default='urls/1422183.txt',
         help='Sec url to get links from'
     )
-
     return parser.parse_args()
 
 
@@ -29,8 +29,8 @@ def get_table_date(
     count = Counter(datetimes)
     table_date = count.most_common(1)
     if not table_date:
-        return 'no date found'
-    return table_date
+        return 'no_date_found'
+    return  datetime.datetime.strptime(table_date[0][0], '%B %d, %Y').strftime('%Y%m%d')
 
 def main()->None:
     init_logger()
@@ -48,20 +48,21 @@ def main()->None:
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         html_content = driver.page_source
-        with open(os.path.join('htmls',url.split("/")[-1].replace(".htm","")+".html"), "w",encoding='utf-8') as file:
-            file.write(html_content)
-            
         table_date = get_table_date(html_content)
         logging.debug(f"DATETIMES - {table_date}")
+        out_path = os.path.join('csv',table_date)
+        if not os.path.exists(out_path):
+            os.mkdir(out_path)
+            
+        with open(os.path.join(out_path,url.replace(".htm","")+".html"), "w",encoding='utf-8') as file:
+            file.write(html_content)
         
         tables = driver.find_elements_by_xpath(table_xpath)
         logging.debug(tables)
         for i,table in enumerate(tables):
             dfs = pd.read_html(table.get_attribute('outerHTML'))
-            dfs[0]['date'] = table_date
-            dfs[0].to_csv(os.path.join('csv',f"{table_title.replace(' ','_')}_{url.split('/')[-1].replace('.htm','')}_{i}.csv"))
+            dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
         time.sleep(1)
-        break
     driver.close()
     return
 
