@@ -16,5 +16,7 @@ conda activate sec
 
 # run scripts
 python3 scrap_links.py
+python3 extract_tables.py
 python3 consolidate_tables.py
+
 

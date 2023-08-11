@@ -22,7 +22,21 @@ def arguements()->argparse.ArgumentParser:
         default='https://www.sec.gov/edgar/browse/?CIK=1422183',
         help='Sec url to get links from'
     )
-
+    parser.add_argument(
+        '--url_txt', type=str, required=False, 
+        default='urls/1422183.txt',
+        help='.txt to get links from'
+    )
+    parser.add_argument(
+        '--driver-path', type=str, required=False, 
+        default="geckodriver.exe",
+        help='path to your geckodriver.exe'
+    )
+    parser.add_argument(
+        '--firefox-path', type=str, required=False, 
+        default=r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe",
+        help='path to your firefox.exe'
+    )
     return parser.parse_args()
 
 def init_logger() -> None:
@@ -60,10 +74,9 @@ def main()->None:
     args = arguements()
     url = args.url
     options = Options()
-    options.binary_location = r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
-    driver = webdriver.Firefox(executable_path="geckodriver.exe")
+    options.binary_location = args.firefox_path #r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
+    driver = webdriver.Firefox(executable_path=args.driver_path)#"geckodriver.exe")
     driver.get(url)
-    
     h5_tags = driver.find_elements_by_tag_name("h5")
 
     for h5_tag in h5_tags:

@@ -1,69 +1,88 @@
 import os
+import json
 import logging
-import time
-import pandas as pd 
-import argparse
-import re
-import datetime
+import glob
+import pandas as pd
+import numpy as np
 from collections import Counter
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from scrap_links import init_logger
+from scrap_links import init_logger,arguements
 
-def arguements()->argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description='Get filing links and dates')
-    parser.add_argument(
-        '--url_txt', type=str, required=False, 
-        default='urls/1422183.txt',
-        help='Sec url to get links from'
+def common_fields()->tuple:
+    """
+    [('AmortizedCost', 424), ('Industry', 420), ('Portfolio Company(a)', 411), ('Footnotes', 325), ('Maturity', 265), ('Rate(b)', 177), ('FairValue(c)', 171)]
+    """
+    return (
+        'AmortizedCost',
+        'Industry',
+        'Portfolio Company(a)',
+        'Footnotes',
+        'Maturity',
+        'Rate(b)',
+        'FairValue(c)'
     )
-    return parser.parse_args()
 
-
-def get_table_date(
-    page_content:str
-)->str:
-    datetime_pattern = r'\b(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}\b'
-    datetimes = re.findall(datetime_pattern,page_content)
-    count = Counter(datetimes)
-    table_date = count.most_common(1)
-    if not table_date:
-        return 'no_date_found'
-    return  datetime.datetime.strptime(table_date[0][0], '%B %d, %Y').strftime('%Y%m%d')
+def debug_format(
+    df:pd.DataFrame,
+    out_path:str,
+)->None:
+    csv,date,debug,filename = out_path.split('/')
+    if not os.path.exists(os.path.join(csv,date,debug)):
+        os.mkdir(os.path.join(csv,date,debug))
+    df.to_csv(out_path)
+    return
 
 def main()->None:
     init_logger()
-    options = Options()
-    options.binary_location = r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
-    table_title = "Schedule of Investments"
-    args = arguements()
-    driver = webdriver.Firefox(executable_path="geckodriver.exe",firefox_options=options)
-    with open(args.url_txt,'r') as f:
-        urls = [url for url in f.read().splitlines()]
+    infile = 'csv/**/*/*'
+    all_csvs = glob.glob(infile,recursive=True)
+    dfs,columns = {},{}
+    
+    for file in all_csvs:
+        dirs = file.split('/')
+        if  len(dirs) < 3 or '.csv' not in dirs[-1]:
+            continue
         
-    table_xpath = '//*[contains(text(), "{0}")]/parent::*/parent::*/following-sibling::table[1]'.format(table_title)
-    for url in urls[1:]:
-        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312511141640/d10q.htm#tx188138_6'
-        logging.info(f"ACCESSING - {url}")
-        driver.get(url)
-        html_content = driver.page_source
-        table_date = get_table_date(html_content)
-        logging.debug(f"DATETIMES - {table_date}")
-        out_path = os.path.join('csv',table_date)
-        if not os.path.exists(out_path):
-            os.mkdir(out_path)
+        df_cur = pd.read_csv(file)
+        df_cur.dropna(axis=1,thresh=7,inplace=True)# allowable nan threshold
+        df_cur.dropna(how='all',inplace=True)
+        df_cur.fillna(-100,inplace=True) 
+        df_cur = df_cur.iloc[1:,1:]
+        if df_cur.shape[1] < 4:
+            continue
+        if (df_cur.iloc[0] != -100).all():
+            debug_format(
+                df=df_cur,
+                out_path=f"csv/{dirs[1]}/debug/{file.split('/')[-1]}"
+            )
+        
+        columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
+        df_cur = df_cur.drop(columns=columns_to_drop) # drops columns with nan columns name
+
+        if df_cur.empty:
+            continue
+        
+        if dfs.get(dirs[1]) is None and columns.get(dirs[1]) is None:
+            dfs[dirs[1]] = []
+            columns[dirs[1]] = []
             
-        with open(os.path.join(out_path,url.replace(".htm","")+".html"), "w",encoding='utf-8') as file:
-            file.write(html_content)
-        
-        tables = driver.find_elements_by_xpath(table_xpath)
-        logging.debug(tables)
-        for i,table in enumerate(tables):
-            dfs = pd.read_html(table.get_attribute('outerHTML'))
-            dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
-        time.sleep(1)
-    driver.close()
+        col = df_cur.iloc[0].tolist()
+        # logging.debug(f"CUR COLUMNS - {col}")
+        if col not in columns[dirs[1]]:
+            columns[dirs[1]].append(col+[dirs[1],file])
+            
+        df_cur['date'] = dirs[1]
+        dfs[dirs[1]].append(df_cur.reset_index(drop=True))
+
+    with open('columns.json','w') as f:
+        logging.debug(type(columns))
+        json.dump(columns,f,indent=4)
+    for t in dfs:
+        result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
+        logging.debug(f"COLUMNS - {columns[t]}")
+        logging.debug(f"SHAPE - {result.shape}")
+        result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
+        result.to_csv(f"csv/main_table_{t}.csv")
+                
     return
 
 if __name__ == "__main__":
