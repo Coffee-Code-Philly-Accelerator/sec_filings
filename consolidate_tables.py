@@ -1,5 +1,4 @@
 import os
-import json
 import logging
 import glob
 import pandas as pd
@@ -31,7 +30,63 @@ def debug_format(
     df.to_csv(out_path)
     return
 
-def main()->None:
+def clean(
+    file:str,
+)->list:
+    if 'main' in file:
+        return
+    dirs = file.split('/')
+    if  len(dirs) < 3 or '.csv' not in dirs[-1]:
+        return
+    df_cur = pd.read_csv(file)
+    df_cur.dropna(axis=1,thresh=7,inplace=True) # allowable nan threshold
+    df_cur = df_cur.iloc[1:,1:]
+    if df_cur.shape[1] < 4:
+        return
+    logging.info(f"PROCESSING - {file}")
+    columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
+    df_cur = df_cur.drop(columns=columns_to_drop)
+    df_cur = df_cur.dropna(how='all')
+    df_cur = df_cur.fillna(-100)
+    if df_cur.empty:
+        return
+    # logging.debug(f'SHAPE - {df_cur.shape}')
+    # logging.debug(f"{df_cur.head()}")
+    return df_cur
+    
+
+
+def process_date(
+    date:str,
+)->dict:
+    dfs,columns = {},{}
+    for file in os.listdir(os.path.join('csv',date)):
+        df_cur = clean(os.path.join('csv',date,file))
+        if df_cur is None:
+            continue
+        
+        df_cur['date'] = date
+        if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
+            dfs[df_cur.shape[1]] = []
+            columns[df_cur.shape[1]] = df_cur.iloc[0].tolist()
+            
+        df_cur.drop(index=1,inplace=True)
+        dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
+        
+    # logging.debug(f"UNIQUE COLUMNS - {columns}")
+    for t in dfs:
+        if os.path.exists(f"csv/{date}/main_table_{t}.csv"):
+            continue
+        result = pd.DataFrame(columns=columns[t])
+        for df in dfs[t]:
+            result = pd.merge(result,df)
+        # result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
+        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
+        result.to_csv(f"csv/{date}/main_table_{t}.csv")
+        
+        
+        
+def join_all_possible()->None:
     init_logger()
     infile = 'csv/**/*/*'
     all_csvs = glob.glob(infile,recursive=True)
@@ -41,49 +96,56 @@ def main()->None:
         dirs = file.split('/')
         if  len(dirs) < 3 or '.csv' not in dirs[-1]:
             continue
-        
         df_cur = pd.read_csv(file)
-        df_cur.dropna(axis=1,thresh=7,inplace=True)# allowable nan threshold
-        df_cur.dropna(how='all',inplace=True)
-        df_cur.fillna(-100,inplace=True) 
+        df_cur.dropna(axis=1,thresh=7,inplace=True) # allowable nan threshold
         df_cur = df_cur.iloc[1:,1:]
         if df_cur.shape[1] < 4:
             continue
-        if (df_cur.iloc[0] != -100).all():
+        logging.info(f"PROCESSING - {file}")
+        columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
+        df_cur = df_cur.drop(columns=columns_to_drop)
+        df_cur = df_cur.dropna(how='all')
+        df_cur = df_cur.fillna(-100)
+        # df_cur.columns = [col if str(col) != 'nan' else i for i,col in enumerate(df_cur.iloc[0].tolist())]
+        # df_cur.columns = df_cur.iloc[0].tolist()
+        # columns.extend(df_cur.iloc[0].tolist())s
+
+        if df_cur.empty:
+            continue
+        if (df_cur.iloc[0] == -100).all():
             debug_format(
                 df=df_cur,
                 out_path=f"csv/{dirs[1]}/debug/{file.split('/')[-1]}"
             )
         
-        columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
-        df_cur = df_cur.drop(columns=columns_to_drop) # drops columns with nan columns name
-
-        if df_cur.empty:
-            continue
-        
-        if dfs.get(dirs[1]) is None and columns.get(dirs[1]) is None:
-            dfs[dirs[1]] = []
-            columns[dirs[1]] = []
-            
-        col = df_cur.iloc[0].tolist()
-        # logging.debug(f"CUR COLUMNS - {col}")
-        if col not in columns[dirs[1]]:
-            columns[dirs[1]].append(col+[dirs[1],file])
-            
         df_cur['date'] = dirs[1]
-        dfs[dirs[1]].append(df_cur.reset_index(drop=True))
-
-    with open('columns.json','w') as f:
-        logging.debug(type(columns))
-        json.dump(columns,f,indent=4)
+        
+        if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
+            dfs[df_cur.shape[1]] = []
+            columns[df_cur.shape[1]] = df_cur.iloc[0].tolist()
+            
+        df_cur.drop(index=1,inplace=True)
+        dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
+        
+    logging.debug(f"UNIQUE COLUMNS - {columns}")
     for t in dfs:
+        if os.path.exists(f"csv/main_table_{t}.csv"):
+            continue
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        logging.debug(f"COLUMNS - {columns[t]}")
-        logging.debug(f"SHAPE - {result.shape}")
         result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
         result.to_csv(f"csv/main_table_{t}.csv")
                 
     return
+
+def main()->None:
+    init_logger()
+    for date in os.listdir('csv'):
+        if '.csv' in date:
+            continue
+        logging.debug(f"DATE - {date}")
+        process_date(date)
+    join_all_possible()
+    return 
 
 if __name__ == "__main__":
     main()
