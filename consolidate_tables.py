@@ -20,6 +20,21 @@ def common_fields()->tuple:
         'FairValue(c)'
     )
 
+def make_unique(original_list):
+    seen = {}
+    unique_list = []
+    
+    for item in original_list:
+        if item in seen:
+            counter = seen[item] + 1
+            seen[item] = counter
+            unique_list.append(f"{item}_{counter}")
+        else:
+            seen[item] = 1
+            unique_list.append(item)
+    
+    return unique_list
+
 def debug_format(
     df:pd.DataFrame,
     out_path:str,
@@ -43,7 +58,7 @@ def clean(
     df_cur = df_cur.iloc[1:,1:]
     if df_cur.shape[1] < 4:
         return
-    logging.info(f"PROCESSING - {file}")
+    # logging.info(f"PROCESSING - {file}")
     columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
     df_cur = df_cur.drop(columns=columns_to_drop)
     df_cur = df_cur.dropna(how='all')
@@ -68,20 +83,21 @@ def process_date(
         df_cur['date'] = date
         if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
             dfs[df_cur.shape[1]] = []
-            columns[df_cur.shape[1]] = df_cur.iloc[0].tolist()
-            
+            columns[df_cur.shape[1]] = make_unique(
+                list(map(
+                    lambda col:col.lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
+                ))
+            ) + ['date']
+
         df_cur.drop(index=1,inplace=True)
         dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
         
-    # logging.debug(f"UNIQUE COLUMNS - {columns}")
     for t in dfs:
         if os.path.exists(f"csv/{date}/main_table_{t}.csv"):
             continue
-        result = pd.DataFrame(columns=columns[t])
-        for df in dfs[t]:
-            result = pd.merge(result,df)
-        # result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
+        logging.debug(f"UNIQUE FIELD - {columns[t]}")
+        result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
+        result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
         result.to_csv(f"csv/{date}/main_table_{t}.csv")
         
         
@@ -94,40 +110,24 @@ def join_all_possible()->None:
     
     for file in all_csvs:
         dirs = file.split('/')
-        if  len(dirs) < 3 or '.csv' not in dirs[-1]:
+        df_cur = clean(file)
+        if df_cur is None:
             continue
-        df_cur = pd.read_csv(file)
-        df_cur.dropna(axis=1,thresh=7,inplace=True) # allowable nan threshold
-        df_cur = df_cur.iloc[1:,1:]
-        if df_cur.shape[1] < 4:
-            continue
-        logging.info(f"PROCESSING - {file}")
-        columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
-        df_cur = df_cur.drop(columns=columns_to_drop)
-        df_cur = df_cur.dropna(how='all')
-        df_cur = df_cur.fillna(-100)
-        # df_cur.columns = [col if str(col) != 'nan' else i for i,col in enumerate(df_cur.iloc[0].tolist())]
-        # df_cur.columns = df_cur.iloc[0].tolist()
-        # columns.extend(df_cur.iloc[0].tolist())s
-
-        if df_cur.empty:
-            continue
-        if (df_cur.iloc[0] == -100).all():
-            debug_format(
-                df=df_cur,
-                out_path=f"csv/{dirs[1]}/debug/{file.split('/')[-1]}"
-            )
         
         df_cur['date'] = dirs[1]
         
         if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
             dfs[df_cur.shape[1]] = []
-            columns[df_cur.shape[1]] = df_cur.iloc[0].tolist()
+            columns[df_cur.shape[1]] = make_unique(
+                list(map(
+                    lambda col:str(col).lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
+                ))
+            ) + ['date']
             
         df_cur.drop(index=1,inplace=True)
         dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
         
-    logging.debug(f"UNIQUE COLUMNS - {columns}")
+    # logging.debug(f"UNIQUE COLUMNS - {columns}")
     for t in dfs:
         if os.path.exists(f"csv/main_table_{t}.csv"):
             continue
