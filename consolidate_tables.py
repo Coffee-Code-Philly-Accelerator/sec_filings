@@ -85,7 +85,7 @@ def process_date(
             dfs[df_cur.shape[1]] = []
             columns[df_cur.shape[1]] = make_unique(
                 list(map(
-                    lambda col:col.lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
+                    lambda col:str(col).lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
                 ))
             ) + ['date']
 
