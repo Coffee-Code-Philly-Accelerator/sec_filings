@@ -43,6 +43,20 @@ def parse_link_element(
     driver.switch_to.window(driver.window_handles[-1])
     return driver.current_url
 
+def malformed_table(
+    table:str
+)->BeautifulSoup:
+    soup = BeautifulSoup(table, 'lxml')
+    logging.debug(f"TABLE - {soup}")
+
+    # If there's no <table> tag, wrap everything inside a table
+    if not soup.table:
+        new_table = soup.new_tag("table")
+        for tag in soup.find_all(True):
+            new_table.append(tag.extract())
+        soup.append(new_table)
+    return soup
+
 def main()->None:
     init_logger()
     args = arguements()
@@ -57,7 +71,7 @@ def main()->None:
     for url in urls[1:]:
         # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312511141640/d10q.htm#tx188138_6'
         # url = 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0001422183/000162828023027800/fsk-20230630.htm'
-        url = 'https://www.sec.gov/Archives/edgar/data/1422183/000162828023027800/fsk-20230630.htm'
+        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000162828023027800/fsk-20230630.htm'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         try:
@@ -84,13 +98,13 @@ def main()->None:
         
         tables = driver.find_elements_by_xpath(table_xpath)
         if not tables:
-            tables = driver.find_elements_by_xpath("(//div[span[contains(text(), 'Schedule of Investments')]]/following-sibling::table)[2]")
-        logging.debug(tables)
+            tables = driver.find_elements_by_xpath("(//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table)")# div/table
+        logging.debug(f"GOT ELEMENTS  - {tables}")
         for i,table in enumerate(tables):
-            logging.debug(f"TABLE - {table.get_attribute('outerHTML')}")
-            dfs = pd.read_html(table.get_attribute('outerHTML'))
+            table = malformed_table(table.get_attribute("outerHTML"))
+            # logging.debug(f"TABLE FORMATTED - {table.prettify()}")
+            dfs = pd.read_html(table.prettify(),displayed_only=False)
             dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
-        break
         time.sleep(1)
     driver.close()
     return
