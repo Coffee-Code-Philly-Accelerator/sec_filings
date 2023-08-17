@@ -47,7 +47,7 @@ def malformed_table(
     table:str
 )->BeautifulSoup:
     soup = BeautifulSoup(table, 'lxml')
-    logging.debug(f"TABLE - {soup}")
+    # logging.debug(f"TABLE - {soup}")
 
     # If there's no <table> tag, wrap everything inside a table
     if not soup.table:
