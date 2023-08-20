@@ -14,6 +14,24 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from scrap_links import init_logger,arguements
 
+def get_xpath_elements(
+    driver:webdriver,
+    inline:bool,
+)->list:
+    xpaths = (
+        '//*[contains(text(), "Schedule of Investments")]/parent::*/parent::*/following-sibling::table[1]',
+        "(//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table)",
+        '//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table'
+    )
+    tables = driver.find_elements_by_xpath(xpaths[0])
+    if not tables:
+        tables = driver.find_elements_by_xpath(xpaths[1])
+    logging.debug(inline)
+    if not inline:
+        first_table = driver.find_elements_by_xpath(xpaths[-1])
+        tables.extend(first_table)
+    logging.debug(f"GOT ELEMENTS  - {tables}")
+    return tables
 
 def get_table_date(
     page_content:str
@@ -28,20 +46,19 @@ def get_table_date(
 
 def parse_link_element(
     driver:webdriver,
-    id:str
 )->str:
-    link_element = driver.find_element_by_id("menu-dropdown-link")
-    if link_element is None:
-        return
-    driver.execute_script("arguments[0].click();", link_element)
-    form_element = driver.find_element_by_id('form-information-html')
-    if form_element is None:
-        return
-    driver.execute_script("arguments[0].click();", form_element)
-    logging.debug(driver.window_handles[-1])
+    link_element = driver.find_elements_by_id("menu-dropdown-link")
+    if not link_element:
+        return None,False
+    driver.execute_script("arguments[0].click();", link_element[0])
+    form_element = driver.find_elements_by_id('form-information-html')
+    if not form_element:
+        return None,False
+    driver.execute_script("arguments[0].click();", form_element[0])
+    logging.debug(f"SWITCHING HANDLES - {driver.window_handles[-1]}")
     time.sleep(1)
     driver.switch_to.window(driver.window_handles[-1])
-    return driver.current_url
+    return driver.current_url,True
 
 def malformed_table(
     table:str
@@ -66,44 +83,46 @@ def main()->None:
     driver = webdriver.Firefox(executable_path=args.driver_path,firefox_options=options) # "geckodriver.exe"
     with open(args.url_txt,'r') as f:
         urls = [url for url in f.read().splitlines()]
-        
-    table_xpath = '//*[contains(text(), "{0}")]/parent::*/parent::*/following-sibling::table[1]'.format(table_title)
+
     for url in urls[1:]:
+        inline = False
         # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312511141640/d10q.htm#tx188138_6'
         # url = 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0001422183/000162828023027800/fsk-20230630.htm'
         # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000162828023027800/fsk-20230630.htm'
+        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312519054647/d679678d10k.htm#tx679678_7'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
-        try:
-            url = parse_link_element(driver,"menu-dropdown-link")
-        except Exception as e:
-            logging.debug(e)
-            
-        logging.debug(f'PARSING - {url}')
-        if url is not None:
+        inline_url,inline = parse_link_element(driver)
+ 
+        logging.info(f'FINAL URL - {inline_url}')
+        if inline_url is not None:
             time.sleep(1)
-            driver.get(url)
+            driver.get(inline_url)
             
         html_content = driver.page_source
         table_date = get_table_date(html_content)
-        logging.debug(f"DATETIMES - {table_date}")
+        logging.info(f"DATETIMES - {table_date}")
         
         out_path = os.path.join('csv',table_date)
         if not os.path.exists(out_path):
             os.mkdir(out_path)
             
-        logging.debug(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
+        logging.info(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
         with open(os.path.join(out_path,url.split('/')[-1].replace(".htm","")+".html"), "w",encoding='utf-8') as file:
             file.write(html_content)
         
-        tables = driver.find_elements_by_xpath(table_xpath)
-        if not tables:
-            tables = driver.find_elements_by_xpath("(//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table)")# div/table
-        logging.debug(f"GOT ELEMENTS  - {tables}")
+        tables = get_xpath_elements(driver,inline)
+        if not tables or not tables[0]:
+            continue
         for i,table in enumerate(tables):
+            if os.path.exists(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
+                continue
+            # logging.debug(f"TABLE - {type(table)} {table}")
             table = malformed_table(table.get_attribute("outerHTML"))
-            # logging.debug(f"TABLE FORMATTED - {table.prettify()}")
             dfs = pd.read_html(table.prettify(),displayed_only=False)
+            if not dfs:
+                logging.debug(f"NO TABLES - {dfs}")
+                continue
             dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
         time.sleep(1)
     driver.close()

@@ -103,7 +103,6 @@ def process_date(
         
         
 def join_all_possible()->None:
-    init_logger()
     infile = 'csv/**/*/*'
     all_csvs = glob.glob(infile,recursive=True)
     dfs,columns = {},{}

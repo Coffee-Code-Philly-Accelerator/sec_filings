@@ -34,7 +34,7 @@ def arguements()->argparse.ArgumentParser:
     )
     parser.add_argument(
         '--firefox-path', type=str, required=False, 
-        default=r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe",
+        default=r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.3.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe",
         help='path to your firefox.exe'
     )
     return parser.parse_args()
