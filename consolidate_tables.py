@@ -1,25 +1,31 @@
 import os
+import re
 import logging
 import glob
 import pandas as pd
 import numpy as np
 from collections import Counter
+from fuzzywuzzy import process
+
 from scrap_links import init_logger,arguements
 from important_tables import key_fields
 
 
-def common_fields()->tuple:
+def standard_field_names()->tuple:
     """
     [('AmortizedCost', 424), ('Industry', 420), ('Portfolio Company(a)', 411), ('Footnotes', 325), ('Maturity', 265), ('Rate(b)', 177), ('FairValue(c)', 171)]
     """
     return (
-        'AmortizedCost',
-        'Industry',
-        'Portfolio Company(a)',
-        'Footnotes',
-        'Maturity',
-        'Rate(b)',
-        'FairValue(c)'
+        'portfolio-company',
+        'footnotes',
+        'industry',
+        'rate',
+        'floor',
+        'maturity',
+        'principal-amount',
+        'cost',
+        'fair-value',
+        'investment-type'
     )
 
 def make_unique(original_list):
@@ -69,57 +75,73 @@ def clean(
         return
     return df_cur
 
+def strip_string(
+    columns_names:list,
+    fuzzy_match:bool=False
+)->tuple:
+    columns = tuple(map(lambda col:re.sub(r'[^a-z]', '', str(col).lower()),columns_names))
+    if fuzzy_match:
+        standard_field = standard_field_names()
+        return tuple(
+            get_standard_name(col,standard_field) for col in columns
+        )
+    return columns
+
 def get_key_fields(
     fields:pd.DataFrame
-)->list:
+)->tuple:
     important_fields = key_fields()
     for idx,row in enumerate(fields.iterrows()):
-        if any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist()):
-            logging.debug(f"FOUND FIELDS - {row[-1].tolist()}")
-            return row[-1].tolist(),idx
+        found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
+        if found:
+            fields = strip_string(row[-1].tolist(),fuzzy_match=found),idx
+            logging.debug(f"FUZZY FIELDS - {fields[0]}")
+            return fields
     logging.info("DEFAULT FIELDS")
-    return fields.iloc[0].tolist(),0
+    return strip_string(fields.iloc[0].tolist(),fuzzy_match=found),0
 
+
+def get_standard_name(col, choices, score_cutoff=60):
+    best_match, score = process.extractOne(col, choices)
+    if score > score_cutoff:
+        return best_match
+    return col
 
 def process_date(
     date:str,
 )->dict:
-    dfs,columns = {},{}
+    dfs = {}
     for file in os.listdir(os.path.join('csv',date)):
         df_cur = clean(os.path.join('csv',date,file))
         if df_cur is None:
             continue
         
-        df_cur['date'] = date
         df_cur.reset_index(drop=True,inplace=True)
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
+        df_cur['date'] = date
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
-        key = key.replace(' ',"_")
-        if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
+        key = key.replace(' ','_')
+        if dfs.get(key) is None:
             dfs[key] = []
-            # columns[df_cur.shape[1]] = make_unique(
-            #     list(map(
-            #         lambda col:str(col).lower().replace(" ","_"),important_fields[:-1]
-            #     ))
-            # ) + ['date']
-            
+
         df_cur.drop(index=idx,inplace=True)
         dfs[key].append(df_cur)
-        
+     
+    if not os.path.exists(f"csv/{date}/output"):
+        os.mkdir(f"csv/{date}/output")   
     for t in dfs:
-        if os.path.exists(f"csv/{date}/{t}.csv") or len(t) > 100:
+        if os.path.exists(f"csv/{date}/output/{t}.csv") or len(t) > 100:
             continue
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
-        result.to_csv(f"csv/{date}/{t}.csv")
+        result.to_csv(f"csv/{date}/output/{t}.csv")
         
         
         
 def join_all_possible()->None:
     infile = 'csv/**/*/*'
     all_csvs = glob.glob(infile,recursive=True)
-    dfs,columns = {},{}
+    dfs = {}
     
     for file in all_csvs:
         dirs = file.split('/')
@@ -127,39 +149,36 @@ def join_all_possible()->None:
         if df_cur is None:
             continue
         
-        df_cur['date'] = dirs[1]
         df_cur.reset_index(drop=True,inplace=True)
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
+        df_cur['date'] = dirs[1]
+        # logging.debug(f"BEFORE - {df_cur.columns}")
+        df_cur.drop(df_cur.columns[-2],axis=1,inplace=True)
+        # logging.debug(f"AFTER - {df_cur.columns}")
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
-        key = key.replace(' ',"_")
-        if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
+        key = key.replace(' ','_')
+        if dfs.get(key) is None:
             dfs[key] = []
-            # columns[df_cur.shape[1]] = make_unique(
-            #     list(map(
-            #         lambda col:str(col).lower().replace(" ","_"),important_fields[:-1]
-            #     ))
-            # ) + ['date']
-            
+
         df_cur.drop(index=idx,inplace=True)
-        dfs[key].append(df_cur.reset_index(drop=True))
+        dfs[key].append(df_cur)
         
     for t in dfs:
         if os.path.exists(f"csv/{t}.csv") or len(t) > 100:
             continue
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
         result.to_csv(f"csv/{t}.csv")
                 
     return
 
 def main()->None:
     init_logger()
-    for date in os.listdir('csv'):
-        if '.csv' in date:
-            continue
-        logging.info(f"DATE - {date}")
-        process_date(date)
+    # for date in os.listdir('csv'):
+    #     if '.csv' in date:
+    #         continue
+    #     logging.info(f"DATE - {date}")
+    #     process_date(date)
     join_all_possible()
     return 
 
@@ -167,15 +186,4 @@ if __name__ == "__main__":
     # remove files that don't contain keyword
     # https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
     # https://stackoverflow.com/questions/26616003/shopt-command-not-found-in-bashrc-after-shell-updation
-    
-    """
-    Traceback (most recent call last):
-  File "consolidate_tables.py", line 168, in <module>
-    main()
-  File "consolidate_tables.py", line 161, in main
-    join_all_possible()
-  File "consolidate_tables.py", line 133, in join_all_possible
-    key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
-TypeError: sequence item 3: expected str instance, numpy.float64 found
-    """
     main()
