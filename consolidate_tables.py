@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 from scrap_links import init_logger,arguements
+from important_tables import key_fields
+
 
 def common_fields()->tuple:
     """
@@ -54,21 +56,29 @@ def clean(
     if  len(dirs) < 3 or '.csv' not in dirs[-1]:
         return
     df_cur = pd.read_csv(file)
+    df_cur = df_cur.T.drop_duplicates().T
     df_cur.dropna(axis=1,thresh=7,inplace=True) # allowable nan threshold
     df_cur = df_cur.iloc[1:,1:]
     if df_cur.shape[1] < 4:
         return
-    # logging.info(f"PROCESSING - {file}")
     columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
     df_cur = df_cur.drop(columns=columns_to_drop)
     df_cur = df_cur.dropna(how='all')
     df_cur = df_cur.fillna(-100)
     if df_cur.empty:
         return
-    # logging.debug(f'SHAPE - {df_cur.shape}')
-    # logging.debug(f"{df_cur.head()}")
     return df_cur
-    
+
+def get_key_fields(
+    fields:pd.DataFrame
+)->list:
+    important_fields = key_fields()
+    for idx,row in enumerate(fields.iterrows()):
+        if any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist()):
+            logging.debug(f"FOUND FIELDS - {row[-1].tolist()}")
+            return row[-1].tolist(),idx
+    logging.info("DEFAULT FIELDS")
+    return fields.iloc[0].tolist(),0
 
 
 def process_date(
@@ -81,24 +91,27 @@ def process_date(
             continue
         
         df_cur['date'] = date
-        if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
-            dfs[df_cur.shape[1]] = []
-            columns[df_cur.shape[1]] = make_unique(
-                list(map(
-                    lambda col:str(col).lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
-                ))
-            ) + ['date']
-
-        df_cur.drop(index=1,inplace=True)
-        dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
+        df_cur.reset_index(drop=True,inplace=True)
+        important_fields,idx = get_key_fields(df_cur)
+        df_cur.columns = important_fields
+        key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
+        if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
+            dfs[key] = []
+            # columns[df_cur.shape[1]] = make_unique(
+            #     list(map(
+            #         lambda col:str(col).lower().replace(" ","_"),important_fields[:-1]
+            #     ))
+            # ) + ['date']
+            
+        df_cur.drop(index=idx,inplace=True)
+        dfs[key].append(df_cur)
         
     for t in dfs:
-        if os.path.exists(f"csv/{date}/main_table_{t}.csv"):
+        if os.path.exists(f"csv/{date}/{t}.csv") or len(t) > 100:
             continue
-        logging.debug(f"UNIQUE FIELD - {columns[t]}")
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
-        result.to_csv(f"csv/{date}/main_table_{t}.csv")
+        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
+        result.to_csv(f"csv/{date}/{t}.csv")
         
         
         
@@ -114,25 +127,27 @@ def join_all_possible()->None:
             continue
         
         df_cur['date'] = dirs[1]
-        
-        if dfs.get(df_cur.shape[1]) is None and columns.get(df_cur.shape[1]) is None:
-            dfs[df_cur.shape[1]] = []
-            columns[df_cur.shape[1]] = make_unique(
-                list(map(
-                    lambda col:str(col).lower().replace(" ","_"),df_cur.iloc[0].tolist()[:-1]
-                ))
-            ) + ['date']
+        df_cur.reset_index(drop=True,inplace=True)
+        important_fields,idx = get_key_fields(df_cur)
+        df_cur.columns = important_fields
+        key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
+        if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
+            dfs[key] = []
+            # columns[df_cur.shape[1]] = make_unique(
+            #     list(map(
+            #         lambda col:str(col).lower().replace(" ","_"),important_fields[:-1]
+            #     ))
+            # ) + ['date']
             
-        df_cur.drop(index=1,inplace=True)
-        dfs[df_cur.shape[1]].append(df_cur.reset_index(drop=True))
+        df_cur.drop(index=idx,inplace=True)
+        dfs[key].append(df_cur.reset_index(drop=True))
         
-    # logging.debug(f"UNIQUE COLUMNS - {columns}")
     for t in dfs:
-        if os.path.exists(f"csv/main_table_{t}.csv"):
+        if os.path.exists(f"csv/{t}.csv") or len(t) > 100:
             continue
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
-        result.to_csv(f"csv/main_table_{t}.csv")
+        # result.columns = columns[t] + list(range(result.shape[1] - len(columns[t]))) 
+        result.to_csv(f"csv/{t}.csv")
                 
     return
 
@@ -141,10 +156,13 @@ def main()->None:
     for date in os.listdir('csv'):
         if '.csv' in date:
             continue
-        logging.debug(f"DATE - {date}")
+        logging.info(f"DATE - {date}")
         process_date(date)
     join_all_possible()
     return 
 
 if __name__ == "__main__":
+    # remove files that don't contain keyword
+    # https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
+    # https://stackoverflow.com/questions/26616003/shopt-command-not-found-in-bashrc-after-shell-updation
     main()
