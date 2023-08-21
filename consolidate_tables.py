@@ -94,7 +94,8 @@ def process_date(
         df_cur.reset_index(drop=True,inplace=True)
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
-        key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
+        key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
+        key = key.replace(' ',"_")
         if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
             dfs[key] = []
             # columns[df_cur.shape[1]] = make_unique(
@@ -130,7 +131,8 @@ def join_all_possible()->None:
         df_cur.reset_index(drop=True,inplace=True)
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
-        key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
+        key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
+        key = key.replace(' ',"_")
         if dfs.get(key) is None:# and columns.get(df_cur.shape[1]) is None:
             dfs[key] = []
             # columns[df_cur.shape[1]] = make_unique(
@@ -165,4 +167,15 @@ if __name__ == "__main__":
     # remove files that don't contain keyword
     # https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
     # https://stackoverflow.com/questions/26616003/shopt-command-not-found-in-bashrc-after-shell-updation
+    
+    """
+    Traceback (most recent call last):
+  File "consolidate_tables.py", line 168, in <module>
+    main()
+  File "consolidate_tables.py", line 161, in main
+    join_all_possible()
+  File "consolidate_tables.py", line 133, in join_all_possible
+    key = '_'.join(df_cur.columns.tolist()).replace('/','_').replace(' ',"_")
+TypeError: sequence item 3: expected str instance, numpy.float64 found
+    """
     main()
