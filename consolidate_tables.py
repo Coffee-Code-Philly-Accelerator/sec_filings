@@ -16,16 +16,16 @@ def standard_field_names()->tuple:
     [('AmortizedCost', 424), ('Industry', 420), ('Portfolio Company(a)', 411), ('Footnotes', 325), ('Maturity', 265), ('Rate(b)', 177), ('FairValue(c)', 171)]
     """
     return (
-        'portfolio-company',
+        'portfolio',
         'footnotes',
         'industry',
         'rate',
         'floor',
         'maturity',
-        'principal-amount',
+        'principal',
         'cost',
-        'fair-value',
-        'investment-type'
+        'value',
+        'investment'
     )
 
 def make_unique(original_list):
@@ -75,15 +75,22 @@ def clean(
         return
     return df_cur
 
+def present_substrings(substrings, main_string):
+    check = list(filter(lambda sub: sub in main_string, substrings))
+    if check:
+        return check[0]
+    return main_string
+
 def strip_string(
     columns_names:list,
-    fuzzy_match:bool=False
+    standardize:bool=False
 )->tuple:
     columns = tuple(map(lambda col:re.sub(r'[^a-z]', '', str(col).lower()),columns_names))
-    if fuzzy_match:
-        standard_field = standard_field_names()
+    if standardize:
+        standard_fields = standard_field_names()
         return tuple(
-            get_standard_name(col,standard_field) for col in columns
+            # present_substrings(standard_fields,col) for col in columns 
+            get_standard_name(col,standard_fields) for col in columns
         )
     return columns
 
@@ -94,13 +101,13 @@ def get_key_fields(
     for idx,row in enumerate(fields.iterrows()):
         found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
         if found:
-            fields = strip_string(row[-1].tolist(),fuzzy_match=found),idx
+            fields = strip_string(row[-1].tolist(),standardize=found),idx
             logging.debug(f"FUZZY FIELDS - {fields[0]}")
             return fields
     logging.info("DEFAULT FIELDS")
-    return strip_string(fields.iloc[0].tolist(),fuzzy_match=found),0
+    return strip_string(fields.iloc[0].tolist(),standardize=found),0
 
-
+ 
 def get_standard_name(col, choices, score_cutoff=60):
     best_match, score = process.extractOne(col, choices)
     if score > score_cutoff:
@@ -174,11 +181,11 @@ def join_all_possible()->None:
 
 def main()->None:
     init_logger()
-    # for date in os.listdir('csv'):
-    #     if '.csv' in date:
-    #         continue
-    #     logging.info(f"DATE - {date}")
-    #     process_date(date)
+    for date in os.listdir('csv'):
+        if '.csv' in date:
+            continue
+        logging.info(f"DATE - {date}")
+        process_date(date)
     join_all_possible()
     return 
 
