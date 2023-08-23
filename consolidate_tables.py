@@ -201,11 +201,11 @@ def main()->None:
     import warnings
     warnings.filterwarnings("ignore")
     init_logger()
-    # for date in os.listdir('csv'):
-    #     if '.csv' in date:
-    #         continue
-    #     logging.info(f"DATE - {date}")
-    #     process_date(date)
+    for date in os.listdir('csv'):
+        if '.csv' in date:
+            continue
+        logging.info(f"DATE - {date}")
+        process_date(date)
     join_all_possible()
     return 
 

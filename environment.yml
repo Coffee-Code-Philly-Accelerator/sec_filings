@@ -64,6 +64,7 @@ dependencies:
   - pip:
     - chardet==5.0.0
     - edgar==5.4.3
+    - fuzzywuzzy==0.18.0
     - importlib-resources==5.4.0
     - lxml==4.9.2
     - python-dotenv==0.20.0
