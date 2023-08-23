@@ -70,7 +70,6 @@ def clean(
     columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
     df_cur = df_cur.drop(columns=columns_to_drop)
     df_cur = df_cur.dropna(how='all')
-    df_cur = df_cur.fillna(-100)
     if df_cur.empty:
         return
     return df_cur
@@ -102,9 +101,9 @@ def get_key_fields(
         found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
         if found:
             fields = strip_string(row[-1].tolist(),standardize=found),idx
-            logging.debug(f"FUZZY FIELDS - {fields[0]}")
+            # logging.debug(f"FUZZY FIELDS - {fields[0]}")
             return fields
-    logging.info("DEFAULT FIELDS")
+    # logging.info("DEFAULT FIELDS")
     return strip_string(fields.iloc[0].tolist(),standardize=found),0
 
  
@@ -127,6 +126,7 @@ def process_date(
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
         df_cur['date'] = date
+        df_cur = merge_duplicate_columns(df_cur)
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
         key = key.replace(' ','_')
         if dfs.get(key) is None:
@@ -143,8 +143,24 @@ def process_date(
         result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
         result.to_csv(f"csv/{date}/output/{t}.csv")
         
-        
-        
+def merge_duplicate_columns(
+    df:pd.DataFrame,
+)->pd.DataFrame:
+    duplicate_cols = df.columns[df.columns.duplicated(keep=False)]
+    # Merge columns with the same name
+    for col_name in duplicate_cols.unique():
+        # Select columns with the same name
+        duplicate_data = df.loc[:, df.columns == col_name]
+        # Concatenate the values in these columns row-wise and store in a new 
+        # logging.debug(f"{duplicate_data[0,:].dropna().astype(str)} {len(duplicate_data[0].dropna().astype(str))}")
+        merged_data = duplicate_data.apply(lambda row: ' '.join(set(row.dropna().astype(str))), axis=1)
+        # Drop the original duplicate columns
+        df = df.loc[:, df.columns != col_name]
+        # Add the new merged column
+        df[col_name] = merged_data
+    return df
+
+
 def join_all_possible()->None:
     infile = 'csv/**/*/*'
     all_csvs = glob.glob(infile,recursive=True)
@@ -162,6 +178,8 @@ def join_all_possible()->None:
         df_cur['date'] = dirs[1]
         # logging.debug(f"BEFORE - {df_cur.columns}")
         df_cur.drop(df_cur.columns[-2],axis=1,inplace=True)
+        logging.debug(f"DUPLICATED COLUMNS - {df_cur.columns[df_cur.columns.duplicated(keep=False)]}")
+        df_cur = merge_duplicate_columns(df_cur)
         # logging.debug(f"AFTER - {df_cur.columns}")
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
         key = key.replace(' ','_')
@@ -180,16 +198,25 @@ def join_all_possible()->None:
     return
 
 def main()->None:
+    import warnings
+    warnings.filterwarnings("ignore")
     init_logger()
-    for date in os.listdir('csv'):
-        if '.csv' in date:
-            continue
-        logging.info(f"DATE - {date}")
-        process_date(date)
+    # for date in os.listdir('csv'):
+    #     if '.csv' in date:
+    #         continue
+    #     logging.info(f"DATE - {date}")
+    #     process_date(date)
     join_all_possible()
     return 
 
 if __name__ == "__main__":
+    """
+    See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+    df[col_name] = merged_data
+    consolidate_tables.py:160: SettingWithCopyWarning:
+    A value is trying to be set on a copy of a slice from a DataFrame.
+    Try using .loc[row_indexer,col_indexer] = value instead
+    """
     # remove files that don't contain keyword
     # https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
     # https://stackoverflow.com/questions/26616003/shopt-command-not-found-in-bashrc-after-shell-updation
