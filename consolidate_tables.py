@@ -25,7 +25,8 @@ def standard_field_names()->tuple:
         'principal',
         'cost',
         'value',
-        'investment'
+        'investment',
+        'date'
     )
 
 def make_unique(original_list):
@@ -127,6 +128,12 @@ def process_date(
         df_cur.columns = important_fields
         df_cur['date'] = date
         df_cur = merge_duplicate_columns(df_cur)
+        
+        cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
+        cols_to_drop = [col for col in cur_cols if col not in standard_names] \
+            if any(col in standard_names for col in cur_cols) else []
+        df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True)
+        
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
         key = key.replace(' ','_')
         if dfs.get(key) is None:
@@ -176,11 +183,16 @@ def join_all_possible()->None:
         important_fields,idx = get_key_fields(df_cur)
         df_cur.columns = important_fields
         df_cur['date'] = dirs[1]
-        # logging.debug(f"BEFORE - {df_cur.columns}")
         df_cur.drop(df_cur.columns[-2],axis=1,inplace=True)
+        
         logging.debug(f"DUPLICATED COLUMNS - {df_cur.columns[df_cur.columns.duplicated(keep=False)]}")
         df_cur = merge_duplicate_columns(df_cur)
-        # logging.debug(f"AFTER - {df_cur.columns}")
+        
+        cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
+        cols_to_drop = [col for col in cur_cols if col not in standard_names] \
+            if any(col in standard_names for col in cur_cols) else []
+        df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True)
+        
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
         key = key.replace(' ','_')
         if dfs.get(key) is None:
@@ -201,11 +213,11 @@ def main()->None:
     import warnings
     warnings.filterwarnings("ignore")
     init_logger()
-    for date in os.listdir('csv'):
-        if '.csv' in date:
-            continue
-        logging.info(f"DATE - {date}")
-        process_date(date)
+    # for date in os.listdir('csv'):
+    #     if '.csv' in date:
+    #         continue
+    #     logging.info(f"DATE - {date}")
+    #     process_date(date)
     join_all_possible()
     return 
 
