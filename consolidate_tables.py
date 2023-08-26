@@ -27,7 +27,8 @@ def standard_field_names()->tuple:
         'cost',
         'value',
         'investment',
-        'date'
+        'date',
+        'subheaders'
     )
 
 def make_unique(original_list):
@@ -55,6 +56,23 @@ def debug_format(
     df.to_csv(out_path)
     return
 
+def extract_subheaders(
+    df:pd.DataFrame,
+)->pd.DataFrame:
+    result = df.apply(lambda row: pd.notna(row).sum() == 1, axis=1)
+    idx = result[result].index.tolist()
+    df['subheaders'] = 'no_subheader'
+    if not idx:
+        return df
+    for j,i in enumerate(idx[1:]):
+        # logging.debug(f"SUBHEADER - {df.iloc[i,0]}")
+        df.loc[idx[j]:idx[j+1],'subheaders'] = df.iloc[i,0]
+        logging.debug(f"INDEX SUBHEADER - {df.loc[idx[j]:idx[j+1],'subheaders']}")
+    # logging.debug(f"ROWS - {df.iloc[idx,:]}")
+    logging.debug(f"SAMPLE - {df.loc[:,['subheaders']]}")
+    return df
+
+
 def clean(
     file:str,
 )->list:
@@ -63,12 +81,9 @@ def clean(
         return
     df_cur = pd.read_csv(file)
     df_cur = df_cur.T.drop_duplicates().T
-    # df_cur.dropna(axis=1,thresh=7,inplace=True) # allowable nan threshold
     df_cur = df_cur.iloc[1:,1:]
     if df_cur.shape[1] < 4:
         return
-    # columns_to_drop = df_cur.columns[df_cur.iloc[0].isna()]
-    # df_cur = df_cur.drop(columns=columns_to_drop)
     df_cur = df_cur.dropna(how='all')
     if df_cur.empty:
         return
@@ -76,6 +91,7 @@ def clean(
     df_cur.reset_index(drop=True,inplace=True)
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
+    df_cur = extract_subheaders(df_cur)
     df_cur['date'] = dirs[1]
     df_cur = merge_duplicate_columns(df_cur)
     
@@ -99,7 +115,6 @@ def strip_string(
     if standardize:
         standard_fields = standard_field_names()
         return tuple(
-            # present_substrings(standard_fields,col) for col in columns 
             get_standard_name(col,standard_fields) for col in columns
         )
     return columns
@@ -172,11 +187,11 @@ def main()->None:
     import warnings
     warnings.filterwarnings("ignore")
     init_logger()
-    # for date in os.listdir('csv'):
-    #     if '.csv' in date:
-    #         continue
-    #     logging.info(f"DATE - {date}")
-    #     process_date(date)
+    for date in os.listdir('csv'):
+        if '.csv' in date:
+            continue
+        logging.info(f"DATE - {date}")
+        process_date(date)
     join_all_possible()
     return 
 
