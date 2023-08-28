@@ -8,8 +8,7 @@ from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
 
-from scrap_links import init_logger,arguements
-from important_tables import key_fields
+from utils import arguements,init_logger
 
 
 def standard_field_names()->tuple:
@@ -46,15 +45,6 @@ def make_unique(original_list):
     
     return unique_list
 
-def debug_format(
-    df:pd.DataFrame,
-    out_path:str,
-)->None:
-    csv,date,debug,filename = out_path.split('/')
-    if not os.path.exists(os.path.join(csv,date,debug)):
-        os.mkdir(os.path.join(csv,date,debug))
-    df.to_csv(out_path)
-    return
 
 def extract_subheaders(
     df:pd.DataFrame,
@@ -64,12 +54,15 @@ def extract_subheaders(
     df['subheaders'] = 'no_subheader'
     if not idx:
         return df
-    for j,i in enumerate(idx[1:]):
-        # logging.debug(f"SUBHEADER - {df.iloc[i,0]}")
+    
+    df.loc[idx[-1]:,'subheaders'] = df.iloc[idx[-1],0]
+    for j,i in enumerate(idx[:-1]):
         df.loc[idx[j]:idx[j+1],'subheaders'] = df.iloc[i,0]
-        logging.debug(f"INDEX SUBHEADER - {df.loc[idx[j]:idx[j+1],'subheaders']}")
-    # logging.debug(f"ROWS - {df.iloc[idx,:]}")
-    logging.debug(f"SAMPLE - {df.loc[:,['subheaders']]}")
+    if idx[0] == 0:
+        logging.debug(f"\n{df.iloc[:,:5]}")
+        logging.debug(df.index.tolist())
+        return df
+    df.drop(idx,axis=0,inplace=True,errors='ignore') # drop subheader row
     return df
 
 
@@ -84,7 +77,7 @@ def clean(
     df_cur = df_cur.iloc[1:,1:]
     if df_cur.shape[1] < 4:
         return
-    df_cur = df_cur.dropna(how='all')
+    df_cur = df_cur.dropna(how='all') # drop empty rows
     if df_cur.empty:
         return
     
@@ -97,8 +90,9 @@ def clean(
     
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
     cols_to_drop = [col for col in cur_cols if col not in standard_names] 
-    df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True)
-    df_cur.drop(index=idx,inplace=True)
+    df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
+    df_cur.drop(index=idx,inplace=True) # drop the column row
+    # df_cur.dropna(inplace=True) # drop totals rows
     return df_cur
 
 def present_substrings(substrings, main_string):
@@ -122,7 +116,7 @@ def strip_string(
 def get_key_fields(
     fields:pd.DataFrame
 )->tuple:
-    important_fields = key_fields()
+    important_fields = standard_field_names()
     for idx,row in enumerate(fields.iterrows()):
         found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
         if found:
@@ -179,6 +173,7 @@ def join_all_possible()->None:
     dfs = [pd.read_csv(csv) for csv in all_csvs]
     merged_df = pd.concat(dfs)
     merged_df.drop(columns=merged_df.columns[0],inplace=True)
+    merged_df.reset_index(drop=True,inplace=True)
     logging.debug(f"final table shape - {merged_df.shape}")
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return

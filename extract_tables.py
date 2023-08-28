@@ -12,7 +12,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from scrap_links import init_logger,arguements
+from utils import arguements,init_logger
 
 def get_xpath_elements(
     driver:webdriver,
