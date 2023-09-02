@@ -44,17 +44,17 @@ def main()->None:
     for i,df in enumerate(dfs):
         df.to_csv(os.path.join('csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
 
+    conditions = '@data-original-title="Open document" and contains(@href, "Archive") and not(contains(@href, "index")) and not(contains(@href, "xml"))'
     table = driver.find_elements_by_css_selector('div.dataTables_scroll')
-    links = table[0].find_elements_by_xpath('//a[contains(@href, "Archive") and not(contains(@href, "index"))]')
-    logging.debug(len([link.get_attribute('innerHTML') for link in links]))
+    links = table[0].find_elements_by_xpath(f'//td//a[{conditions}]')
+    logging.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
     df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
     filing_date = df['Reporting date']
+    logging.debug(f"DATES - {len(filing_date)}")
     with open(os.path.join('urls',url.split("=")[-1]+".txt"),'w') as url_out:
-        for a in links:
-            url_out.write('\n%s' % a.get_attribute('href'))
-            logging.debug('\n%s' % a.get_attribute('href'))
-
-
+        for a,date in zip(links,filing_date):
+            url_out.write('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
+            logging.debug('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
 
     driver.close()
 
