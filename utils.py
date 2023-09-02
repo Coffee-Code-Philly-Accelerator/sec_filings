@@ -28,14 +28,24 @@ def arguements()->argparse.ArgumentParser:
         help='.txt to get links from'
     )
     parser.add_argument(
-        '--driver-path', type=str, required=False, 
+        '--firefox-driver-path', type=str, required=False, 
         default="geckodriver.exe",
+        help='path to your geckodriver.exe'
+    )
+    parser.add_argument(
+        '--chrome-driver-path', type=str, required=False, 
+        default="chromedriver_win32/chromedriver.exe",
         help='path to your geckodriver.exe'
     )
     parser.add_argument(
         '--firefox-path', type=str, required=False, 
         default=r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.3.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe",
         help='path to your firefox.exe'
+    )
+    parser.add_argument(
+        '--chrome-path',type=str,required=False,
+        default=r'C:\Program Files\Google\Chrome\Application\chrome.exe',
+        help='path to your chrome.exe'
     )
     return parser.parse_args()
 

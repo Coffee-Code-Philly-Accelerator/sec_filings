@@ -8,7 +8,8 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options
+# from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 
 from utils import arguements,init_logger
 
@@ -18,8 +19,10 @@ def main()->None:
     args = arguements()
     url = args.url
     options = Options()
-    options.binary_location = args.firefox_path #r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
-    driver = webdriver.Firefox(executable_path=args.driver_path,firefox_options=options)#"geckodriver.exe")
+    options.binary_location = args.chrome_path
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options)
+    # options.binary_location = args.firefox_path #r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
+    # driver = webdriver.Firefox(executable_path=args.driver_path,firefox_options=options)#"geckodriver.exe")
     driver.get(url)
     h5_tags = driver.find_elements_by_tag_name("h5")
 
@@ -41,12 +44,17 @@ def main()->None:
     for i,df in enumerate(dfs):
         df.to_csv(os.path.join('csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
 
-    table = driver.find_element_by_id('filingsTable')
-    soup = BeautifulSoup(table.get_attribute('innerHTML'))
+    table = driver.find_elements_by_css_selector('div.dataTables_scroll')
+    links = table[0].find_elements_by_xpath('//a[contains(@href, "Archive") and not(contains(@href, "index"))]')
+    logging.debug(len([link.get_attribute('innerHTML') for link in links]))
+    df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
+    filing_date = df['Reporting date']
     with open(os.path.join('urls',url.split("=")[-1]+".txt"),'w') as url_out:
-        for a in soup.find_all('a', href=True):
-            url_out.write('\n%s' % url.split('edgar')[0]+a['href'])
-            logging.debug('\n%s' % url.split('edgar')[0]+a['href'])
+        for a in links:
+            url_out.write('\n%s' % a.get_attribute('href'))
+            logging.debug('\n%s' % a.get_attribute('href'))
+
+
 
     driver.close()
 
