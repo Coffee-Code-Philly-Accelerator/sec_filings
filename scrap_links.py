@@ -20,7 +20,7 @@ def main()->None:
     url = args.url
     options = Options()
     options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options)
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)#,options=options)
     # options.binary_location = args.firefox_path #r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
     # driver = webdriver.Firefox(executable_path=args.driver_path,firefox_options=options)#"geckodriver.exe")
     driver.get(url)

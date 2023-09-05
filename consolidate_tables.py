@@ -133,6 +133,18 @@ def get_standard_name(col, choices, score_cutoff=60):
         return best_match
     return col
 
+def process_totals(
+    df:pd.DataFrame,
+    totals_cols:list=['index','portfolio', 'subheaders', 'date', 'cost', 'value']
+)->bool:
+    return df.drop(totals_cols, axis=1).isna().all(axis=1)
+    # df = df.drop(columns=totals_cols)
+    # to_drop = []
+    # for index, row in df.iterrows():
+    #     if row.isna().all():
+    #         to_drop.append(index)
+    # return to_drop
+
 def process_date(
     date:str,
 )->dict:
@@ -146,6 +158,9 @@ def process_date(
         if dfs.get(key) is None:
             dfs[key] = []
         dfs[key].append(df_cur)
+        index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
+        if index_list:
+            break
      
     if not os.path.exists(f"csv/{date}/output"):
         os.mkdir(f"csv/{date}/output")   
@@ -173,8 +188,15 @@ def join_all_possible()->None:
     dfs = [pd.read_csv(csv) for csv in all_csvs]
     merged_df = pd.concat(dfs)
     merged_df.drop(columns=merged_df.columns[0],inplace=True)
-    merged_df.reset_index(drop=True,inplace=True)
+    merged_df.reset_index(inplace=True)
+    merged_df.rename({'index':'original_index'})
+    mask = process_totals(merged_df)
+    logging.debug(f"TOTALS TO KEEP - {mask}")
+    extracted_rows = merged_df.loc[mask]
+    merged_df.drop(extracted_rows.index,inplace=True)
+    
     logging.debug(f"final table shape - {merged_df.shape}")
+    extracted_rows.to_csv('csv/totals.csv')
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return
 

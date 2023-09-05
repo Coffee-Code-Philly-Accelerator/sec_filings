@@ -18,19 +18,47 @@ def get_xpath_elements(
     driver:webdriver,
     inline:bool,
 )->list:
+    """
+    var xpathExpression = "//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table";
+    var xpathResult = document.evaluate(xpathExpression, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+
+    var node = xpathResult.iterateNext();
+    while(node) {
+        console.log(node);
+        node = xpathResult.iterateNext();
+    }
+    """
     xpaths = (
         '//*[contains(text(), "Schedule of Investments")]/parent::*/parent::*/following-sibling::table[1]',
         "(//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table)",
-        '//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table'
+        "//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table",
+        "//b[contains(text(), 'Schedule of Investments')]/parent::p/following-sibling::table",
+        '//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table',
     )
-    tables = driver.find_elements_by_xpath(xpaths[0])
-    if not tables:
-        tables = driver.find_elements_by_xpath(xpaths[1])
+    tables = []
     logging.debug(inline)
     if not inline:
         first_table = driver.find_elements_by_xpath(xpaths[-1])
         tables.extend(first_table)
+        
+    for path in xpaths[:-1]:
+        tables.extend(driver.find_elements_by_xpath(path))
     logging.debug(f"GOT ELEMENTS  - {tables}")
+    return tables
+
+def get_soup_tables(
+    driver:webdriver,
+    saved_html_path:str,
+)->object:
+    driver.get('file://'+saved_html_path)
+    tables = driver.find_elements_by_xpath(By.XPATH,"//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table")
+    logging.debug(f"GOT ELEMENTS - {tables}")
+    # for div in divs:
+    #     tables = div.find_elements(By.TAG_NAME, "table")
+    #     print(len(tables), "tables found")
+
+    #     for table in tables:
+    #         print(table.text)
     return tables
 
 def get_table_date(
@@ -79,17 +107,13 @@ def main()->None:
     args = arguements()
     options = Options()
     options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options)
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)#,options=options)
     table_title = "Schedule of Investments"
     with open(args.url_txt,'r') as f:
-        urls = [url for url in f.read().splitlines()]
+        urls = [(*url.split(' '),) for url in f.read().splitlines()]
 
-    for url in urls[1:]:
+    for table_date,url in urls[1:]:
         inline = False
-        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312511141640/d10q.htm#tx188138_6'
-        # url = 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0001422183/000162828023027800/fsk-20230630.htm'
-        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000162828023027800/fsk-20230630.htm'
-        # url = 'https://www.sec.gov/Archives/edgar/data/1422183/000119312519054647/d679678d10k.htm#tx679678_7'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url,inline = parse_link_element(driver)
@@ -100,7 +124,6 @@ def main()->None:
             driver.get(inline_url)
             
         html_content = driver.page_source
-        table_date = get_table_date(html_content)
         logging.info(f"DATETIMES - {table_date}")
         
         out_path = os.path.join('csv',table_date)
@@ -108,16 +131,17 @@ def main()->None:
             os.mkdir(out_path)
             
         logging.info(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
-        with open(os.path.join(out_path,url.split('/')[-1].replace(".htm","")+".html"), "w",encoding='utf-8') as file:
-            file.write(html_content)
+        html_to_file = os.path.join(out_path,url.split('/')[-1].replace(".htm","")+".html")
+        with open(html_to_file, "w",encoding='utf-8') as file:
+            file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
         tables = get_xpath_elements(driver,inline)
-        if not tables or not tables[0]:
-            continue
+        # if not tables or not tables[0]:
+        #     tables = get_soup_tables(driver,html_to_file)
         for i,table in enumerate(tables):
+            # logging.debug(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
             if os.path.exists(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
-            # logging.debug(f"TABLE - {type(table)} {table}")
             table = malformed_table(table.get_attribute("outerHTML"))
             dfs = pd.read_html(table.prettify(),displayed_only=False)
             if not dfs:
