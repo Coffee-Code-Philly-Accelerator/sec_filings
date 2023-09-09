@@ -50,7 +50,7 @@ def make_unique(original_list):
 def extract_subheaders(
     df:pd.DataFrame,
 )->pd.DataFrame:
-    result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair Value(d)' in row, axis=1) # TODO fix me
+    result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair  Value  (d)' in row.tolist(), axis=1) # TODO fix me
     idx = result[result].index.tolist()
     df['subheaders'] = 'no_subheader'
     logging.debug(idx)
@@ -58,8 +58,6 @@ def extract_subheaders(
         return df
     df.loc[idx[-1]:,'subheaders'] = df.iloc[idx[-1],0]
     for j,i in enumerate(idx[:-1]):
-        if df.iloc[i,0]:
-            continue
         df.loc[idx[j]:idx[j+1],'subheaders'] = df.iloc[i,0]
     df.drop(idx,axis=0,inplace=True,errors='ignore') # drop subheader row
     return df
@@ -205,7 +203,7 @@ def join_all_possible()->None:
     merged_df.drop(extracted_rows.index,inplace=True)
     
     logging.debug(f"final table shape - {merged_df.shape}")
-    extracted_rows.dropna(axis=1,how='all',).to_csv('csv/totals.csv')
+    extracted_rows.dropna(axis=1,how='all').drop(['subheaders'],axis=1).to_csv('csv/totals.csv')
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return
 
