@@ -46,20 +46,6 @@ def get_xpath_elements(
     logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
-def get_soup_tables(
-    driver:webdriver,
-    saved_html_path:str,
-)->object:
-    driver.get('file://'+saved_html_path)
-    tables = driver.find_elements_by_xpath(By.XPATH,"//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table")
-    logging.debug(f"GOT ELEMENTS - {tables}")
-    # for div in divs:
-    #     tables = div.find_elements(By.TAG_NAME, "table")
-    #     print(len(tables), "tables found")
-
-    #     for table in tables:
-    #         print(table.text)
-    return tables
 
 def get_table_date(
     page_content:str
@@ -139,7 +125,6 @@ def main()->None:
         # if not tables or not tables[0]:
         #     tables = get_soup_tables(driver,html_to_file)
         for i,table in enumerate(tables):
-            # logging.debug(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
             if os.path.exists(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
             table = malformed_table(table.get_attribute("outerHTML"))

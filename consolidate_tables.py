@@ -4,6 +4,7 @@ import logging
 import glob
 import pandas as pd
 import numpy as np
+import itertools
 from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
@@ -49,19 +50,17 @@ def make_unique(original_list):
 def extract_subheaders(
     df:pd.DataFrame,
 )->pd.DataFrame:
-    result = df.apply(lambda row: pd.notna(row).sum() == 1, axis=1)
+    result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair Value(d)' in row, axis=1) # TODO fix me
     idx = result[result].index.tolist()
     df['subheaders'] = 'no_subheader'
+    logging.debug(idx)
     if not idx:
         return df
-    
     df.loc[idx[-1]:,'subheaders'] = df.iloc[idx[-1],0]
     for j,i in enumerate(idx[:-1]):
+        if df.iloc[i,0]:
+            continue
         df.loc[idx[j]:idx[j+1],'subheaders'] = df.iloc[i,0]
-    if idx[0] == 0:
-        logging.debug(f"\n{df.iloc[:,:5]}")
-        logging.debug(df.index.tolist())
-        return df
     df.drop(idx,axis=0,inplace=True,errors='ignore') # drop subheader row
     return df
 
@@ -84,15 +83,12 @@ def clean(
     df_cur.reset_index(drop=True,inplace=True)
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
-    df_cur = extract_subheaders(df_cur)
-    df_cur['date'] = dirs[1]
     df_cur = merge_duplicate_columns(df_cur)
     
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
     cols_to_drop = [col for col in cur_cols if col not in standard_names] 
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
     df_cur.drop(index=idx,inplace=True) # drop the column row
-    # df_cur.dropna(inplace=True) # drop totals rows
     return df_cur
 
 def present_substrings(substrings, main_string):
@@ -121,9 +117,7 @@ def get_key_fields(
         found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
         if found:
             fields = strip_string(row[-1].tolist(),standardize=found),idx
-            # logging.debug(f"FUZZY FIELDS - {fields[0]}")
             return fields
-    # logging.info("DEFAULT FIELDS")
     return strip_string(fields.iloc[0].tolist(),standardize=found),0
 
  
@@ -135,41 +129,57 @@ def get_standard_name(col, choices, score_cutoff=60):
 
 def process_totals(
     df:pd.DataFrame,
-    totals_cols:list=['index','portfolio', 'subheaders', 'date', 'cost', 'value']
+    totals_cols:list=['index','portfolio','date','subheaders',  'cost', 'value']  
 )->bool:
     return df.drop(totals_cols, axis=1).isna().all(axis=1)
-    # df = df.drop(columns=totals_cols)
-    # to_drop = []
-    # for index, row in df.iterrows():
-    #     if row.isna().all():
-    #         to_drop.append(index)
-    # return to_drop
+
 
 def process_date(
     date:str,
 )->dict:
-    dfs = {}
-    for file in os.listdir(os.path.join('csv',date)):
-        df_cur = clean(os.path.join('csv',date,file))
+    dfs,order = {},{}
+    count = 0
+    files = os.listdir(os.path.join('csv',date))
+    df_cur = clean(os.path.join('csv',date,files[0]))
+    for file in files[1:]:
         if df_cur is None or df_cur.empty:
+            df_cur = clean(os.path.join('csv',date,file))
             continue
+        index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
+        if index_list:
+            break
+        
         key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
         key = key.replace(' ','_')
         if dfs.get(key) is None:
             dfs[key] = []
+            order[count] = key
+            count += 1
         dfs[key].append(df_cur)
-        index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
-        if index_list:
-            break
-     
+        df_cur = clean(os.path.join('csv',date,file))
+
     if not os.path.exists(f"csv/{date}/output"):
-        os.mkdir(f"csv/{date}/output")   
-    for t in dfs:
-        if os.path.exists(f"csv/{date}/output/{t}.csv") or len(t.split('_')) < 6:
+        os.mkdir(f"csv/{date}/output") 
+    for t in range(count):
+        if os.path.exists(f"csv/{date}/output/{order[t]}.csv") or len(order[t].split("_")) < 5:
             continue
-        result = pd.concat(dfs[t], axis=0,join='outer', ignore_index=True)
-        result.to_csv(f"csv/{date}/output/{t}.csv")
-        
+        result = pd.concat(dfs[order[t]], axis=0,join='outer', ignore_index=True)
+        result.to_csv(f"csv/{date}/output/{order[t]}.csv")    
+    
+    dfs = [
+        pd.read_csv(os.path.join(f"csv/{date}/output",f"{order[t]}.csv")) 
+        for t in range(count) 
+        if not len(order[t].split("_")) < 5
+    ]
+    date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
+    if not os.path.exists(f"csv/{date}/output_final"):
+        os.mkdir(f"csv/{date}/output_final")
+    date_final.drop(date_final.columns[0],axis=1,inplace=True)
+    date_final = extract_subheaders(date_final)
+    date_final['date'] = date
+    date_final.to_csv(f"csv/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
+    
+            
 def merge_duplicate_columns(
     df:pd.DataFrame,
 )->pd.DataFrame:
@@ -183,20 +193,19 @@ def merge_duplicate_columns(
 
 
 def join_all_possible()->None:
-    infile = 'csv/*/output/*'
+    infile = 'csv/*/output_final/*'
     all_csvs = glob.glob(infile,recursive=True)
     dfs = [pd.read_csv(csv) for csv in all_csvs]
     merged_df = pd.concat(dfs)
     merged_df.drop(columns=merged_df.columns[0],inplace=True)
     merged_df.reset_index(inplace=True)
-    merged_df.rename({'index':'original_index'})
+    merged_df.rename({'Index':'original_index'},inplace=True)
     mask = process_totals(merged_df)
-    logging.debug(f"TOTALS TO KEEP - {mask}")
     extracted_rows = merged_df.loc[mask]
     merged_df.drop(extracted_rows.index,inplace=True)
     
     logging.debug(f"final table shape - {merged_df.shape}")
-    extracted_rows.to_csv('csv/totals.csv')
+    extracted_rows.dropna(axis=1,how='all',).to_csv('csv/totals.csv')
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return
 
