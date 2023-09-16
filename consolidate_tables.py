@@ -211,6 +211,9 @@ def main()->None:
     import warnings
     warnings.filterwarnings("ignore")
     init_logger()
+    
+    if not os.path.exists('csv'):
+        os.mkdir('csv')
     for date in os.listdir('csv'):
         if '.csv' in date:
             continue
