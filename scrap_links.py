@@ -21,9 +21,18 @@ def main()->None:
     options = Options()
     options.binary_location = args.chrome_path
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path)#,options=options)
-    # options.binary_location = args.firefox_path #r"C:\Program Files\WindowsApps\Mozilla.Firefox_116.0.2.0_x64__n80bbvh6b1yt2\VFS\ProgramFiles\Firefox Package Root\firefox.exe"  # Update this with your Firefox path
-    # driver = webdriver.Firefox(executable_path=args.driver_path,firefox_options=options)#"geckodriver.exe")
     driver.get(url)
+    html_content = driver.page_source
+    if not os.path.exists('htmls'):
+        os.mkdir('htmls')
+    with open(os.path.join('htmls',url.split("=")[-1]+".html"), "w",encoding='utf-8') as file:
+        file.write(html_content)
+    dfs = pd.read_html(html_content)
+    
+    if not os.path.exists('csv'):
+        os.mkdir('csv')
+    for i,df in enumerate(dfs):
+        df.to_csv(os.path.join('csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
     h5_tags = driver.find_elements_by_tag_name("h5")
 
     for h5_tag in h5_tags:
@@ -35,14 +44,6 @@ def main()->None:
     xpath = '//button[text()="View all 10-Ks and 10-Qs"]'
     element = WebDriverWait(driver,3).until(EC.element_to_be_clickable((By.XPATH,xpath)))
     driver.execute_script("arguments[0].click();", element)
-    
-    
-    html_content = driver.page_source
-    with open(os.path.join('htmls',url.split("=")[-1]+".html"), "w",encoding='utf-8') as file:
-        file.write(html_content)
-    dfs = pd.read_html(html_content)
-    for i,df in enumerate(dfs):
-        df.to_csv(os.path.join('csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
 
     conditions = '@data-original-title="Open document" and contains(@href, "Archive") and not(contains(@href, "index")) and not(contains(@href, "xml"))'
     table = driver.find_elements_by_css_selector('div.dataTables_scroll')

@@ -12,3 +12,6 @@ Final checks to make sure it works:
   a. Sum of cost and fair values should equal the “Total Investments” line at the bottom of the table.
   b. Sam can run the code on his end and generate
   c. Sam to review the cleaned up table visually
+
+## Caveat
+* Currently only works with selenium==3.15, and chrome version 114
