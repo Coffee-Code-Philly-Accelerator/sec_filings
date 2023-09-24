@@ -50,10 +50,10 @@ def make_unique(original_list):
 def extract_subheaders(
     df:pd.DataFrame,
 )->pd.DataFrame:
-    result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair  Value  (d)' in row.tolist(), axis=1) # TODO fix me
+    result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair  Value  (d)' in row.tolist(), axis=1) # TODO fix me 
     idx = result[result].index.tolist()
     df['subheaders'] = 'no_subheader'
-    logging.debug(idx)
+    logging.debug(f"SUBHEADER INDEXES - {idx}")
     if not idx:
         return df
     df.loc[idx[-1]:,'subheaders'] = df.iloc[idx[-1],0]
@@ -135,40 +135,35 @@ def process_totals(
 def process_date(
     date:str,
 )->dict:
-    dfs,order = {},{}
-    count = 0
+    if not os.path.exists(f"csv/{date}/output"):
+        os.mkdir(f"csv/{date}/output") 
     files = os.listdir(os.path.join('csv',date))
+    files = sorted(
+        files, 
+        key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
+    )
+
     df_cur = clean(os.path.join('csv',date,files[0]))
-    for file in files[1:]:
+    for i,file in enumerate(files[1:]):
         if df_cur is None or df_cur.empty:
             df_cur = clean(os.path.join('csv',date,file))
             continue
+        else:
+            df_cur.to_csv(f"csv/{date}/output/cleaned_{i}.csv")
         index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
         if index_list:
             break
-        
-        key = '_'.join(tuple(map(str,df_cur.columns.tolist()))).replace('/','_')
-        key = key.replace(' ','_')
-        if dfs.get(key) is None:
-            dfs[key] = []
-            order[count] = key
-            count += 1
-        dfs[key].append(df_cur)
         df_cur = clean(os.path.join('csv',date,file))
 
-    if not os.path.exists(f"csv/{date}/output"):
-        os.mkdir(f"csv/{date}/output") 
-    for t in range(count):
-        if os.path.exists(f"csv/{date}/output/{order[t]}.csv") or len(order[t].split("_")) < 5:
-            continue
-        result = pd.concat(dfs[order[t]], axis=0,join='outer', ignore_index=True)
-        result.to_csv(f"csv/{date}/output/{order[t]}.csv")    
-    
+    cleaned = os.listdir(f'csv/{date}/output')
+    cleaned = sorted(
+        cleaned, 
+        key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
+    )
     dfs = [
-        pd.read_csv(os.path.join(f"csv/{date}/output",f"{order[t]}.csv")) 
-        for t in range(count) 
-        if not len(order[t].split("_")) < 5
-    ]
+        pd.read_csv(os.path.join(f"csv/{date}/output",f"{file}")) 
+        for file in cleaned
+    ]        
     date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
     if not os.path.exists(f"csv/{date}/output_final"):
         os.mkdir(f"csv/{date}/output_final")
@@ -215,6 +210,7 @@ def main()->None:
     if not os.path.exists('csv'):
         os.mkdir('csv')
     for date in os.listdir('csv'):
+        # date = '2018-12-31'
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")

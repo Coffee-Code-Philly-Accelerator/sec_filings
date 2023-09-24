@@ -14,6 +14,29 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils import arguements,init_logger
 
+def test_xpath_elements(
+    url:str,
+    xpath:str
+)->list:
+    args = arguements()
+    options = Options()
+    options.binary_location = args.chrome_path
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)
+    driver.get(url)
+    tables = driver.find_elements_by_xpath(xpath)
+    tables = sorted(tables, key=lambda table: table.location['y'])
+    
+    if not os.path.exists(os.path.join('csv','test_path')):
+        os.mkdir(os.path.join('csv','test_path'))
+    print(tables)
+    for i,table in enumerate(tables):
+        table = malformed_table(table.get_attribute("outerHTML"))
+        dfs = pd.read_html(table.prettify(),displayed_only=False)
+        for df in dfs:
+            df.to_csv(os.path.join('csv','test_path',f"test_{i}.csv"))
+    driver.close()
+    return tables
+
 def get_xpath_elements(
     driver:webdriver,
     inline:bool,
@@ -29,11 +52,11 @@ def get_xpath_elements(
     }
     """
     xpaths = (
-        '//*[contains(text(), "Schedule of Investments")]/parent::*/parent::*/following-sibling::table[1]',
-        "(//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table)",
+        "//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table",
         "//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table",
         "//b[contains(text(), 'Schedule of Investments')]/parent::p/following-sibling::table",
         '//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table',
+        '//b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table'
     )
     tables = []
     logging.debug(inline)
@@ -78,8 +101,6 @@ def malformed_table(
     table:str
 )->BeautifulSoup:
     soup = BeautifulSoup(table, 'lxml')
-    # logging.debug(f"TABLE - {soup}")
-
     # If there's no <table> tag, wrap everything inside a table
     if not soup.table:
         new_table = soup.new_tag("table")
@@ -99,6 +120,7 @@ def main()->None:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
 
     for table_date,url in urls[1:]:
+        # table_date,url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312519054647/d679678d10k.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
@@ -122,8 +144,7 @@ def main()->None:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
         tables = get_xpath_elements(driver,inline)
-        # if not tables or not tables[0]:
-        #     tables = get_soup_tables(driver,html_to_file)
+        tables = sorted(tables, key=lambda table: table.location['y'])
         for i,table in enumerate(tables):
             if os.path.exists(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
@@ -133,9 +154,13 @@ def main()->None:
                 logging.debug(f"NO TABLES - {dfs}")
                 continue
             dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
-        time.sleep(1)
+        # time.sleep(1)
     driver.close()
     return
 
 if __name__ == "__main__":
     main()
+    # test_xpath_elements(
+    #     url='https://www.sec.gov/Archives/edgar/data/0001422183/000119312519054647/d679678d10k.htm',
+    #     xpath='//b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table'
+    # )
