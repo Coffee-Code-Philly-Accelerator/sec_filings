@@ -120,7 +120,7 @@ def main()->None:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
 
     for table_date,url in urls[1:]:
-        # table_date,url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312519054647/d679678d10k.htm'
+        # table_date,url = '2011-03-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312511141640/d10q.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)

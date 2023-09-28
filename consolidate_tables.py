@@ -23,12 +23,12 @@ def standard_field_names()->tuple:
         'rate',
         'floor',
         'maturity',
-        'principal',
+        'principal amount', # TODO change stand names for more dynamic fuzzywuzzy matching
         'cost',
         'value',
         'investment',
         'date',
-        'subheaders'
+        'subheaders',
     )
 
 def make_unique(original_list):
@@ -82,7 +82,7 @@ def clean(
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
     df_cur = merge_duplicate_columns(df_cur)
-    
+    print(df_cur)
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
     cols_to_drop = [col for col in cur_cols if col not in standard_names] 
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
@@ -112,8 +112,8 @@ def get_key_fields(
 )->tuple:
     important_fields = standard_field_names()
     for idx,row in enumerate(fields.iterrows()):
-        found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].tolist())
-        if found:
+        found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].dropna().tolist())
+        if found and len(set(row[-1].dropna().tolist())) >= 5:
             fields = strip_string(row[-1].tolist(),standardize=found),idx
             return fields
     return strip_string(fields.iloc[0].tolist(),standardize=found),0
@@ -148,8 +148,7 @@ def process_date(
         if df_cur is None or df_cur.empty:
             df_cur = clean(os.path.join('csv',date,file))
             continue
-        else:
-            df_cur.to_csv(f"csv/{date}/output/cleaned_{i}.csv")
+        df_cur.to_csv(f"csv/{date}/output/cleaned_{i}.csv")
         index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
         if index_list:
             break
@@ -164,9 +163,11 @@ def process_date(
         pd.read_csv(os.path.join(f"csv/{date}/output",f"{file}")) 
         for file in cleaned
     ]        
+    
     date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
     if not os.path.exists(f"csv/{date}/output_final"):
         os.mkdir(f"csv/{date}/output_final")
+        
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
     date_final = extract_subheaders(date_final)
     date_final['date'] = date
@@ -210,7 +211,7 @@ def main()->None:
     if not os.path.exists('csv'):
         os.mkdir('csv')
     for date in os.listdir('csv'):
-        # date = '2018-12-31'
+        # date = '2011-03-31'
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
