@@ -82,7 +82,6 @@ def clean(
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
     df_cur = merge_duplicate_columns(df_cur)
-    print(df_cur)
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
     cols_to_drop = [col for col in cur_cols if col not in standard_names] 
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
