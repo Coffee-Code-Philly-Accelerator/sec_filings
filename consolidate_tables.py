@@ -126,7 +126,7 @@ def get_standard_name(col, choices, score_cutoff=60):
 
 def process_totals(
     df:pd.DataFrame,
-    totals_cols:list=['index','portfolio','date','subheaders',  'cost', 'value']  
+    totals_cols:list=['index','portfolio','principal amount','date','subheaders',  'cost', 'value']  
 )->bool:
     return df.drop(totals_cols, axis=1).isna().all(axis=1)
 
