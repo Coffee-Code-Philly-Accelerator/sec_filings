@@ -202,11 +202,29 @@ def join_all_possible()->None:
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return
 
-def main()->None:
-    import warnings
-    warnings.filterwarnings("ignore")
-    init_logger()
+def validate_totals(
+    soi:pd.DataFrame,
+    totals:pd.DataFrame,
+)->bool:
+    totals = totals[totals['portfolio'].str.contains('total investments', case=False, na=False)][['date','cost','value']].reset_index()
+    totals.cost = totals.cost.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
+    totals.value = totals['value'].replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
+    logging.info(f"SCRAPED TOTALS - {totals}")
     
+    soi.cost = soi.cost.str.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
+    soi.value = soi.value.str.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
+    soi_totals = soi.groupby(['date']).agg({'cost':'sum','value':'sum'}).reset_index()
+    logging.info(f"AGG TOTALS - {soi_totals}")
+    
+    for i in range(soi_totals.shape[0]):
+        assert np.allclose(
+            soi_totals[['cost','value']].loc[i].to_numpy(), 
+            totals[['cost','value']].loc[i].to_numpy(),
+            atol=100
+        ),f"Test {totals['date'].loc[i]} Failed"
+        logging.info(f"Test {totals['date'].loc[i]} - Passed")
+
+def main()->None:
     if not os.path.exists('csv'):
         os.mkdir('csv')
     for date in os.listdir('csv'):
@@ -216,10 +234,15 @@ def main()->None:
         logging.info(f"DATE - {date}")
         process_date(date)
     join_all_possible()
+    validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
     return 
 
 if __name__ == "__main__":
     # remove files that don't contain keyword
     # https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
     # https://stackoverflow.com/questions/26616003/shopt-command-not-found-in-bashrc-after-shell-updation
-    main()
+    import warnings
+    warnings.filterwarnings("ignore")
+    init_logger()
+    # main()
+    validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
