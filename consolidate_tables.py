@@ -252,5 +252,5 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
     init_logger()
-    # main()
-    validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
+    main()
+    # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
