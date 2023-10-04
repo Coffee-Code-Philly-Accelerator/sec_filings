@@ -45,9 +45,9 @@ Future updates will have the setup installation automated in a bashscript .sh fi
     * if windows, should have .exe
     * if linux or mac, does not need .exe
 2.  make sure your chrome browser version is 114 or below
-3. run ```python3 scrap_links.py```
-4. run ```python3 extract_tables.py```
-5. run ```consolidate_tables.py```
+3. run ```python3 scrap_links --url [url] --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
+4. run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
+5. run ```consolidate_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
 #### To scrap data from CIK=1379785,
 1. cd to bbdc_extraction/ directory
 2. run "python3 BBDC_Extraction.py"
