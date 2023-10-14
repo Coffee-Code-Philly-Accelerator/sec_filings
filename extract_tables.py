@@ -2,8 +2,8 @@ import os
 import logging
 import time
 import pandas as pd 
-import argparse
 import re
+import platform
 import datetime
 from collections import Counter
 from bs4 import BeautifulSoup
@@ -21,9 +21,11 @@ def test_xpath_elements(
     args = arguements()
     options = Options()
     options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)\
+        if platform.system() == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
-    tables = driver.find_elements_by_xpath(xpath)
+    tables = driver.find_elements_by_xpath(xpath)\
+        if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=xpath)
     tables = sorted(tables, key=lambda table: table.location['y'])
     
     if not os.path.exists(os.path.join('csv','test_path')):
@@ -61,11 +63,12 @@ def get_xpath_elements(
     tables = []
     logging.debug(inline)
     if not inline:
-        first_table = driver.find_elements_by_xpath(xpaths[-1])
+        first_table = driver.find_elements_by_xpath(xpaths[-1])\
+            if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=xpaths[-1])
         tables.extend(first_table)
         
     for path in xpaths[:-1]:
-        tables.extend(driver.find_elements_by_xpath(path))
+        tables.extend(driver.find_elements_by_xpath(path) if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=path))
     logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
@@ -84,11 +87,13 @@ def get_table_date(
 def parse_link_element(
     driver:webdriver,
 )->str:
-    link_element = driver.find_elements_by_id("menu-dropdown-link")
+    link_element = driver.find_elements_by_id("menu-dropdown-link")\
+        if platform.system() == "Linux" else driver.find_elements(By.ID,value="menu-dropdown-link")
     if not link_element:
         return None,False
     driver.execute_script("arguments[0].click();", link_element[0])
-    form_element = driver.find_elements_by_id('form-information-html')
+    form_element = driver.find_elements_by_id('form-information-html')\
+        if platform.system() == "Linux" else driver.find_elements(By.ID,value='form-information-html')
     if not form_element:
         return None,False
     driver.execute_script("arguments[0].click();", form_element[0])
@@ -114,13 +119,13 @@ def main()->None:
     args = arguements()
     options = Options()
     options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)#,options=options)
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
+        if platform.system() == "Linux" else webdriver.Chrome()
     table_title = "Schedule of Investments"
     with open(args.url_txt,'r') as f:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
 
     for table_date,url in urls[1:]:
-        # table_date,url = '2011-03-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312511141640/d10q.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
