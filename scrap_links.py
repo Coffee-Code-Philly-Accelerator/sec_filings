@@ -2,8 +2,7 @@ import os
 import logging
 import time
 import pandas as pd 
-import argparse
-from bs4 import BeautifulSoup
+import platform
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -20,7 +19,9 @@ def main()->None:
     url = args.url
     options = Options()
     options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)#,options=options)
+    #,options=options) 
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
+        if platform.system() == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
     html_content = driver.page_source
     if not os.path.exists('htmls'):
@@ -33,7 +34,8 @@ def main()->None:
         os.mkdir('csv')
     for i,df in enumerate(dfs):
         df.to_csv(os.path.join('csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
-    h5_tags = driver.find_elements_by_tag_name("h5")
+    h5_tags = driver.find_elements_by_tag_name("h5") \
+        if platform.system() == "Linux" else driver.find_elements(By.TAG_NAME,value='h5')
 
     for h5_tag in h5_tags:
         if h5_tag.text == "[+] 10-K (annual reports) and 10-Q (quarterly reports)":
@@ -46,8 +48,10 @@ def main()->None:
     driver.execute_script("arguments[0].click();", element)
 
     conditions = '@data-original-title="Open document" and contains(@href, "Archive") and not(contains(@href, "index")) and not(contains(@href, "xml"))'
-    table = driver.find_elements_by_css_selector('div.dataTables_scroll')
-    links = table[0].find_elements_by_xpath(f'//td//a[{conditions}]')
+    table = driver.find_elements_by_css_selector('div.dataTables_scroll') if platform.system() == "Linux" else \
+        driver.find_elements(By.CSS_SELECTOR,value='div.dataTables_scroll')
+    links = table[0].find_elements_by_xpath(f'//td//a[{conditions}]') if platform.system() == "Linux" else \
+        table[0].find_elements(By.XPATH,value=f'//td//a[{conditions}]')
     logging.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
     df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
     filing_date = df['Reporting date']

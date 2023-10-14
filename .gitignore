@@ -3,6 +3,8 @@
 *.exe
 *.csv
 *.html
+sec_windows/*
+sec_windows
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
