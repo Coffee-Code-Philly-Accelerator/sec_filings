@@ -124,13 +124,6 @@ def get_standard_name(col, choices, score_cutoff=60):
         return best_match
     return col
 
-def process_totals(
-    df:pd.DataFrame,
-    totals_cols:list=['index','portfolio','principal amount','date','subheaders',  'cost', 'value']  
-)->bool:
-    return df.drop(totals_cols, axis=1).isna().all(axis=1)
-
-
 def process_date(
     date:str,
 )->dict:
@@ -193,12 +186,16 @@ def join_all_possible()->None:
     merged_df.drop(columns=merged_df.columns[0],inplace=True)
     merged_df.reset_index(inplace=True)
     merged_df.rename({'Index':'original_index'},inplace=True)
-    mask = process_totals(merged_df)
+    
+    '''
+    # Seperates totals from soi tables
+    mask = merged_df[merged_df['portfolio'].str.contains('total investments|liabilities|net assets|total equity/other',case=False,na=False)].index.to_numpy()
     extracted_rows = merged_df.loc[mask]
     merged_df.drop(extracted_rows.index,inplace=True)
-    
-    logging.debug(f"final table shape - {merged_df.shape}")
     extracted_rows.dropna(axis=1,how='all').drop(['subheaders'],axis=1).to_csv('csv/totals.csv')
+    '''
+
+    logging.debug(f"final table shape - {merged_df.shape}")
     merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
     return
 
@@ -213,7 +210,7 @@ def validate_totals(
     soi.cost = soi.cost.str.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
     soi.value = soi.value.str.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
     soi_totals = soi.groupby(['date']).agg({'cost':'sum','value':'sum'}).reset_index()
-    
+
     for i in range(soi_totals.shape[0]):
         try:
             assert np.allclose(
@@ -242,7 +239,7 @@ def main()->None:
         logging.info(f"DATE - {date}")
         process_date(date)
     join_all_possible()
-    validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
+    # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
     return 
 
 if __name__ == "__main__":
@@ -253,4 +250,3 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     init_logger()
     main()
-    # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))

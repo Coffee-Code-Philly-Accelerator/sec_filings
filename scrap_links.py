@@ -60,4 +60,7 @@ def main()->None:
     driver.close()
 
 if __name__ == '__main__':
+    """
+    python3 scrap_links --url [url] --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]
+    """
     main()
