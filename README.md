@@ -55,7 +55,7 @@ Future updates will have the setup installation automated in a bashscript .sh fi
 * to setup dependencies via pip, reference the [Python installation guide](https://www.python.org/downloads/) from python.org
 * run ```python3 -m venv [environment_name]```
 * cd to sec_filings
-* run ```pip install -r requirements.txt``` to install all the python dependencies to run the scraping scripts
+* run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
 
 #### 2. After dependencies have been setup
 * Download the selenium chrome driver for chrome version 114 or below specific to your operating system from [this website](https://sites.google.com/chromium.org/driver/downloads?authuser=0)
