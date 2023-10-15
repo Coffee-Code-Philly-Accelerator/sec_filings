@@ -24,8 +24,7 @@ def test_xpath_elements(
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path)\
         if platform.system() == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
-    tables = driver.find_elements_by_xpath(xpath)\
-        if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=xpath)
+    tables = driver.find_elements(By.XPATH,value=xpath)
     tables = sorted(tables, key=lambda table: table.location['y'])
     
     if not os.path.exists(os.path.join('csv','test_path')):
@@ -63,12 +62,11 @@ def get_xpath_elements(
     tables = []
     logging.debug(inline)
     if not inline:
-        first_table = driver.find_elements_by_xpath(xpaths[-1])\
-            if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=xpaths[-1])
+        first_table = driver.find_elements(By.XPATH,value=xpaths[-1])
         tables.extend(first_table)
         
     for path in xpaths[:-1]:
-        tables.extend(driver.find_elements_by_xpath(path) if platform.system() == "Linux" else driver.find_elements(By.XPATH,value=path))
+        tables.extend(driver.find_elements(By.XPATH,value=path))
     logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
@@ -87,13 +85,11 @@ def get_table_date(
 def parse_link_element(
     driver:webdriver,
 )->str:
-    link_element = driver.find_elements_by_id("menu-dropdown-link")\
-        if platform.system() == "Linux" else driver.find_elements(By.ID,value="menu-dropdown-link")
+    link_element = driver.find_elements(By.ID,value="menu-dropdown-link")
     if not link_element:
         return None,False
-    driver.execute_script("arguments[0].click();", link_element[0])
-    form_element = driver.find_elements_by_id('form-information-html')\
-        if platform.system() == "Linux" else driver.find_elements(By.ID,value='form-information-html')
+    driver.execute_script("arguments[0].click();", link_element[0]) 
+    form_element = driver.find_elements(By.ID,value='form-information-html')
     if not form_element:
         return None,False
     driver.execute_script("arguments[0].click();", form_element[0])

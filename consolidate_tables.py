@@ -233,7 +233,6 @@ def main()->None:
     if not os.path.exists('csv'):
         os.mkdir('csv')
     for date in os.listdir('csv'):
-        # date = '2011-03-31'
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
