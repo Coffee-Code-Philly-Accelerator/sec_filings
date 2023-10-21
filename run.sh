@@ -11,12 +11,12 @@
 
 
 # create conda environment
-conda env create --file environment.yml -n sec
-conda activate sec
+# conda env create --file environment.yml -n sec
+# conda activate sec
 
 # run scripts
-python3 scrap_links.py
-python3 extract_tables.py
-python3 consolidate_tables.py
+python3 /home/seluser/sec_filings/scrap_links.py
+python3 /home/seluser/sec_filings/extract_tables.py
+python3 /home/seluser/sec_filings/consolidate_tables.py
 
 

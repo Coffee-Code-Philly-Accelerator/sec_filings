@@ -12,7 +12,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils import arguements,init_logger
+from utils import arguements,init_logger,ROOT_PATH
 
 def test_xpath_elements(
     url:str,
@@ -27,14 +27,14 @@ def test_xpath_elements(
     tables = driver.find_elements(By.XPATH,value=xpath)
     tables = sorted(tables, key=lambda table: table.location['y'])
     
-    if not os.path.exists(os.path.join('csv','test_path')):
-        os.mkdir(os.path.join('csv','test_path'))
+    if not os.path.exists(os.path.join(ROOT_PATH,'csv','test_path')):
+        os.mkdir(os.path.join(ROOT_PATH,'csv','test_path'))
     print(tables)
     for i,table in enumerate(tables):
         table = malformed_table(table.get_attribute("outerHTML"))
         dfs = pd.read_html(table.prettify(),displayed_only=False)
         for df in dfs:
-            df.to_csv(os.path.join('csv','test_path',f"test_{i}.csv"))
+            df.to_csv(os.path.join(ROOT_PATH,'csv','test_path',f"test_{i}.csv"))
     driver.close()
     return tables
 
@@ -118,7 +118,7 @@ def main()->None:
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
         if platform.system() == "Linux" else webdriver.Chrome()
     table_title = "Schedule of Investments"
-    with open(args.url_txt,'r') as f:
+    with open(os.path.join(ROOT_PATH,args.url_txt),'r') as f:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
 
     for table_date,url in urls[1:]:
@@ -135,26 +135,26 @@ def main()->None:
         html_content = driver.page_source
         logging.info(f"DATETIMES - {table_date}")
         
-        out_path = os.path.join('csv',table_date)
+        out_path = os.path.join(ROOT_PATH,'csv',table_date)
         if not os.path.exists(out_path):
             os.mkdir(out_path)
             
         logging.info(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
-        html_to_file = os.path.join(out_path,url.split('/')[-1].replace(".htm","")+".html")
+        html_to_file = os.path.join(ROOT_PATH,out_path,url.split('/')[-1].replace(".htm","")+".html")
         with open(html_to_file, "w",encoding='utf-8') as file:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
         tables = get_xpath_elements(driver,inline)
         tables = sorted(tables, key=lambda table: table.location['y'])
         for i,table in enumerate(tables):
-            if os.path.exists(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
+            if os.path.exists(os.path.join(ROOT_PATH,'csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
             table = malformed_table(table.get_attribute("outerHTML"))
             dfs = pd.read_html(table.prettify(),displayed_only=False)
             if not dfs:
                 logging.debug(f"NO TABLES - {dfs}")
                 continue
-            dfs[0].to_csv(os.path.join('csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
+            dfs[0].to_csv(os.path.join(ROOT_PATH,'csv',table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
         # time.sleep(1)
     driver.close()
     return

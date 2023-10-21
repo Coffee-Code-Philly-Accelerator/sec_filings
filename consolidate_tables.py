@@ -9,7 +9,7 @@ from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
 
-from utils import arguements,init_logger
+from utils import arguements,init_logger,ROOT_PATH
 
 
 def standard_field_names()->tuple:
@@ -127,43 +127,43 @@ def get_standard_name(col, choices, score_cutoff=60):
 def process_date(
     date:str,
 )->dict:
-    if not os.path.exists(f"csv/{date}/output"):
-        os.mkdir(f"csv/{date}/output") 
-    files = os.listdir(os.path.join('csv',date))
+    if not os.path.exists(f"{ROOT_PATH}/csv/{date}/output"):
+        os.mkdir(f"{ROOT_PATH}/csv/{date}/output") 
+    files = os.listdir(os.path.join(ROOT_PATH,'csv',date))
     files = sorted(
         files, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
 
-    df_cur = clean(os.path.join('csv',date,files[0]))
+    df_cur = clean(os.path.join(ROOT_PATH,'csv',date,files[0]))
     for i,file in enumerate(files[1:]):
         if df_cur is None or df_cur.empty:
-            df_cur = clean(os.path.join('csv',date,file))
+            df_cur = clean(os.path.join(ROOT_PATH,'csv',date,file))
             continue
-        df_cur.to_csv(f"csv/{date}/output/cleaned_{i}.csv")
+        df_cur.to_csv(f"{ROOT_PATH}/csv/{date}/output/cleaned_{i}.csv")
         index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
         if index_list:
             break
-        df_cur = clean(os.path.join('csv',date,file))
+        df_cur = clean(os.path.join(ROOT_PATH,'csv',date,file))
 
-    cleaned = os.listdir(f'csv/{date}/output')
+    cleaned = os.listdir(f'{ROOT_PATH}/csv/{date}/output')
     cleaned = sorted(
         cleaned, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
     dfs = [
-        pd.read_csv(os.path.join(f"csv/{date}/output",f"{file}")) 
+        pd.read_csv(os.path.join(f"{ROOT_PATH}/csv/{date}/output",f"{file}")) 
         for file in cleaned
     ]        
     
     date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
-    if not os.path.exists(f"csv/{date}/output_final"):
-        os.mkdir(f"csv/{date}/output_final")
+    if not os.path.exists(f"{ROOT_PATH}/csv/{date}/output_final"):
+        os.mkdir(f"{ROOT_PATH}/csv/{date}/output_final")
         
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
     date_final = extract_subheaders(date_final)
     date_final['date'] = date
-    date_final.to_csv(f"csv/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
+    date_final.to_csv(f"{ROOT_PATH}/csv/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
     
             
 def merge_duplicate_columns(
@@ -179,7 +179,7 @@ def merge_duplicate_columns(
 
 
 def join_all_possible()->None:
-    infile = 'csv/*/output_final/*'
+    infile = f'{ROOT_PATH}/csv/*/output_final/*'
     all_csvs = glob.glob(infile,recursive=True)
     dfs = [pd.read_csv(csv) for csv in all_csvs]
     merged_df = pd.concat(dfs)
@@ -196,7 +196,7 @@ def join_all_possible()->None:
     '''
 
     logging.debug(f"final table shape - {merged_df.shape}")
-    merged_df.to_csv('csv/soi_table_all_possible_merges.csv')    
+    merged_df.to_csv(f'{ROOT_PATH}/csv/soi_table_all_possible_merges.csv')    
     return
 
 def validate_totals(
@@ -230,9 +230,9 @@ def validate_totals(
     ).reset_index().drop(['index','level_0'],axis=1).to_csv('csv/totals_validation.csv',index=False)
 
 def main()->None:
-    if not os.path.exists('csv'):
-        os.mkdir('csv')
-    for date in os.listdir('csv'):
+    if not os.path.exists(f'{ROOT_PATH}/csv'):
+        os.mkdir(f'{ROOT_PATH}/csv')
+    for date in os.listdir(f'{ROOT_PATH}/csv'):
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
