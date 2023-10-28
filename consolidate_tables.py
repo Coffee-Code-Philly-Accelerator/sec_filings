@@ -5,6 +5,7 @@ import glob
 import pandas as pd
 import numpy as np
 import itertools
+import platform
 from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
@@ -66,7 +67,7 @@ def extract_subheaders(
 def clean(
     file:str,
 )->list:
-    dirs = file.split('/')
+    dirs = file.split('/') if platform.system() == "Linux" else file.split('\\')
     if  len(dirs) < 3 or '.csv' not in dirs[-1]:
         return
     df_cur = pd.read_csv(file)
@@ -126,44 +127,44 @@ def get_standard_name(col, choices, score_cutoff=60):
 
 def process_date(
     date:str,
+    cik:str,
 )->dict:
-    if not os.path.exists(f"{ROOT_PATH}/csv/{date}/output"):
-        os.mkdir(f"{ROOT_PATH}/csv/{date}/output") 
-    files = os.listdir(os.path.join(ROOT_PATH,'csv',date))
+    if not os.path.exists(f"{ROOT_PATH}/{cik}/{date}/output"):
+        os.mkdir(f"{ROOT_PATH}/{cik}/{date}/output") 
+    files = os.listdir(os.path.join(ROOT_PATH,cik,date))
     files = sorted(
         files, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
 
-    df_cur = clean(os.path.join(ROOT_PATH,'csv',date,files[0]))
+    df_cur = clean(os.path.join(ROOT_PATH,cik,date,files[0]))
     for i,file in enumerate(files[1:]):
         if df_cur is None or df_cur.empty:
-            df_cur = clean(os.path.join(ROOT_PATH,'csv',date,file))
+            df_cur = clean(os.path.join(ROOT_PATH,cik,date,file))
             continue
-        df_cur.to_csv(f"{ROOT_PATH}/csv/{date}/output/cleaned_{i}.csv")
+        df_cur.to_csv(f"{ROOT_PATH}/{cik}/{date}/output/cleaned_{i}.csv")
         index_list = df_cur[df_cur.iloc[:,0].str.contains('total investments', case=False, na=False)].index.tolist()
         if index_list:
             break
-        df_cur = clean(os.path.join(ROOT_PATH,'csv',date,file))
-
-    cleaned = os.listdir(f'{ROOT_PATH}/csv/{date}/output')
+        df_cur = clean(os.path.join(ROOT_PATH,cik,date,file))
+    cleaned = os.listdir(f'{ROOT_PATH}/{cik}/{date}/output')
     cleaned = sorted(
         cleaned, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
     dfs = [
-        pd.read_csv(os.path.join(f"{ROOT_PATH}/csv/{date}/output",f"{file}")) 
+        pd.read_csv(os.path.join(f"{ROOT_PATH}/{cik}/{date}/output",f"{file}")) 
         for file in cleaned
     ]        
     
     date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
-    if not os.path.exists(f"{ROOT_PATH}/csv/{date}/output_final"):
-        os.mkdir(f"{ROOT_PATH}/csv/{date}/output_final")
+    if not os.path.exists(f"{ROOT_PATH}/{cik}/{date}/output_final"):
+        os.mkdir(f"{ROOT_PATH}/{cik}/{date}/output_final")
         
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
     date_final = extract_subheaders(date_final)
     date_final['date'] = date
-    date_final.to_csv(f"{ROOT_PATH}/csv/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
+    date_final.to_csv(f"{ROOT_PATH}/{cik}/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
     
             
 def merge_duplicate_columns(
@@ -178,8 +179,10 @@ def merge_duplicate_columns(
     return df
 
 
-def join_all_possible()->None:
-    infile = f'{ROOT_PATH}/csv/*/output_final/*'
+def join_all_possible(
+    cik:str    
+)->None:
+    infile = f'{ROOT_PATH}/{cik}/*/output_final/*'
     all_csvs = glob.glob(infile,recursive=True)
     dfs = [pd.read_csv(csv) for csv in all_csvs]
     merged_df = pd.concat(dfs)
@@ -196,12 +199,13 @@ def join_all_possible()->None:
     '''
 
     logging.debug(f"final table shape - {merged_df.shape}")
-    merged_df.to_csv(f'{ROOT_PATH}/csv/soi_table_all_possible_merges.csv')    
+    merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table_all_possible_merges.csv')    
     return
 
 def validate_totals(
     soi:pd.DataFrame,
     totals:pd.DataFrame,
+    cik:str,
 )->bool:
     totals = totals[totals['portfolio'].str.contains('total investments', case=False, na=False)][['date','cost','value']].reset_index()
     totals.cost = totals.cost.replace(r'[^\d\.-]', '', regex=True).apply(pd.to_numeric)
@@ -227,17 +231,19 @@ def validate_totals(
         on='date', 
         how='inner',
         suffixes=('_published', '_aggregate')
-    ).reset_index().drop(['index','level_0'],axis=1).to_csv('csv/totals_validation.csv',index=False)
+    ).reset_index().drop(['index','level_0'],axis=1).to_csv(f'{cik}/totals_validation.csv',index=False)
 
 def main()->None:
-    if not os.path.exists(f'{ROOT_PATH}/csv'):
+    args = arguements()
+    cik = args.cik
+    if not os.path.exists(f'{ROOT_PATH}/{cik}'):
         os.mkdir(f'{ROOT_PATH}/csv')
-    for date in os.listdir(f'{ROOT_PATH}/csv'):
+    for date in os.listdir(f'{ROOT_PATH}/{cik}'):
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
-        process_date(date)
-    join_all_possible()
+        process_date(date,cik)
+    join_all_possible(cik)
     # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
     return 
 

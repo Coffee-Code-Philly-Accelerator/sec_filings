@@ -4,7 +4,7 @@ import argparse
 import pandas as pd
 from rich.logging import RichHandler
 
-ROOT_PATH = os.getcwd()#'/home/seluser/sec_filings'
+ROOT_PATH = os.getcwd()
 
 
 def debug_format(
@@ -20,6 +20,12 @@ def debug_format(
 
 def arguements()->argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Get filing links and dates')
+    parser.add_argument(
+        '--cik',
+        type=str,
+        required=True,
+        help='BDC CIK number'
+    )
     parser.add_argument(
         '--url', type=str, required=False, 
         default='https://www.sec.gov/edgar/browse/?CIK=1422183',
@@ -50,6 +56,11 @@ def arguements()->argparse.ArgumentParser:
         default=r'C:\Program Files\Google\Chrome\Application\chrome.exe',
         help='path to your chrome.exe'
     )
+    parser.add_argument(
+        '--x-path',type=str,required=False,
+        default=r'C:\Users\pysol\Desktop\projects\sec_filings\xpaths\1422183.txt',
+        help='path to your xpaths.txt that contains the xpaths to the soi tables'
+    )
     return parser.parse_args()
 
 def init_logger() -> None:
@@ -62,6 +73,7 @@ def init_logger() -> None:
     logging.getLogger('urllib3').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.WARNING)
     logging.getLogger('root').setLevel(logging.ERROR)
+    logging.getLogger("pandas").setLevel(logging.ERROR)
 
     FORMAT = "%(name)s[%(process)d] " + \
         "%(processName)s(%(threadName)s) " + \

@@ -1,6 +1,7 @@
 import os
 import logging
 import time
+import re
 import pandas as pd 
 import platform
 from selenium import webdriver
@@ -29,10 +30,10 @@ def main()->None:
         file.write(html_content)
     dfs = pd.read_html(html_content)
     
-    if not os.path.exists(os.path.join(ROOT_PATH,'csv')):
-        os.mkdir(os.path.join(ROOT_PATH,'csv'))
+    if not os.path.exists(os.path.join(ROOT_PATH,args.cik)):
+        os.mkdir(os.path.join(ROOT_PATH,args.cik))
     for i,df in enumerate(dfs):
-        df.to_csv(os.path.join(ROOT_PATH,'csv',url.split("=")[-1]+f"_link_table_{i}.csv"))
+        df.to_csv(os.path.join(ROOT_PATH,args.cik,url.split("=")[-1]+f"_link_table_{i}.csv"))
     h5_tags = driver.find_elements(By.TAG_NAME,value='h5')
 
     for h5_tag in h5_tags:

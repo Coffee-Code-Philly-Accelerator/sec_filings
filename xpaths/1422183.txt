@@ -1,0 +1,5 @@
+//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table
+//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table
+//b[contains(text(), 'Schedule of Investments')]/parent::p/following-sibling::table
+//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table
+//b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table
