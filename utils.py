@@ -4,7 +4,7 @@ import argparse
 import pandas as pd
 from rich.logging import RichHandler
 
-ROOT_PATH = '/home/seluser/sec_filings'
+ROOT_PATH = os.getcwd()#'/home/seluser/sec_filings'
 
 
 def debug_format(
