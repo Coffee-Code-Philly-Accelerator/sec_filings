@@ -126,7 +126,7 @@ def main()->None:
         xpaths = [line.rstrip() for line in file.readlines()]
     logging.debug(f"USING XPATHS - {xpaths}")
     for table_date,url in urls[1:]:
-        # table_date,url = '2021-06-30','https://www.sec.gov/Archives/edgar/data/0001501729/000110465921102950/tm2124358-1_10q.htm'
+        # table_date,url = '2017-12-31', 'https://www.sec.gov/Archives/edgar/data/0001501729/000104746918001361/a2234760z10-k.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
