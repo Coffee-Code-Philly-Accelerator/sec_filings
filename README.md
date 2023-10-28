@@ -35,7 +35,6 @@ The script should also automatically run unit tests to assert whether the scrape
         * i.e. chrome driver version 114.0.5735.90 supports chrome version 114
 * You need to know where your chrome binaries and chrome drivers are located on your computer
 
-#### Containerization of chrome version binaries and progam dependencies via Docker comes in next update
 ## Program Arguement Variables
 * [environment_name] is what ever you want to name your environment
 * [url] = the url of where your BDCs investment docuemnts are archived
@@ -46,6 +45,12 @@ The script should also automatically run unit tests to assert whether the scrape
 
 ## Getting Started
 Future updates will have the setup installation automated in a bashscript .sh file
+#### Using Docker run 
+* [Install](https://docs.docker.com/desktop/install/windows-install/) docker on your windows machine and create an account on dockerhub
+* first authenticate your docker credentials with ```docker login```
+* run command ```docker run -it -u root pysolver33/sec-filings:10.21.2023.2 /home/seluser/sec_filings/run.sh```
+* check out container id with ```docker ps -a```
+* use container id to cp file to local machine, ```docker cp [container_id]:/home/seluser/sec_filings/csv/soi_table_all_possible_merges.csv .```
 #### 1a. Conda steps to run
 * to setup dependencies via conda for your operating system, follow the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html)
 * once conda is setup, cd to "sec_filings" 
