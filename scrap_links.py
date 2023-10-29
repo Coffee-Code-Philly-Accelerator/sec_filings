@@ -1,7 +1,5 @@
 import os
 import logging
-import time
-import re
 import pandas as pd 
 import platform
 from selenium import webdriver

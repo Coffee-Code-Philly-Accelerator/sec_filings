@@ -43,23 +43,6 @@ def get_xpath_elements(
     xpaths:list,
     inline:bool,
 )->list:
-    """
-    var xpathExpression = "//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table";
-    var xpathResult = document.evaluate(xpathExpression, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-
-    var node = xpathResult.iterateNext();
-    while(node) {
-        console.log(node);
-        node = xpathResult.iterateNext();
-    }
-    xpaths = (
-        "//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table",
-        "//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table",
-        "//b[contains(text(), 'Schedule of Investments')]/parent::p/following-sibling::table",
-        '//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table',
-        '//b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table'
-    )
-    """
     tables = []
     logging.debug(inline)
     if not inline:
@@ -126,7 +109,7 @@ def main()->None:
         xpaths = [line.rstrip() for line in file.readlines()]
     logging.debug(f"USING XPATHS - {xpaths}")
     for table_date,url in urls[1:]:
-        # table_date,url = '2017-12-31', 'https://www.sec.gov/Archives/edgar/data/0001501729/000104746918001361/a2234760z10-k.htm'
+        # table_date,url = '2011-03-31', 'https://www.sec.gov/Archives/edgar/data/0001501729/000104746911006058/a2204582z10-q.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)

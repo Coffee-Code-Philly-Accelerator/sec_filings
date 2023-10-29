@@ -5,4 +5,5 @@
 //b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table
 //font[contains(text(), "Schedule of Investments")]/parent::div/following-sibling::table
 //div[contains(text(), "Schedule of Investments")]/following-sibling::table
-//b[contains(text(), "Schedule of Investments") ]/parent::font/parent::p/following-sibling::div/child::div/child::table
+/html/body/document/type/sequence/filename/description/text/div[11]/div/table
+/html/body/document/type/sequence/filename/description/text/div[48]/div/table

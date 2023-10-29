@@ -4,7 +4,6 @@ import logging
 import glob
 import pandas as pd
 import numpy as np
-import itertools
 import platform
 from collections import Counter
 from functools import reduce
@@ -136,7 +135,6 @@ def process_date(
         files, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
-
     df_cur = clean(os.path.join(ROOT_PATH,cik,date,files[0]))
     for i,file in enumerate(files[1:]):
         if df_cur is None or df_cur.empty:
@@ -148,10 +146,14 @@ def process_date(
             break
         df_cur = clean(os.path.join(ROOT_PATH,cik,date,file))
     cleaned = os.listdir(f'{ROOT_PATH}/{cik}/{date}/output')
+    if not cleaned:
+        return
+    
     cleaned = sorted(
         cleaned, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
+    
     dfs = [
         pd.read_csv(os.path.join(f"{ROOT_PATH}/{cik}/{date}/output",f"{file}")) 
         for file in cleaned
