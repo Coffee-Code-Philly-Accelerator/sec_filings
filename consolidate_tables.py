@@ -13,9 +13,6 @@ from utils import arguements,init_logger,ROOT_PATH
 
 
 def standard_field_names()->tuple:
-    """
-    [('AmortizedCost', 424), ('Industry', 420), ('Portfolio Company(a)', 411), ('Footnotes', 325), ('Maturity', 265), ('Rate(b)', 177), ('FairValue(c)', 171)]
-    """
     return (
         'portfolio',
         'footnotes',
@@ -85,7 +82,8 @@ def clean(
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
-    if df_cur.iloc[:,1].isna().sum() > 10:
+    
+    if df_cur.iloc[:,1].isna().sum() > 15:
         df_cur['subheaders_diff'] = df_cur.iloc[:,1]
         df_cur.subheaders_diff.fillna(method='ffill',inplace=True)
         df_cur.subheaders_diff.fillna('subheaders_diff',inplace=True)
@@ -175,6 +173,7 @@ def process_date(
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
     date_final = extract_subheaders(date_final)
     date_final['date'] = date
+    date_final.subheaders.fillna(method='ffill',inplace=True)
     date_final.to_csv(f"{ROOT_PATH}/{cik}/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
     
             
@@ -201,16 +200,16 @@ def join_all_possible(
     merged_df.reset_index(inplace=True)
     merged_df.rename({'Index':'original_index'},inplace=True)
     
-    '''
     # Seperates totals from soi tables
     mask = merged_df[merged_df['portfolio'].str.contains('total investments|liabilities|net assets|total equity/other',case=False,na=False)].index.to_numpy()
     extracted_rows = merged_df.loc[mask]
-    merged_df.drop(extracted_rows.index,inplace=True)
-    extracted_rows.dropna(axis=1,how='all').drop(['subheaders'],axis=1).to_csv('csv/totals.csv')
-    '''
-
+    extracted_rows.dropna(axis=1,how='all').drop(['subheaders'],axis=1).to_csv(f'{cik}/totals.csv')
+    
     logging.debug(f"final table shape - {merged_df.shape}")
-    merged_df = merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7)) # drop empty rows
+    merged_df = merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7)) # drop empty 
+    logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}")
+    
+    merged_df.subheaders.fillna(method='ffill',inplace=True)
     merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table.csv')   
  
     return
@@ -252,14 +251,13 @@ def main()->None:
     if not os.path.exists(f'{ROOT_PATH}/{cik}'):
         os.mkdir(f'{ROOT_PATH}/csv')
     for date in os.listdir(f'{ROOT_PATH}/{cik}'):
-        # date = '2011-09-30'
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
         process_date(date,cik)
-        # break
     join_all_possible(cik)
-    # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
+    # TODO fix unit testing for other BDC
+    # validate_totals(pd.read_csv(f'{cik}/soi_table_all_possible_merges.csv'),pd.read_csv(f'{cik}/totals.csv'),cik=cik)
     return 
 
 if __name__ == "__main__":
