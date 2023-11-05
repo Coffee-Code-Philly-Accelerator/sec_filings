@@ -50,6 +50,10 @@ def make_unique(original_list):
 def extract_subheaders(
     df:pd.DataFrame,
 )->pd.DataFrame:
+    if 'subheaders_diff' in df.columns.tolist():
+        df.rename(columns={'subheaders_diff': 'subheaders'},inplace=True)
+        return df
+    
     result = df.apply(lambda row: pd.notna(row).sum() == 1 or len(set(row.tolist())) == 2 or 'Fair  Value  (d)' in row.tolist(), axis=1) # TODO fix me 
     idx = result[result].index.tolist()
     df['subheaders'] = 'no_subheader'
@@ -71,18 +75,23 @@ def clean(
         return
     df_cur = pd.read_csv(file)
     df_cur = df_cur.T.drop_duplicates().T
-    df_cur = df_cur.iloc[1:,1:]
+    # df_cur = df_cur.iloc[1:,1:]
     if df_cur.shape[1] < 4:
         return
-    df_cur = df_cur.dropna(how='all') # drop empty rows
     if df_cur.empty:
         return
     
     df_cur.reset_index(drop=True,inplace=True)
     important_fields,idx = get_key_fields(df_cur)
     df_cur.columns = important_fields
-    df_cur = merge_duplicate_columns(df_cur)
     cur_cols,standard_names = df_cur.columns.tolist(),standard_field_names()
+    if df_cur.iloc[:,1].isna().sum() > 10:
+        df_cur['subheaders_diff'] = df_cur.iloc[:,1]
+        df_cur.subheaders_diff.fillna(method='ffill',inplace=True)
+        df_cur.subheaders_diff.fillna('subheaders_diff',inplace=True)
+        standard_names += ('subheaders_diff',)
+    
+    df_cur = merge_duplicate_columns(df_cur)
     cols_to_drop = [col for col in cur_cols if col not in standard_names] 
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
     df_cur.drop(index=idx,inplace=True) # drop the column row
@@ -107,15 +116,15 @@ def strip_string(
     return columns
 
 def get_key_fields(
-    fields:pd.DataFrame
+    df_cur:pd.DataFrame
 )->tuple:
     important_fields = standard_field_names()
-    for idx,row in enumerate(fields.iterrows()):
+    for idx,row in enumerate(df_cur.iterrows()):
         found = any(any(key in str(field).lower() for key in important_fields)for field in row[-1].dropna().tolist())
         if found and len(set(row[-1].dropna().tolist())) >= 5:
-            fields = strip_string(row[-1].tolist(),standardize=found),idx
+            fields = strip_string(row[-1].tolist(),standardize=found) ,idx
             return fields
-    return strip_string(fields.iloc[0].tolist(),standardize=found),0
+    return strip_string(df_cur.iloc[0].tolist(),standardize=found),0
 
  
 def get_standard_name(col, choices, score_cutoff=60):
@@ -201,7 +210,9 @@ def join_all_possible(
     '''
 
     logging.debug(f"final table shape - {merged_df.shape}")
-    merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table_all_possible_merges.csv')    
+    merged_df = merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7)) # drop empty rows
+    merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table.csv')   
+ 
     return
 
 def validate_totals(
@@ -241,10 +252,12 @@ def main()->None:
     if not os.path.exists(f'{ROOT_PATH}/{cik}'):
         os.mkdir(f'{ROOT_PATH}/csv')
     for date in os.listdir(f'{ROOT_PATH}/{cik}'):
+        # date = '2011-09-30'
         if '.csv' in date:
             continue
         logging.info(f"DATE - {date}")
         process_date(date,cik)
+        # break
     join_all_possible(cik)
     # validate_totals(pd.read_csv('csv/soi_table_all_possible_merges.csv'),pd.read_csv('csv/totals.csv'))
     return 
