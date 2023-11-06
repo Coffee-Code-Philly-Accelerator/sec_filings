@@ -142,6 +142,7 @@ def process_date(
         files, 
         key=lambda file: int(file.split('_')[-1].replace(".csv","")) if file.split('_')[-1].replace(".csv","").isdigit() else 999
     )
+    
     df_cur = clean(os.path.join(ROOT_PATH,cik,date,files[0]))
     for i,file in enumerate(files[1:]):
         if df_cur is None or df_cur.empty:
@@ -153,6 +154,7 @@ def process_date(
             break
         df_cur = clean(os.path.join(ROOT_PATH,cik,date,file))
     cleaned = os.listdir(f'{ROOT_PATH}/{cik}/{date}/output')
+    
     if not cleaned:
         return
     
@@ -173,7 +175,6 @@ def process_date(
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
     date_final = extract_subheaders(date_final)
     date_final['date'] = date
-    date_final.subheaders.fillna(method='ffill',inplace=True)
     date_final.to_csv(f"{ROOT_PATH}/{cik}/{date}/output_final/{'_'.join(date_final.columns.tolist())}.csv")
     
             
@@ -188,6 +189,16 @@ def merge_duplicate_columns(
         df[col_name] = merged_data
     return df
 
+def custom_ffill(
+    series:pd.Series
+):
+    previous_value = None
+    for i in range(len(series)):
+        if pd.isna(series[i]) or series[i] == 'nan' or series[i] is None:  # Check if the value is NaN.
+            series[i] = previous_value  # Replace NaN with the previous non-null value.
+        else:
+            previous_value = series[i]  # Update the previous non-null value.
+    return series
 
 def join_all_possible(
     cik:str    
@@ -207,9 +218,11 @@ def join_all_possible(
     
     logging.debug(f"final table shape - {merged_df.shape}")
     merged_df = merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7)) # drop empty 
-    logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}")
-    
-    merged_df.subheaders.fillna(method='ffill',inplace=True)
+    # merged_df.replace(to_replace='nan',method='ffill',inplace=True)
+    merged_df.fillna(method='ffill',inplace=True)
+    # merged_df.subheaders = custom_ffill(merged_df.subheaders.reset_index(drop=True))
+    logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}\n{merged_df.subheaders.apply(lambda x: type(x).__name__).unique()}")
+
     merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table.csv')   
  
     return
