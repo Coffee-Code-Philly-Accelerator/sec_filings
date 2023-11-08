@@ -189,17 +189,6 @@ def merge_duplicate_columns(
         df[col_name] = merged_data
     return df
 
-def custom_ffill(
-    series:pd.Series
-):
-    previous_value = None
-    for i in range(len(series)):
-        if pd.isna(series[i]) or series[i] == 'nan' or series[i] is None:  # Check if the value is NaN.
-            series[i] = previous_value  # Replace NaN with the previous non-null value.
-        else:
-            previous_value = series[i]  # Update the previous non-null value.
-    return series
-
 def join_all_possible(
     cik:str    
 )->None:
@@ -217,10 +206,10 @@ def join_all_possible(
     extracted_rows.dropna(axis=1,how='all').drop(['subheaders'],axis=1).to_csv(f'{cik}/totals.csv')
     
     logging.debug(f"final table shape - {merged_df.shape}")
-    merged_df = merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7)) # drop empty 
-    # merged_df.replace(to_replace='nan',method='ffill',inplace=True)
+    merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7),inplace=True) # drop empty 
+    merged_df.drop(columns='index',inplace=True)
+    merged_df.reset_index(inplace=True,drop=True)
     merged_df.fillna(method='ffill',inplace=True)
-    # merged_df.subheaders = custom_ffill(merged_df.subheaders.reset_index(drop=True))
     logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}\n{merged_df.subheaders.apply(lambda x: type(x).__name__).unique()}")
 
     merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table.csv')   
