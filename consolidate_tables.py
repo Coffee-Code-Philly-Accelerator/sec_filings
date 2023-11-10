@@ -213,7 +213,6 @@ def join_all_possible(
     logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}\n{merged_df.subheaders.apply(lambda x: type(x).__name__).unique()}")
 
     merged_df.to_csv(f'{ROOT_PATH}/{cik}/soi_table.csv')   
- 
     return
 
 def validate_totals(
