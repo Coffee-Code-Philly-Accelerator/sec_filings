@@ -1,0 +1,18 @@
+
+2023-09-30 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000139644023000140/main-20230930.htm
+2023-06-30 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000139644023000102/main-20230630.htm
+2023-03-31 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000139644023000067/main-20230331.htm
+2022-12-31 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000139644023000035/main-20221231.htm
+2022-09-30 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000139644022000034/main-20220930.htm
+2022-06-30 https://www.sec.gov/ix?doc=/Archives/edgar/data/0001396440/000155837022012361/main-20220630x10q.htm
+2022-03-31 https://www.sec.gov/Archives/edgar/data/0001396440/000155837022007536/main-20220331x10q.htm
+2021-12-31 https://www.sec.gov/Archives/edgar/data/0001396440/000155837022002131/tmb-20211231x10k.htm
+2021-09-30 https://www.sec.gov/Archives/edgar/data/0001396440/000155837021014764/main-20210930x10q.htm
+2021-06-30 https://www.sec.gov/Archives/edgar/data/0001396440/000155837021010724/main-20210630x10q.htm
+2021-03-31 https://www.sec.gov/Archives/edgar/data/0001396440/000155837021006405/main-20210331x10q.htm
+2020-12-31 https://www.sec.gov/Archives/edgar/data/0001396440/000155837021001943/tmb-20201231x10k.htm
+2020-09-30 https://www.sec.gov/Archives/edgar/data/0001396440/000155837020013055/tmb-20200930x10q.htm
+2020-06-30 https://www.sec.gov/Archives/edgar/data/0001396440/000104746920004438/a2242174z10-q.htm
+2020-03-31 https://www.sec.gov/Archives/edgar/data/0001396440/000104746920002918/a2241543z10-q.htm
+2019-12-31 https://www.sec.gov/Archives/edgar/data/0001396440/000104746920001108/a2240804z10-k.htm
+2019-09-30 https://www.sec.gov/Archives/edgar/data/0001396440/000104746919006178/a2239966z10-q.htm

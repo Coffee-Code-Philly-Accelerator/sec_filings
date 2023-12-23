@@ -1,4 +1,5 @@
 import os
+import warnings
 import logging
 import time
 import pandas as pd 
@@ -94,7 +95,20 @@ def malformed_table(
         soup.append(new_table)
     return soup
 
+def remove_duplicate_element(
+    elements:webdriver.remote.webelement.WebElement
+)->list:
+    ids = set()
+    unique_elements = []
+    for e in elements:
+        if e.id not in ids:
+            ids.add(e.id)
+            unique_elements.append(e)
+    return unique_elements
+    
+
 def main()->None:
+    warnings.simplefilter(action='ignore', category=FutureWarning)
     init_logger()
     args = arguements()
     options = Options()
@@ -109,7 +123,7 @@ def main()->None:
         xpaths = [line.rstrip() for line in file.readlines()]
     logging.debug(f"USING XPATHS - {xpaths}")
     for table_date,url in urls[1:]:
-        # table_date,url = '2011-03-31', 'https://www.sec.gov/Archives/edgar/data/0001501729/000104746911006058/a2204582z10-q.htm'
+        # table_date,url = '2012-03-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312512233399/d352774d10q.htm'
         inline = False
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
@@ -123,7 +137,7 @@ def main()->None:
         html_content = driver.page_source
         logging.info(f"DATETIMES - {table_date}")
         
-        out_path = os.path.join(ROOT_PATH,args.cik,table_date)
+        out_path,spec_path = os.path.join(ROOT_PATH,args.cik,table_date),os.path.join(ROOT_PATH,args.cik,table_date,'spec_paths.txt')
         if not os.path.exists(out_path):
             os.mkdir(out_path)
             
@@ -133,7 +147,14 @@ def main()->None:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
         tables = get_xpath_elements(driver,xpaths,inline)
+        if os.path.exists(spec_path):
+            with open(spec_path) as file:
+                spec_paths = [line.rstrip() for line in file.readlines()]
+                logging.debug(spec_paths)
+            tables = get_xpath_elements(driver,spec_paths,inline)
+                
         tables = sorted(tables, key=lambda table: table.location['y'])
+        tables = remove_duplicate_element(tables)      
         for i,table in enumerate(tables):
             if os.path.exists(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
@@ -142,13 +163,28 @@ def main()->None:
             if not dfs:
                 logging.debug(f"NO TABLES - {dfs}")
                 continue
-            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"))
-        # time.sleep(1)
+            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
         # break
     driver.close()
     return
 
 if __name__ == "__main__":
+    """
+    python .\extract_tables.py --cik 1501729 --url_txt urls/1501729.txt --x-path xpaths/1501729.txt   
+    python .\extract_tables.py --cik 1396440 --url_txt urls/1396440.txt --x_path xpaths/1396440.txt
+    
+    /html/body/document/type/sequence/filename/description/text/div[11]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[48]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[16]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[15]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[19]/div/table
+    
+    
+    1501729
+    /html/body/document/type/sequence/filename/description/text/div[48]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[15]/div/table
+    /html/body/document/type/sequence/filename/description/text/div[19]/div/table
+    """
     main()
     # test_xpath_elements(
     #     url='https://www.sec.gov/Archives/edgar/data/0001501729/000110465921102950/tm2124358-1_10q.htm',
