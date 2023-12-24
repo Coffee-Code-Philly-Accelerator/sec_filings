@@ -38,7 +38,7 @@ def common_subheaders()->tuple:
         'subordinated debt',
         'equity/other',
         'collateralized securities',
-        # 'preferred equity' TODO how to include this subheader
+        'preferred equity—' #TODO how to include this subheader
     )
 
 def make_unique(original_list):
@@ -103,10 +103,13 @@ def clean(
         return
     
     df_cur.reset_index(drop=True,inplace=True)
+    
     important_fields,idx = get_key_fields(df_cur)
     if len(set(important_fields) - {''}) < 4:
         df_cur.replace('\u200b', np.nan, regex=True,inplace=True)
-        return df_cur.iloc[:,1:].dropna(axis=1, thresh=10)
+        df_cur.replace(r'\$|€|£',np.nan,regex=True,inplace=True)
+        columns_to_drop = df_cur.notna().sum() == 1
+        return df_cur.iloc[:,1:].drop(columns=columns_to_drop[columns_to_drop].index)
     
     df_cur.columns = important_fields
     df_cur = merge_duplicate_columns(df_cur)
@@ -197,8 +200,15 @@ def process_date(
         for file in cleaned
     ]
     final_columns = dfs[0].columns
-    # date_final = pd.concat(dfs,axis=0,join='outer', ignore_index=True)
+    #TODO how to generalize below if statement?
+    if cik == '1501729' and date == '2012-12-31':#1501729\2012-12-31
+        logging.debug(f"COLS TO DROP {dfs[-2].columns[[0,2]]}")
+        dfs[-1].drop(columns=dfs[-1].columns[2],inplace=True)
+        logging.debug(dfs[-1])
+        # dfs[-1].columns = ['portfolio','industry','principal amount','cost','value']
+        dfs[-1].to_csv("debug_single.csv",index=False)
     date_final = pd.DataFrame(concat(*dfs))
+
     date_final.columns = final_columns
     if not os.path.exists(f"{ROOT_PATH}/{cik}/{date}/output_final"):
         os.mkdir(f"{ROOT_PATH}/{cik}/{date}/output_final")
@@ -239,9 +249,7 @@ def join_all_possible(
     
     logging.debug(f"final table shape - {merged_df.shape}")
     merged_df.dropna(axis=0,thresh=(merged_df.shape[1] - 7),inplace=True) # drop empty 
-    # merged_df.drop(columns='index',inplace=True)
     merged_df.reset_index(inplace=True,drop=True)
-    # merged_df.fillna(method='ffill',inplace=True)
     logging.debug(f"NULL SUBHEADERS - {merged_df.subheaders.isnull().sum()}\n{merged_df.subheaders.apply(lambda x: type(x).__name__).unique()}")
 
     merged_df.to_csv(f'{ROOT_PATH}/{cik}/{cik}_soi_table.csv')   
