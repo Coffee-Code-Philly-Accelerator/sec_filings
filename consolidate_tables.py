@@ -161,6 +161,28 @@ def get_standard_name(col, choices, score_cutoff=60):
         return best_match
     return col
 
+
+def exceptions(
+    date:str,
+    cik:str,
+    dfs:list,
+)->list:
+    warning = 'EXCEPTION'
+    #TODO how to generalize below if statement?
+    if cik == '1501729' and date == '2012-12-31':#1501729\2012-12-31
+        dfs[-1].drop(columns=dfs[-1].columns[2],inplace=True)
+        logging.debug(f'{warning} - {dfs[-1]}')
+    if cik == '1422183' and date == '2012-03-31':
+        dfs[-1].drop(dfs[-1].columns[[2,4,7]],axis=1,inplace=True)
+        dfs[-1].to_csv("debug_1422183.csv",index=False)
+        logging.debug(f'{warning} - {dfs[-1]}')
+    if cik == '1422183' and (date == '2012-06-30' or date == '2012-12-31'):
+        dfs[-2].drop(dfs[-2].columns[[2]],axis=1,inplace=True)
+        dfs[-2].to_csv("debug_1422183.csv",index=False)
+        logging.debug(f'{warning} - {dfs[-1]}')
+
+    return dfs
+
 def process_date(
     date:str,
     cik:str,
@@ -200,13 +222,8 @@ def process_date(
         for file in cleaned
     ]
     final_columns = dfs[0].columns
-    #TODO how to generalize below if statement?
-    if cik == '1501729' and date == '2012-12-31':#1501729\2012-12-31
-        logging.debug(f"COLS TO DROP {dfs[-2].columns[[0,2]]}")
-        dfs[-1].drop(columns=dfs[-1].columns[2],inplace=True)
-        logging.debug(dfs[-1])
-        # dfs[-1].columns = ['portfolio','industry','principal amount','cost','value']
-        dfs[-1].to_csv("debug_single.csv",index=False)
+
+    dfs = exceptions(date,cik,dfs)
     date_final = pd.DataFrame(concat(*dfs))
 
     date_final.columns = final_columns
@@ -307,6 +324,7 @@ def main()->None:
 if __name__ == "__main__":
     """
     python .\consolidate_tables.py --cik 1501729 --url_txt urls/1501729.txt --x-path xpaths/1501729.txt
+    python .\consolidate_tables.py --cik 1422183 --url_txt urls/1422183.txt --x-path xpaths/1422183.txt
     
     remove files that don't contain keyword
     https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
