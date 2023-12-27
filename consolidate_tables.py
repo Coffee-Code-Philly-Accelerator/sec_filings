@@ -174,13 +174,10 @@ def exceptions(
         logging.debug(f'{warning} - {dfs[-1]}')
     if cik == '1422183' and date == '2012-03-31':
         dfs[-1].drop(dfs[-1].columns[[2,4,7]],axis=1,inplace=True)
-        dfs[-1].to_csv("debug_1422183.csv",index=False)
         logging.debug(f'{warning} - {dfs[-1]}')
     if cik == '1422183' and (date == '2012-06-30' or date == '2012-12-31'):
         dfs[-2].drop(dfs[-2].columns[[2]],axis=1,inplace=True)
-        dfs[-2].to_csv("debug_1422183.csv",index=False)
         logging.debug(f'{warning} - {dfs[-1]}')
-
     return dfs
 
 def process_date(
@@ -323,8 +320,8 @@ def main()->None:
 
 if __name__ == "__main__":
     """
-    python .\consolidate_tables.py --cik 1501729 --url_txt urls/1501729.txt --x-path xpaths/1501729.txt
-    python .\consolidate_tables.py --cik 1422183 --url_txt urls/1422183.txt --x-path xpaths/1422183.txt
+    python .\consolidate_tables.py --cik 1501729 --url-txt urls/1501729.txt --x-path xpaths/1501729.txt
+    python .\consolidate_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
     
     remove files that don't contain keyword
     https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 

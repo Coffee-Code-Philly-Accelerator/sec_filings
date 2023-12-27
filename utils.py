@@ -32,7 +32,7 @@ def arguements()->argparse.ArgumentParser:
         help='Sec url to get links from'
     )
     parser.add_argument(
-        '--url_txt', type=str, required=False, 
+        '--url-txt', type=str, required=False, 
         default='urls/1422183.txt',
         help='.txt to get links from'
     )

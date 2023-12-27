@@ -1,7 +1,6 @@
-//div[span[contains(text(), 'Schedule of Investments')]]/parent::div/following-sibling::div/table
-//font[contains(text(), 'Schedule of Investments')]/parent::div/parent::div/following-sibling::div/table
-//b[contains(text(), 'Schedule of Investments')]/parent::p/following-sibling::table
-//font[b[contains(text(), "Schedule of Investments")]]/parent::p/following-sibling::table
-//b[contains(text(), "As of December 31, 2018") ]/parent::font/parent::p/following-sibling::table
-//font[contains(text(), "Schedule of Investments")]/parent::div/following-sibling::table
-//div[contains(text(), "Schedule of Investments")]/following-sibling::table
+//br[contains(text(), "Schedule of Investments")]/parent::b/parent::font/parent::p/following-sibling::div/child::div/child::table
+//b[contains(text(), "Schedule of Investments")]/parent::font/parent::p/following-sibling::div/child::div/child::table
+//b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::div/child::table
+//b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::table
+//span[contains(text(), "Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
+//b[contains(text(), "September 30, 2020")]/parent::p/parent::div/following-sibling::div/child::div/child::table

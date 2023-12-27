@@ -42,15 +42,9 @@ def test_xpath_elements(
 def get_xpath_elements(
     driver:webdriver,
     xpaths:list,
-    inline:bool,
 )->list:
     tables = []
-    logging.debug(inline)
-    if not inline:
-        first_table = driver.find_elements(By.XPATH,value=xpaths[-1])
-        tables.extend(first_table)
-        
-    for path in xpaths[:-1]:
+    for path in xpaths:
         tables.extend(driver.find_elements(By.XPATH,value=path))
     logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
@@ -72,16 +66,16 @@ def parse_link_element(
 )->str:
     link_element = driver.find_elements(By.ID,value="menu-dropdown-link")
     if not link_element:
-        return None,False
+        return None
     driver.execute_script("arguments[0].click();", link_element[0]) 
     form_element = driver.find_elements(By.ID,value='form-information-html')
     if not form_element:
-        return None,False
+        return None
     driver.execute_script("arguments[0].click();", form_element[0])
     logging.debug(f"SWITCHING HANDLES - {driver.window_handles[-1]}")
     time.sleep(1)
     driver.switch_to.window(driver.window_handles[-1])
-    return driver.current_url,True
+    return driver.current_url
 
 def malformed_table(
     table:str
@@ -123,11 +117,10 @@ def main()->None:
         xpaths = [line.rstrip() for line in file.readlines()]
     logging.debug(f"USING XPATHS - {xpaths}")
     for table_date,url in urls[1:]:
-        # table_date,url = '2012-03-31', 'https://www.sec.gov/Archives/edgar/data/0001422183/000119312512233399/d352774d10q.htm'
-        inline = False
+        # table_date,url = '2020-09-30', 'https://www.sec.gov/Archives/edgar/data/0001396440/000155837020013055/tmb-20200930x10q.htm'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
-        inline_url,inline = parse_link_element(driver)
+        inline_url = parse_link_element(driver)
  
         logging.info(f'FINAL URL - {inline_url}')
         if inline_url is not None:
@@ -146,12 +139,13 @@ def main()->None:
         with open(html_to_file, "w",encoding='utf-8') as file:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
-        tables = get_xpath_elements(driver,xpaths,inline)
+        tables = get_xpath_elements(driver,xpaths)
         if os.path.exists(spec_path):
             with open(spec_path) as file:
                 spec_paths = [line.rstrip() for line in file.readlines()]
+                spec_paths.extend(xpaths)
                 logging.debug(spec_paths)
-            tables = get_xpath_elements(driver,spec_paths,inline)
+            tables = get_xpath_elements(driver,spec_paths)
                 
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)      
@@ -170,9 +164,9 @@ def main()->None:
 
 if __name__ == "__main__":
     """
-    python .\extract_tables.py --cik 1501729 --url_txt urls/1501729.txt --x-path xpaths/1501729.txt   
-    python .\extract_tables.py --cik 1396440 --url_txt urls/1396440.txt --x_path xpaths/1396440.txt
-    python .\extract_tables.py --cik 1422183 --url_txt urls/1422183.txt --x_path xpaths/1422183.txt
+    python .\extract_tables.py --cik 1501729 --url-txt urls/1501729.txt --x-path xpaths/1501729.txt   
+    python .\extract_tables.py --cik 1396440 --url-txt urls/1396440.txt --x-path xpaths/1396440.txt
+    python .\extract_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
     
     /html/body/document/type/sequence/filename/description/text/div[11]/div/table
     /html/body/document/type/sequence/filename/description/text/div[48]/div/table
@@ -185,6 +179,12 @@ if __name__ == "__main__":
     /html/body/document/type/sequence/filename/description/text/div[48]/div/table
     /html/body/document/type/sequence/filename/description/text/div[15]/div/table
     /html/body/document/type/sequence/filename/description/text/div[19]/div/table
+    
+    1396440
+    //br[contains(text(), "Schedule of Investments")]/parent::b/parent::font/parent::p/following-sibling::div/child::div/child::table
+    //b[contains(text(), "Schedule of Investments")]/parent::font/parent::p/following-sibling::div/child::div/child::table
+    //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::div/child::table
+    //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::table
     """
     main()
     # test_xpath_elements(
