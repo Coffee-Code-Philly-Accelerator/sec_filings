@@ -1,11 +1,45 @@
 import os
 import logging
+import datetime
 import argparse
 import pandas as pd
 from rich.logging import RichHandler
 
 ROOT_PATH = os.getcwd()
 
+
+def present_substrings(substrings, main_string):
+    check = list(filter(lambda sub: sub in main_string, substrings))
+    if check:
+        return check[0]
+    return main_string
+
+def make_unique(original_list):
+    seen = {}
+    unique_list = []
+    
+    for item in original_list:
+        if item in seen:
+            counter = seen[item] + 1
+            seen[item] = counter
+            unique_list.append(f"{item}_{counter}")
+        else:
+            seen[item] = 1
+            unique_list.append(item)
+    
+    return unique_list
+
+def concat(*dfs)->list:
+    final = []
+    for df in dfs:
+        final.extend(df.values.tolist())
+    return final
+
+# Function to extract date and convert to datetime object
+def extract_date(file_path):
+    # Extract date from file path (assuming date is always in 'YYYY-MM-DD' format)
+    date_str = re.search(r'\d{4}-\d{2}-\d{2}', file_path).group()
+    return datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
 def debug_format(
     df:pd.DataFrame,

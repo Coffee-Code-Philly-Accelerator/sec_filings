@@ -10,7 +10,7 @@ from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
 
-from utils import arguements,init_logger,ROOT_PATH
+from utils import arguements,init_logger,ROOT_PATH,extract_date,concat
 
 
 def standard_field_names()->tuple:
@@ -38,23 +38,11 @@ def common_subheaders()->tuple:
         'subordinated debt',
         'equity/other',
         'collateralized securities',
-        'preferred equity—' #TODO how to include this subheader
+        'preferred equity—',
+        'control investments',
+        'affiliate investments',
+        'non-control/non-affilate investments'
     )
-
-def make_unique(original_list):
-    seen = {}
-    unique_list = []
-    
-    for item in original_list:
-        if item in seen:
-            counter = seen[item] + 1
-            seen[item] = counter
-            unique_list.append(f"{item}_{counter}")
-        else:
-            seen[item] = 1
-            unique_list.append(item)
-    
-    return unique_list
 
 
 def extract_subheaders(
@@ -68,26 +56,35 @@ def extract_subheaders(
         lambda row: row.astype(str).str.contains('total', case=False, na=False).any(),
         axis=1
     )
-    
     idx = df[include & exclude].index.tolist()
     df['subheaders'] = 'no_subheader'
-    
     if not idx:
         return df
-    
+
+    prev_header = subheader = None
     df.loc[idx[-1]:,'subheaders'] = df.iloc[idx[-1],1] if isinstance(df.iloc[idx[-1],0],float)  else df.iloc[idx[-1],0]
     for j,i in enumerate(idx[:-1]):
+        prev_header = subheader
         subheader = df.iloc[i,1] if isinstance(df.iloc[i,0],float)  else df.iloc[i,0]
-        logging.debug(f"SUBHEADER - {subheader}")
-        df.loc[idx[j]:idx[j+1],'subheaders'] = subheader
+        df.loc[idx[j]:idx[j+1],'subheaders'] = subheader if subheader != '' else prev_header
     df.drop(idx,axis=0,inplace=True,errors='ignore') # drop subheader row
     return df
 
-def concat(*dfs)->list:
-    final = []
-    for df in dfs:
-        final.extend(df.values.tolist())
-    return final
+def _clean_qtr(
+    file_path:str
+)->pd.DataFrame:
+    df = pd.read_csv(file_path,index_col=0)
+    df.replace(['\u200b','',')',0],np.nan,inplace=True)
+    df.dropna(axis=1,how='all',inplace=True)
+    df.dropna(axis=0,how='all',inplace=True)
+    df.columns = df.iloc[0].str.replace('[^a-zA-Z]', '', regex=True)
+    df = merge_duplicate_columns(df)
+    df.replace(['\u200b','',')',0],np.nan,inplace=True)
+    df = df.iloc[1: , :]
+    df.drop(columns=df.columns[pd.isna(df.columns)].tolist() + [col for col in df.columns if col == ''],axis=1,inplace=True)
+    return df
+
+
 
 def clean(
     file:str,
@@ -121,11 +118,6 @@ def clean(
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
     return df_cur
 
-def present_substrings(substrings, main_string):
-    check = list(filter(lambda sub: sub in main_string, substrings))
-    if check:
-        return check[0]
-    return main_string
 
 def strip_string(
     columns_names:list,
@@ -300,28 +292,77 @@ def validate_totals(
         suffixes=('_published', '_aggregate')
     ).reset_index().drop(['index','level_0'],axis=1).to_csv(f'{cik}/totals_validation.csv',index=False)
 
+def case_fsk(
+    cik:int
+)->None:
+    for date in os.listdir(f'{ROOT_PATH}/{cik}'):
+        if '.csv' in date:
+            continue
+        logging.info(f"DATE - {date}")
+        process_date(date,cik)
+    join_all_possible(cik)
+    # TODO fix unit testing for other BDC
+    # validate_totals(pd.read_csv(f'{cik}/soi_table_all_possible_merges.csv'),pd.read_csv(f'{cik}/totals.csv'),cik=cik)
+    return
+
+def case_main(
+    cik:int
+)->None:
+    bdc = os.path.join(ROOT_PATH,str(cik))
+    qtrs = os.listdir(bdc)
+    for qtr in qtrs:
+        if '.csv' in qtr:
+            continue
+        dfs = []
+        index_list_sum = i = 0
+        while index_list_sum == 0:
+            qtr_file = os.path.join(bdc,qtr,f'Schedule_of_Investments_{i}.csv')
+            df = _clean_qtr(qtr_file)
+            dfs.append(df)
+            index_list = df.apply(
+                lambda row:row.astype(str).str.contains('total portfolio investments', case=False, na=False).any(),
+                axis=1
+            )
+            index_list_sum = index_list.sum()
+            i += 1
+        
+        date_final = pd.concat(dfs,axis=0,ignore_index=True)        
+        date_final = extract_subheaders(date_final)
+        date_final.subheaders.fillna(method='ffill',inplace=True)
+        date_final['qtr'] = qtr.split('\\')[-1]
+        for i in range(3):
+            date_final[date_final.columns[i]].fillna(method='ffill',inplace=True)
+        date_final.to_csv('debugging.csv',index=False)
+        idx = date_final[['Principal', 'Cost', 'FairValue']].isna().all(axis=1)
+        date_final = date_final.loc[~idx,:]
+        if not os.path.exists(os.path.join(bdc,qtr,'output')):
+            os.makedirs(os.path.join(bdc,qtr,'output'))
+        date_final.to_csv(os.path.join(bdc,qtr,'output',f'{qtr}.csv'),index=False)
+
+    # Use glob to find files
+    files = sorted(glob.glob(f'{cik}/*/output/*.csv'), key=extract_date)
+    single_truth = pd.concat([
+        pd.read_csv(df) for df in files
+    ],axis=0,ignore_index=True)
+    single_truth.to_csv(os.path.join(str(cik),f'{cik}_soi_table.csv'),index=False)
+
 def main()->None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
     args = arguements()
     cik = args.cik
     if not os.path.exists(f'{ROOT_PATH}/{cik}'):
         os.mkdir(f'{ROOT_PATH}/csv')
-    for date in os.listdir(f'{ROOT_PATH}/{cik}'):
-        if '.csv' in date:
-            continue
-        # date = '2019-09-30'
-        logging.info(f"DATE - {date}")
-        process_date(date,cik)
-        # break
-    join_all_possible(cik)
-    # TODO fix unit testing for other BDC
-    # validate_totals(pd.read_csv(f'{cik}/soi_table_all_possible_merges.csv'),pd.read_csv(f'{cik}/totals.csv'),cik=cik)
+    if cik == 1501729 or cik == 1422183:
+        case_fsk(cik)
+    if cik == 1396440:
+        case_main(cik)
     return 
 
 if __name__ == "__main__":
     """
     python .\consolidate_tables.py --cik 1501729 --url-txt urls/1501729.txt --x-path xpaths/1501729.txt
     python .\consolidate_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
+    python .\consolidate_tables.py --cik 1396440 --url-txt urls/1396440.txt --x-path xpaths/1396440.txt
     
     remove files that don't contain keyword
     https://unix.stackexchange.com/questions/150624/remove-all-files-without-a-keyword-in-the-filename 
