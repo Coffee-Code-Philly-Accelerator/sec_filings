@@ -1,0 +1,3 @@
+//font[contains(text(), "Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::div/child::table
+//font[contains(text(), "Schedule of Investments")]/parent::div/following-sibling::div/child::table
+
