@@ -503,7 +503,7 @@ def scrape_data(date):
                 extract_tables_3(edgar_soup, qtr_date, i)
                 group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
             else:
-                formatting("output-" + str(i) + "-pandas.csv", qtr_date)
+                # formatting("output-" + str(i) + "-pandas.csv", qtr_date)
                 try:
                     if(outside==2):
                         group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
@@ -589,7 +589,7 @@ def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
         master_table = master_table.replace(r'^\s*$', np.nan, regex=True).replace(r'^\s*\$\s*$', np.nan, regex=True).replace(r'^\s*\)\s*$', np.nan, regex=True)
         master_table = master_table.replace("~", ",", regex=True)
         ## Code to understand if keyword is inside table or outside
-        # master_table.to_csv("output-" + str(ind) + "-outside-pandas.csv")
+        master_table.to_csv("output-" + str(ind) + "-outside-pandas.csv")
         for col in master_table.columns:
             if (master_table[col].astype(str).str.contains(outside_string_check).any() == True):
                 return 0
@@ -625,7 +625,7 @@ def extract_tables_inside(soup_content, qtr_date,ind,outside_string_check):
         master_table = master_table.replace(r'^\s*$', np.nan, regex=True).replace(r'^\s*\$\s*$', np.nan, regex=True).replace(r'^\s*\)\s*$', np.nan, regex=True)
         master_table = master_table.replace("~", ",", regex=True)
         ## Code to understand if keyword is inside table or outside
-        #master_table.to_csv("output-" + str(ind) + "inside-pandas.csv")
+        master_table.to_csv("output-" + str(ind) + "inside-pandas.csv")
         for col in master_table.columns:
             if (master_table[col].astype(str).str.contains(outside_string_check).any() == True ):
                 print("Inside Extraction Failed")
