@@ -607,7 +607,7 @@ def scrape_data(date):
             outside_string_check = "December 31, " + str(last_year)
             print("OUTSIDE STRING CHECK", outside_string_check)
             print("OUTSIDE EXTRACTION")
-            outside = extract_tables_outside(edgar_soup, qtr_date, i, outside_string_check)
+            # outside = extract_tables_outside(edgar_soup, qtr_date, i, outside_string_check)
             try:
                 outside = extract_tables_outside(edgar_soup, qtr_date, i, outside_string_check)
                 print("Outside Extraction Done")
@@ -619,27 +619,27 @@ def scrape_data(date):
             #inside = extract_tables_inside(edgar_soup, qtr_date, i, outside_string_check)
             print("INSIDE", inside)
             # print("OUTSIDE", outside)
-            # if (inside == False and outside == 0):
-            #     1
-            #     # print("Group 3 Extraction")
-            #     # extract_tables_3(edgar_soup, qtr_date, i)
-            #     # group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
-            # else:
-            #     formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            #     try:
-            #         if(outside==2):
-            #             group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
-            #         else:
-            #             formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            #     except:
-            #         print("Error:::::::Table not found:::::::::::::")
-            
-            print("QTR DATE",qtr_date)
-            formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            try:
+            if (inside == False and outside == 0):
+                1
+                print("Group 3 Extraction")
+                extract_tables_3(edgar_soup, qtr_date, i)
+                # group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
+            else:
                 formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            except:
-                print("DID NOT WORK FOR ",str(date_format))
+                try:
+                    if(outside==2):
+                        group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
+                    else:
+                        formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
+                except:
+                    print("Error:::::::Table not found:::::::::::::")
+            
+            # print("QTR DATE",qtr_date)
+            # # formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
+            # try:
+            #     formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
+            # except:
+            #     print("DID NOT WORK FOR ",str(date_format))
         i = i+1
 
 def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
@@ -744,9 +744,13 @@ def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
                             continous_table_check = 0
                             break
                     if(continous_table_check==1):
-                        master_table = master_table.append(
-                            new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
-                            ignore_index=True)
+                        # master_table = master_table.append(
+                        #     new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
+                        #     ignore_index=True)
+                        master_table = pd.concat([
+                            master_table,
+                            new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0)
+                        ],ignore_index=False)
 
                 nextNode = nextNode.find_next('table')
 
@@ -884,4 +888,4 @@ def extract_tables_3(soup_content, qtr_date,ind):
     #return html_table
 
 scrape_data(2012)
-writer.save()
+writer.close()
