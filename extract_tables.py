@@ -46,7 +46,7 @@ def get_xpath_elements(
     tables = []
     for path in xpaths:
         tables.extend(driver.find_elements(By.XPATH,value=path))
-    logging.debug(f"GOT ELEMENTS  - {tables}")
+    # logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
 
@@ -113,11 +113,11 @@ def main()->None:
     with open(os.path.join(ROOT_PATH,args.url_txt),'r') as f:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
         
+    x_paths = None
     with open(args.x_path) as file:
-        xpaths = [line.rstrip() for line in file.readlines()]
-    logging.debug(f"USING XPATHS - {xpaths}")
+        gen_paths = [line.rstrip() for line in file.readlines()]
     for table_date,url in urls[1:]:
-        # table_date,url = '2020-09-30', 'https://www.sec.gov/Archives/edgar/data/0001396440/000155837020013055/tmb-20200930x10q.htm'
+        # table_date,url = '2022-09-30', 'https://www.sec.gov/Archives/edgar/data/0001490349/000121390022080281/f10k2022_phenixfincorp.htm'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
@@ -139,14 +139,15 @@ def main()->None:
         with open(html_to_file, "w",encoding='utf-8') as file:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
         
+        xpaths = gen_paths
         tables = get_xpath_elements(driver,xpaths)
         if os.path.exists(spec_path):
             with open(spec_path) as file:
-                spec_paths = [line.rstrip() for line in file.readlines()]
-                spec_paths.extend(xpaths)
-                logging.debug(spec_paths)
-            tables = get_xpath_elements(driver,spec_paths)
-                
+                xpaths = [line.rstrip() for line in file.readlines()]
+                # spec_paths.extend(xpaths)
+            tables = get_xpath_elements(driver,xpaths)
+        logging.debug(f"USING XPATHS - {xpaths}")
+
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)      
         for i,table in enumerate(tables):
@@ -167,7 +168,8 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1501729 --url-txt urls/1501729.txt --x-path xpaths/1501729.txt   
     python .\extract_tables.py --cik 1396440 --url-txt urls/1396440.txt --x-path xpaths/1396440.txt
     python .\extract_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
-    
+    python .\extract_tables.py --cik 1490349 --url-txt urls/1490349.txt --x-path xpaths/1490349.txt
+
     /html/body/document/type/sequence/filename/description/text/div[11]/div/table
     /html/body/document/type/sequence/filename/description/text/div[48]/div/table
     /html/body/document/type/sequence/filename/description/text/div[16]/div/table
@@ -185,6 +187,9 @@ if __name__ == "__main__":
     //b[contains(text(), "Schedule of Investments")]/parent::font/parent::p/following-sibling::div/child::div/child::table
     //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::div/child::table
     //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::table
+    
+    1490349
+    //b[contains(text(), "Schedule of Investments")]/parent::p/following-sibling::table
     """
     main()
     # test_xpath_elements(

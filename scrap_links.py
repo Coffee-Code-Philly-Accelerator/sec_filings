@@ -62,6 +62,8 @@ if __name__ == '__main__':
     """
     docker run -v $(pwd)/sec_filings/run.sh:/script.sh ubuntu:latest /run.sh
     python3 scrap_links --url [url] --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]
-    python .\scrap_links --cik 1396440 --url https://www.sec.gov/edgar/browse/?CIK=1396440
+    python .\scrap_links.py --cik 1396440 --url https://www.sec.gov/edgar/browse/?CIK=1396440
+    python .\scrap_links.py --cik 1490927 --url https://www.sec.gov/edgar/browse/?CIK=1490927
+    python .\scrap_links.py --cik 1490349 --url https://www.sec.gov/edgar/browse/?CIK=1490349
     """
     main()

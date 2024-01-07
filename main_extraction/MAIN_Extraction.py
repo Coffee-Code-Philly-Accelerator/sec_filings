@@ -625,7 +625,7 @@ def scrape_data(date):
                 extract_tables_3(edgar_soup, qtr_date, i)
                 # group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
             else:
-                formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
+                # formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
                 try:
                     if(outside==2):
                         group3_formatting("output-" + str(i) + "-pandas.csv", qtr_date)
@@ -633,13 +633,6 @@ def scrape_data(date):
                         formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
                 except:
                     print("Error:::::::Table not found:::::::::::::")
-            
-            # print("QTR DATE",qtr_date)
-            # # formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            # try:
-            #     formatting_2("output-" + str(i) + "-pandas.csv", qtr_date)
-            # except:
-            #     print("DID NOT WORK FOR ",str(date_format))
         i = i+1
 
 def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
