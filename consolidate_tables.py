@@ -10,7 +10,7 @@ from collections import Counter
 from functools import reduce
 from fuzzywuzzy import process
 
-from utils import arguements,init_logger,ROOT_PATH,extract_date,concat
+from utils import arguements,init_logger,ROOT_PATH,extract_date,concat,remove_row_duplicates
 
 
 def standard_field_names()->tuple:
@@ -30,8 +30,8 @@ def standard_field_names()->tuple:
     )
 
 def common_subheaders()->tuple:
-    return (
-        'senior secured loans',
+    return tuple(map(lambda header:header.replace(' ', r'\s*'),
+        ('senior secured loans',
         'first lien',
         'second lien',
         'senior secured bonds',
@@ -41,17 +41,34 @@ def common_subheaders()->tuple:
         'preferred equity—',
         'control investments',
         'affiliate investments',
-        'non-control/non-affilate investments'
-    )
+        'non-control/non-affilate investments',
+        'Non-Controlled/Non-Affiliated  Investments:',
+        'Affiliated  Investments:',
+        'Non-Controlled/Non-Affiliated  Investments  :',
+        'Affiliated  Investments  :',
+        'Non-controlled/Non-affiliated Investments',
+        'Affiliated Investments',
+        'Equity/Warrants',
+        'unsecured debt')
+    ))
 
+def stopping_criterion(
+    search_string:str='total investments'
+)->str:
+    # Regular expression to ignore whitespace and case
+    regex_pattern = search_string.replace(' ', r'\s*')
+    return '{}|{}'.format(regex_pattern,'Invesmtents')
 
 def extract_subheaders(
     df:pd.DataFrame,
 )->pd.DataFrame:
+    # include = df.apply(
+    # lambda row: row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
+    #     axis=1) # 
     include = df.apply(
-    lambda row: row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
-        axis=1) # 
-    
+        lambda row: re.search('|'.join(common_subheaders()), str(row[0]), re.IGNORECASE) is not None,#row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
+        axis=1
+    )  
     exclude = ~df.apply(
         lambda row: row.astype(str).str.contains('total', case=False, na=False).any(),
         axis=1
@@ -74,13 +91,20 @@ def _clean_qtr(
     file_path:str
 )->pd.DataFrame:
     df = pd.read_csv(file_path,index_col=0)
-    df.replace(['\u200b','',')',0],np.nan,inplace=True)
+    df.replace(['\u200b','',')',':','$','%',0],np.nan,inplace=True) #':','$','%'
     df.dropna(axis=1,how='all',inplace=True)
     df.dropna(axis=0,how='all',inplace=True)
-    df.columns = df.iloc[0].str.replace('[^a-zA-Z]', '', regex=True)
+    
+    cols = df.iloc[0].str.replace('[^a-zA-Z]', '', regex=True)
+    if '' in cols.tolist():
+        df = df.apply(remove_row_duplicates, axis=1)
+    else:
+        df.columns = cols
     df = merge_duplicate_columns(df)
-    df.replace(['\u200b','',')',0],np.nan,inplace=True)
-    df = df.iloc[1: , :]
+    df.replace(['\u200b','',')',':','$','%',0],np.nan,inplace=True) #':','$','%'
+    df.dropna(axis=1,how='all',inplace=True)
+    df.dropna(axis=0,how='all',inplace=True)
+    # df = df.iloc[1: , :]
     df.drop(columns=df.columns[pd.isna(df.columns)].tolist() + [col for col in df.columns if col == ''],axis=1,inplace=True)
     return df
 
@@ -326,15 +350,14 @@ def case_main(
             index_list_sum = index_list.sum()
             i += 1
         
-        date_final = pd.concat(dfs,axis=0,ignore_index=True)        
+        date_final = pd.concat(dfs,axis=0,ignore_index=True) if cik == '1396440' else pd.DataFrame(concat(*dfs))        
         date_final = extract_subheaders(date_final)
-        date_final.subheaders.fillna(method='ffill',inplace=True)
         date_final['qtr'] = qtr.split('\\')[-1]
         for i in range(3):
             date_final[date_final.columns[i]].fillna(method='ffill',inplace=True)
-        date_final.to_csv('debugging.csv',index=False)
-        idx = date_final[['Principal', 'Cost', 'FairValue']].isna().all(axis=1)
-        date_final = date_final.loc[~idx,:]
+        if cik == '1396440':
+            idx = date_final[['Principal', 'Cost', 'FairValue']].isna().all(axis=1)
+            date_final = date_final.loc[~idx,:]
         if not os.path.exists(os.path.join(bdc,qtr,'output')):
             os.makedirs(os.path.join(bdc,qtr,'output'))
         date_final.to_csv(os.path.join(bdc,qtr,'output',f'{qtr}.csv'),index=False)
@@ -344,6 +367,8 @@ def case_main(
     single_truth = pd.concat([
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)
+    single_truth.columns = single_truth.columns if cik == '1396440' else single_truth.iloc[0,:-2].tolist() + ['subheaders','qtr']
+
     single_truth.to_csv(os.path.join(str(cik),f'{cik}_soi_table.csv'),index=False)
 
 def main()->None:
@@ -352,9 +377,9 @@ def main()->None:
     cik = args.cik
     if not os.path.exists(f'{ROOT_PATH}/{cik}'):
         os.mkdir(f'{ROOT_PATH}/csv')
-    if cik == 1501729 or cik == 1422183:
+    if cik == '1501729' or cik == '1422183':
         case_fsk(cik)
-    if cik == 1396440:
+    if cik == '1396440' or cik == '1490349':
         case_main(cik)
     return 
 

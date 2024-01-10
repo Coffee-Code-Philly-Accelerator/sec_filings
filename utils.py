@@ -7,6 +7,9 @@ from rich.logging import RichHandler
 
 ROOT_PATH = os.getcwd()
 
+def remove_row_duplicates(row):
+    seen = set()
+    return pd.Series([x if x not in seen and not seen.add(x) else None for x in row])
 
 def present_substrings(substrings, main_string):
     check = list(filter(lambda sub: sub in main_string, substrings))
