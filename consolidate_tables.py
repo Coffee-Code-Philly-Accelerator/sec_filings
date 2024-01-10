@@ -96,14 +96,15 @@ def _clean_qtr(
     df.dropna(axis=0,how='all',inplace=True)
     
     cols = df.iloc[0].str.replace('[^a-zA-Z]', '', regex=True)
-    if '' in cols.tolist():
+    if ((cols == '') + (cols == 'nan') + (cols == np.nan) + (cols == 'NaN')).sum() > int(file_path.split('\\')[-3] == '1396440'):
         df = df.apply(remove_row_duplicates, axis=1)
     else:
         df.columns = cols
     df = merge_duplicate_columns(df)
     df.replace(['\u200b','',')',':','$','%',0],np.nan,inplace=True) #':','$','%'
-    df.dropna(axis=1,how='all',inplace=True)
-    df.dropna(axis=0,how='all',inplace=True)
+    if ((cols == '') + (cols == 'nan') + (cols == np.nan) + (cols == 'NaN')).sum() > int(file_path.split('\\')[-3] == '1396440'):
+        df.dropna(axis=1,how='all',inplace=True)
+        df.dropna(axis=0,how='all',inplace=True)
     # df = df.iloc[1: , :]
     df.drop(columns=df.columns[pd.isna(df.columns)].tolist() + [col for col in df.columns if col == ''],axis=1,inplace=True)
     return df
