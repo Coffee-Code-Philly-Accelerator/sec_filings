@@ -43,9 +43,15 @@ def main()->None:
     xpath = '//button[text()="View all 10-Ks and 10-Qs"]'
     element = WebDriverWait(driver,3).until(EC.element_to_be_clickable((By.XPATH,xpath)))
     driver.execute_script("arguments[0].click();", element)
-
+    
+    _from = driver.find_elements(By.ID,value='filingDateFrom')
+    _to = driver.find_elements(By.ID,value='filingDateTo')
+    _from[0].clear();_to[0].clear()
+    driver.implicitly_wait(10) 
+    
     conditions = '@data-original-title="Open document" and contains(@href, "Archive") and not(contains(@href, "index")) and not(contains(@href, "xml"))'
     table = driver.find_elements(By.CSS_SELECTOR,value='div.dataTables_scroll')
+    
     links = table[0].find_elements(By.XPATH,value=f'//td//a[{conditions}]')
     logging.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
     df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
