@@ -117,10 +117,7 @@ def main()->None:
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
     for table_date,url in urls[1:]:
-        table_date,url = '2012-12-31', 'https://www.sec.gov/Archives/edgar/data/0001396440/000104746913002445/a2213375z10-k.htm'
-
-
-
+        # table_date,url = '2015-12-31', 'https://www.sec.gov/Archives/edgar/data/0001501729/000104746916011041/a2227740z10-k.htm'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
@@ -162,7 +159,7 @@ def main()->None:
                 logging.debug(f"NO TABLES - {dfs}")
                 continue
             dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
-        break
+        # break
     driver.close()
     return
 

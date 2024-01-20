@@ -28,7 +28,7 @@ def standard_field_names()->tuple:
         'date',
         'subheaders',
     )
-
+    
 def common_subheaders()->tuple:
     return tuple(map(lambda header:header.replace(' ', r'\s*'),
         ('senior secured loans',
@@ -39,6 +39,17 @@ def common_subheaders()->tuple:
         'equity/other',
         'collateralized securities',
         'preferred equity—',
+        'Equity/Warrants',
+        'unsecured debt',
+        'senior secured notes',
+        'warrants',
+        'total senior secured first lien term loans',
+        'secured debt')
+    ))
+
+def company_control_headers()->tuple:
+    return tuple(map(lambda header:header.replace(' ', r'\s*'),
+        (
         'control investments',
         'affiliate investments',
         'non-control/non-affilate investments',
@@ -48,9 +59,9 @@ def common_subheaders()->tuple:
         'Affiliated  Investments  :',
         'Non-controlled/Non-affiliated Investments',
         'Affiliated Investments',
-        'Equity/Warrants',
-        'unsecured debt')
+        )
     ))
+
 
 def stopping_criterion(
     search_string:str='total investments'
@@ -66,7 +77,7 @@ def extract_subheaders(
     # lambda row: row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
     #     axis=1) # 
     include = df.apply(
-        lambda row: re.search('|'.join(common_subheaders()), str(row[0]), re.IGNORECASE) is not None,#row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
+        lambda row: re.search('|'.join(common_subheaders()), str("".join(row.astype(str))), re.IGNORECASE) is not None,#row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
         axis=1
     )  
     exclude = ~df.apply(
@@ -141,6 +152,7 @@ def clean(
     ] 
 
     df_cur.drop(columns=cols_to_drop, errors='ignore',inplace=True) # drop irrelevant columns
+    df_cur.dropna(axis=0,how='all',inplace=True)
     return df_cur
 
 
