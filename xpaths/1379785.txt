@@ -6,3 +6,6 @@
 //font[contains(text(), "Consolidated Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
 //font[contains(text(), "Consolidated Schedule of Investments")]/parent::div/following-sibling::div/child::table
 //b[contains(text(), "Consolidated Schedule of Investments")]/parent::p/following-sibling::table
+//b[contains(text(), "Portfolio Company")]/parent::td/parent::tr/parent::tbody/parent::table
+//b[contains(text(), "Portfolio Company")]/parent::font/parent::p/parent::td/parent::tr/parent::tbody/parent::table
+//b[contains(text(), "Portfolio Company")]/parent::div/parent::td/parent::tr/parent::tbody/parent::table
