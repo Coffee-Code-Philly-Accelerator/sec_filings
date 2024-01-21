@@ -1,0 +1,8 @@
+//span[contains(text(), "Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
+//font[text()[contains(., "Schedule of Investments")]]/parent::div/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(., "Schedule of Investments")]/parent::b/parent::a/parent::div/following-sibling::table
+//font[contains(., "Schedule of Investments")]/parent::b/parent::div/following-sibling::table
+//b[contains(., "Schedule of Investments")]/parent::p/following-sibling::table
+//font[contains(text(), "Consolidated Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
+//font[contains(text(), "Consolidated Schedule of Investments")]/parent::div/following-sibling::div/child::table
+//b[contains(text(), "Consolidated Schedule of Investments")]/parent::p/following-sibling::table

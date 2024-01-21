@@ -71,5 +71,7 @@ if __name__ == '__main__':
     python .\scrap_links.py --cik 1396440 --url https://www.sec.gov/edgar/browse/?CIK=1396440
     python .\scrap_links.py --cik 1490927 --url https://www.sec.gov/edgar/browse/?CIK=1490927
     python .\scrap_links.py --cik 1490349 --url https://www.sec.gov/edgar/browse/?CIK=1490349
+    python .\scrap_links.py --cik 1379785 --url https://www.sec.gov/edgar/browse/?CIK=1379785
+   
     """
     main()

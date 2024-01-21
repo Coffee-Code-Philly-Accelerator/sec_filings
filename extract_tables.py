@@ -15,6 +15,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils import arguements,init_logger,ROOT_PATH
 
+
+
+"""
+document.querySelectorAll("body > document:nth-child(1) > type:nth-child(1) > sequence:nth-child(1) > filename:nth-child(1) > description:nth-child(1) > text:nth-child(1) > div:nth-child(418) ~ div"
+"""
 def test_xpath_elements(
     url:str,
     xpath:str
@@ -46,6 +51,7 @@ def get_xpath_elements(
     tables = []
     for path in xpaths:
         tables.extend(driver.find_elements(By.XPATH,value=path))
+    # driver.execute('document.querySelectorAll("body > document:nth-child(1) > type:nth-child(1) > sequence:nth-child(1) > filename:nth-child(1) > description:nth-child(1) > text:nth-child(1) > div:nth-child(418) ~ div"')
     logging.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
@@ -169,6 +175,7 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1396440 --url-txt urls/1396440.txt --x-path xpaths/1396440.txt
     python .\extract_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
     python .\extract_tables.py --cik 1490349 --url-txt urls/1490349.txt --x-path xpaths/1490349.txt
+    python .\extract_tables.py --cik 1379785 --url-txt urls/1379785.txt --x-path xpaths/1379785.txt
 
     /html/body/document/type/sequence/filename/description/text/div[11]/div/table
     /html/body/document/type/sequence/filename/description/text/div[48]/div/table
