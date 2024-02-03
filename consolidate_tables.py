@@ -72,12 +72,14 @@ def stopping_criterion(
 
 def extract_subheaders(
     df:pd.DataFrame,
+    cik:str
 )->pd.DataFrame:
-    # include = df.apply(
-    # lambda row: row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
-    #     axis=1) # 
+    sub_headers = common_subheaders()
+    if cik == '1501729' or cik == '1422183':
+        sub_headers = list(sub_headers)
+        sub_headers.remove("warrants")
     include = df.apply(
-        lambda row: re.search('|'.join(common_subheaders()), str("".join(row.astype(str))), re.IGNORECASE) is not None,#row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
+        lambda row: re.search('|'.join(sub_headers), str("".join(row.astype(str))), re.IGNORECASE) is not None,#row.astype(str).str.contains('|'.join(common_subheaders()), case=False, na=False).any(),
         axis=1
     )  
     exclude = ~df.apply(
@@ -85,7 +87,7 @@ def extract_subheaders(
         axis=1
     )
     idx = df[include & exclude].index.tolist()
-    df['subheaders'] = 'no_subheader'
+    df['subheaders'] = 'no_subheader' 
     if not idx:
         return df
 
@@ -257,7 +259,7 @@ def process_date(
         os.mkdir(f"{ROOT_PATH}/{cik}/{date}/output_final")
     
     date_final.drop(date_final.columns[0],axis=1,inplace=True)
-    date_final = extract_subheaders(date_final)
+    date_final = extract_subheaders(date_final,cik=cik)
     date_final['date'] = date
     date_final.reset_index(inplace=True,drop=True)
     date_final.to_csv(f"{ROOT_PATH}/{cik}/{date}/output_final/{date}_final.csv")
@@ -364,7 +366,7 @@ def case_main(
             i += 1
         
         date_final = pd.concat(dfs,axis=0,ignore_index=True) if cik == '1396440' else pd.DataFrame(concat(*dfs))        
-        date_final = extract_subheaders(date_final)
+        date_final = extract_subheaders(date_final,cik=cik)
         date_final['qtr'] = qtr.split('\\')[-1]
         for i in range(3):
             date_final[date_final.columns[i]].fillna(method='ffill',inplace=True)
