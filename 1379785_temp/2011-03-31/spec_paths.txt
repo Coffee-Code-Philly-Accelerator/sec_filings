@@ -1,4 +1,0 @@
-/html/body/document/type/sequence/filename/description/text/div[7]/div[4]/table
-/html/body/document/type/sequence/filename/description/text/div[8]/div/table
-/html/body/document/type/sequence/filename/description/text/div[9]/div/table
-/html/body/document/type/sequence/filename/description/text/div[10]/div[1]/table

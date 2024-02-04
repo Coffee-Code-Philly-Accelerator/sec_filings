@@ -1,0 +1,1 @@
+//font[contains(text(), "Consolidated Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
