@@ -388,6 +388,7 @@ def case_main(
 
 def main()->None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
+    warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
     args = arguements()
     cik = args.cik
     if not os.path.exists(f'{ROOT_PATH}/{cik}'):
