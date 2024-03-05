@@ -396,7 +396,7 @@ def formatting_2(file_name, qtr_date):
     new_header = pd_csv.iloc[0]  # grab the first row for the header
     # new_header = new_header.str.replace("Shares/Warrants/Principal","Shares Warrants Principal")
     pd_csv = pd_csv[1:]  # take the data less the header row
-    pd_csv.columns = new_header.str.replace(r"\(\d+\)", "")  # set the header row as the df header
+    pd_csv.columns = new_header#.str.replace(r"\(\d+\)", "")  # set the header row as the df header
 
     pd_csv = pd_csv.replace("~", ",", regex=True)
     # pd_csv = pd_csv.iloc[:, 1:]
@@ -728,28 +728,28 @@ def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
                     last_row = str(new_table.iloc[-1,0]).replace(" ", "")
                     if('TOTALINVESTMENTS' in last_row):
                         # print("Total Investment found")
-                        master_table = master_table.append(
+                        master_table = master_table._append(
                             new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                             ignore_index=True)
                         continous_table_check = 0
                         print('Total investments founds')
                         break
                     elif('TOTALDERIVATIVES' in last_row):
-                        master_table = master_table.append(
+                        master_table = master_table._append(
                             new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                             ignore_index=True)
                         continous_table_check = 0
                         # print('TOTAL DERIVATIVES founds')
                         break
                     elif ('TotalInvestments' in last_row):
-                        master_table = master_table.append(
+                        master_table = master_table._append(
                             new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                             ignore_index=True)
                         continous_table_check = 0
                         # print('TOTAL DERIVATIVES founds')
                         break
                     elif ('TotalPortfolioInvestments' in last_row):
-                        master_table = master_table.append(
+                        master_table = master_table._append(
                             new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                             ignore_index=True)
                         continous_table_check = 0
@@ -758,7 +758,7 @@ def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
                     # print("Full Last Row of new table",new_table.iloc[-1])
                     for i in range(len(new_table.iloc[-1])):
                         if ('Total Portfolio Investments' in str(new_table.iloc[-1, i])):
-                            master_table = master_table.append(
+                            master_table = master_table._append(
                                 new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                                 ignore_index=True)
                             continous_table_check = 0
@@ -774,7 +774,7 @@ def extract_tables_outside(soup_content, qtr_date,ind,outside_string_check):
                         #         continous_table_check = 0
                         #         break
                         if (continous_table_check == 1):
-                            master_table = master_table.append(
+                            master_table = master_table._append(
                                 new_table.dropna(how='all', axis=0).reset_index(drop=True).drop(index=0),
                                 ignore_index=True)
                     except:
@@ -848,7 +848,8 @@ def extract_tables_inside(soup_content, qtr_date,ind,outside_string_check):
     else:
         #print("INSIDE EXTRACTION FAILED")
         return False
+    
 if __name__ == "__main__":
     scrape_data(2012)
-    writer.save()
+    writer._save()
 
