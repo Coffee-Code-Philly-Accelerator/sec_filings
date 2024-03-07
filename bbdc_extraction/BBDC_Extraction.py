@@ -144,23 +144,23 @@ def formatting_2(file_name, qtr_date):
         else:
             endIndex = listOfLevels[i + 1]
         value = pd_csv.iat[beginIndex, 0]
-        if (value == 'Portfolio Company'):
-            value = 'Levels'
-        try:
-            value = ''.join([i for i in value if not i.isdigit()])
-            value = re.sub("[^\P{P}-]+", "", value)
-        except:
-            value = pd_csv.iat[beginIndex, 0]
+        # if (value == 'Portfolio Company'):
+        #     value = 'Levels'
+        # try:
+        #     value = ''.join([i for i in value if not i.isdigit()])
+        #     value = re.sub("[^\P{P}-]+", "", value)
+        # except:
+        #     value = pd_csv.iat[beginIndex, 0]
         # print("Begin", beginIndex)
         # print("End", endIndex)
         for x in range(beginIndex, endIndex):
             newValues.append(value)
 
     # print(newValues)
-    if (len(newValues) < (len(pd_csv))):
-        newValues.insert(0, 'Levels')
+    # if (len(newValues) < (len(pd_csv))):
+    #     newValues.insert(0, 'Levels')
     # Adding the array to the df
-    pd_csv.insert(0, 'Levels', newValues)
+    # pd_csv.insert(0, 'Levels', newValues)
 
     # Finding Subtotals
     pd_csv.reset_index()
@@ -230,8 +230,8 @@ def formatting_2(file_name, qtr_date):
 
     industry_col = pd_csv[pd_csv.columns[industry_index]]
     investment_col = pd_csv[pd_csv.columns[investment_index]]
-    investment_col_next = pd_csv[pd_csv.columns[investment_index + 1]]
-    company_col = pd_csv[pd_csv.columns[company_index]]
+    # investment_col_next = pd_csv[pd_csv.columns[investment_index + 1]]
+    # company_col = pd_csv[pd_csv.columns[company_index]]
 
     investment_numeric_mask = pd.notna(investment_col) & (
                 investment_col.str.isnumeric() | investment_col.str.match('^[-]+$'))
@@ -328,14 +328,14 @@ def formatting_2(file_name, qtr_date):
     except:
         pd_csv_principal = pd_csv_principal.iloc[:, :fair_index + 1]
 
-    for i in range(int(pd_csv_principal.shape[0])):
-        for j in range(pd_csv_principal.shape[1]):
-            try:
-                pd_csv_principal.iat[i, j] = re.sub(r"\(\d+\)", "", pd_csv_principal.iat[i, j])
-                if (pd_csv_principal.iat[i, j] == ''):
-                    pd_csv_principal.iat[i, j] = np.nan
-            except:
-                print("Bracket digits not removed")
+    # for i in range(int(pd_csv_principal.shape[0])):
+    #     for j in range(pd_csv_principal.shape[1]):
+    #         try:
+    #             pd_csv_principal.iat[i, j] = re.sub(r"\(\d+\)", "", pd_csv_principal.iat[i, j])
+    #             if (pd_csv_principal.iat[i, j] == ''):
+    #                 pd_csv_principal.iat[i, j] = np.nan
+    #         except:
+    #             print("Bracket digits not removed")
 
     # CHANGES
 
@@ -421,25 +421,25 @@ def formatting_2(file_name, qtr_date):
 
     # Appending to Type of Investment from Company column
 
-    type_invest_append = ['(Revolver)', '(First Out)', '(Last Out)', 'Series A-1', 'Series A', 'Series B-1', 'Series B',
-                          'Series C', 'Series A-1',
-                          'Series B-1', 'Class A', 'Class B', 'Class C', 'Class D', 'Membership Unit Warrants',
-                          'Series M-1']
-    try:
-        comp_cols = [col for col in pd_csv.columns if 'Investment ,' in col]
-        type_inv_cols = [col for col in pd_csv.columns if 'Type of Investment' in col]
+    # type_invest_append = ['(Revolver)', '(First Out)', '(Last Out)', 'Series A-1', 'Series A', 'Series B-1', 'Series B',
+    #                       'Series C', 'Series A-1',
+    #                       'Series B-1', 'Class A', 'Class B', 'Class C', 'Class D', 'Membership Unit Warrants',
+    #                       'Series M-1']
+    # try:
+    #     comp_cols = [col for col in pd_csv.columns if 'Investment ,' in col]
+    #     type_inv_cols = [col for col in pd_csv.columns if 'Type of Investment' in col]
 
-        invest_append_list = list()
-        for i in type_invest_append:
-            # print(i)
-            if (pd_csv[comp_cols[0]].str.contains(i).any() == True):
-                invest_append_list = pd_csv.index[pd_csv[comp_cols[0]].str.contains(i)].to_list()
-                for j in invest_append_list:
-                    if (i in str(pd_csv.loc[int(j), comp_cols[0]])):
-                        pd_csv.loc[int(j), comp_cols[0]] = pd_csv.loc[int(j), comp_cols[0]].replace(i, "")
-                        pd_csv.loc[int(j), type_inv_cols[0]] = type_inv_cols[0] + " " + i
-    except:
-        print("Company Name column different")
+    #     invest_append_list = list()
+    #     for i in type_invest_append:
+    #         # print(i)
+    #         if (pd_csv[comp_cols[0]].str.contains(i).any() == True):
+    #             invest_append_list = pd_csv.index[pd_csv[comp_cols[0]].str.contains(i)].to_list()
+    #             for j in invest_append_list:
+    #                 if (i in str(pd_csv.loc[int(j), comp_cols[0]])):
+    #                     pd_csv.loc[int(j), comp_cols[0]] = pd_csv.loc[int(j), comp_cols[0]].replace(i, "")
+    #                     pd_csv.loc[int(j), type_inv_cols[0]] = type_inv_cols[0] + " " + i
+    # except:
+    #     print("Company Name column different")
 
     # Replaceing ( with minus
     for i in pd_csv.columns[-3:]:
@@ -533,9 +533,9 @@ def formatting_2(file_name, qtr_date):
     pd_csv = pd_csv[pd.to_numeric(pd_csv[invest_cols[0]], errors="coerce").isnull()]
 
     # Finding out if the column Investment contains values like Level 3
-    level_in_investments = pd_csv.index[pd_csv[invest_cols[0]].str.contains('Level')].to_list()
+    # level_in_investments = pd_csv.index[pd_csv[invest_cols[0]].str.contains('Level')].to_list()
     # Dropping it if its there
-    pd_csv.drop(level_in_investments, inplace=True)
+    # pd_csv.drop(level_in_investments, inplace=True)
     #Dropping rows that have only - in Type of Investment
     pd_csv = pd_csv[pd_csv[invest_cols[0]] != '-']
     pd_csv = pd_csv.fillna("")
