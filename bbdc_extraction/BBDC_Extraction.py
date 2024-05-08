@@ -144,13 +144,13 @@ def formatting_2(file_name, qtr_date):
         else:
             endIndex = listOfLevels[i + 1]
         value = pd_csv.iat[beginIndex, 0]
-        # if (value == 'Portfolio Company'):
-        #     value = 'Levels'
-        # try:
-        #     value = ''.join([i for i in value if not i.isdigit()])
-        #     value = re.sub("[^\P{P}-]+", "", value)
-        # except:
-        #     value = pd_csv.iat[beginIndex, 0]
+        if (value == 'Portfolio Company'):
+            value = 'Levels'
+        try:
+            value = ''.join([i for i in value if not i.isdigit()])
+            value = re.sub("[^\P{P}-]+", "", value)
+        except:
+            value = pd_csv.iat[beginIndex, 0]
         # print("Begin", beginIndex)
         # print("End", endIndex)
         for x in range(beginIndex, endIndex):
@@ -421,25 +421,25 @@ def formatting_2(file_name, qtr_date):
 
     # Appending to Type of Investment from Company column
 
-    # type_invest_append = ['(Revolver)', '(First Out)', '(Last Out)', 'Series A-1', 'Series A', 'Series B-1', 'Series B',
-    #                       'Series C', 'Series A-1',
-    #                       'Series B-1', 'Class A', 'Class B', 'Class C', 'Class D', 'Membership Unit Warrants',
-    #                       'Series M-1']
-    # try:
-    #     comp_cols = [col for col in pd_csv.columns if 'Investment ,' in col]
-    #     type_inv_cols = [col for col in pd_csv.columns if 'Type of Investment' in col]
+    type_invest_append = ['(Revolver)', '(First Out)', '(Last Out)', 'Series A-1', 'Series A', 'Series B-1', 'Series B',
+                          'Series C', 'Series A-1',
+                          'Series B-1', 'Class A', 'Class B', 'Class C', 'Class D', 'Membership Unit Warrants',
+                          'Series M-1']
+    try:
+        comp_cols = [col for col in pd_csv.columns if 'Investment ,' in col]
+        type_inv_cols = [col for col in pd_csv.columns if 'Type of Investment' in col]
 
-    #     invest_append_list = list()
-    #     for i in type_invest_append:
-    #         # print(i)
-    #         if (pd_csv[comp_cols[0]].str.contains(i).any() == True):
-    #             invest_append_list = pd_csv.index[pd_csv[comp_cols[0]].str.contains(i)].to_list()
-    #             for j in invest_append_list:
-    #                 if (i in str(pd_csv.loc[int(j), comp_cols[0]])):
-    #                     pd_csv.loc[int(j), comp_cols[0]] = pd_csv.loc[int(j), comp_cols[0]].replace(i, "")
-    #                     pd_csv.loc[int(j), type_inv_cols[0]] = type_inv_cols[0] + " " + i
-    # except:
-    #     print("Company Name column different")
+        invest_append_list = list()
+        for i in type_invest_append:
+            # print(i)
+            if (pd_csv[comp_cols[0]].str.contains(i).any() == True):
+                invest_append_list = pd_csv.index[pd_csv[comp_cols[0]].str.contains(i)].to_list()
+                for j in invest_append_list:
+                    if (i in str(pd_csv.loc[int(j), comp_cols[0]])):
+                        pd_csv.loc[int(j), comp_cols[0]] = pd_csv.loc[int(j), comp_cols[0]].replace(i, "")
+                        pd_csv.loc[int(j), type_inv_cols[0]] = type_inv_cols[0] + " " + i
+    except:
+        print("Company Name column different")
 
     # Replaceing ( with minus
     for i in pd_csv.columns[-3:]:
@@ -543,7 +543,7 @@ def formatting_2(file_name, qtr_date):
     # print("Formated Data Frame")
     # print(pd_csv)
     # print("Length",len(pd_csv))
-    # pd_csv.to_csv("Formated_" + qtr_date + ".csv")
+    pd_csv.to_csv("Formated_" + qtr_date + ".csv")
     pd_csv.to_excel(writer, index=None, header=True, sheet_name=qtr_date)
     #writer.save()
 
