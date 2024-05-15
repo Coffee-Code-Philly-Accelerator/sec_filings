@@ -176,6 +176,7 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
     python .\extract_tables.py --cik 1490349 --url-txt urls/1490349.txt --x-path xpaths/1490349.txt
     python .\extract_tables.py --cik 1379785 --url-txt urls/1379785.txt --x-path xpaths/1379785.txt
+    python .\extract_tables.py --cik 1490927 --url-txt urls/1490927.txt --x-path xpaths/1490927.txt
 
     /html/body/document/type/sequence/filename/description/text/div[11]/div/table
     /html/body/document/type/sequence/filename/description/text/div[48]/div/table

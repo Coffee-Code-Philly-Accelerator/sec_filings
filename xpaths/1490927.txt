@@ -1,3 +1,5 @@
-//font[contains(text(), "Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::div/child::table
-//font[contains(text(), "Schedule of Investments")]/parent::div/following-sibling::div/child::table
-
+//b[contains(text(),"Industry")]/parent::font/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(text(),"Industry")]/parent::div/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(text(),"Industry")]/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(text(),"SCHEDULE OF INVESTMENTS")]/parent::div/parent::div/following-sibling::div/child::div/child::table
+//span[contains(text(),"SCHEDULES OF INVESTMENTS")]/parent::div/parent::div/following-sibling::div/child::table

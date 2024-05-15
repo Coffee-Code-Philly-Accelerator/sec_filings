@@ -247,14 +247,14 @@ def formatting_2(file_name, qtr_date):
     except:
         pd_csv_principal = pd_csv_principal.iloc[:, :fair_index + 1]
 
-    for i in range(int(pd_csv_principal.shape[0])):
-        for j in range(pd_csv_principal.shape[1]):
-            try:
-                pd_csv_principal.iat[i, j] = re.sub(r"\(\d+\)", "", pd_csv_principal.iat[i, j])
-                if (pd_csv_principal.iat[i, j] == ''):
-                    pd_csv_principal.iat[i, j] = np.nan
-            except:
-                print("Bracket digits not removed")
+    # for i in range(int(pd_csv_principal.shape[0])):
+    #     for j in range(pd_csv_principal.shape[1]):
+    #         try:
+    #             pd_csv_principal.iat[i, j] = re.sub(r"\(\d+\)", "", pd_csv_principal.iat[i, j])
+    #             if (pd_csv_principal.iat[i, j] == ''):
+    #                 pd_csv_principal.iat[i, j] = np.nan
+    #         except:
+    #             print("Bracket digits not removed")
 
     try:
         principal_cols = pd_csv_principal.columns[principal_index]
@@ -390,7 +390,7 @@ def formatting_2(file_name, qtr_date):
     print("Formated Data Frame")
     print(pd_csv)
     print("Length",len(pd_csv))
-    # pd_csv.to_csv("Formated_" + qtr_date + ".csv")
+    pd_csv.to_csv("Formated_" + qtr_date + ".csv")
     pd_csv.to_excel(writer, index=None, header=True, sheet_name=qtr_date)
     #writer.save()
 
