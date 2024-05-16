@@ -3,3 +3,4 @@
 //font[contains(text(),"Industry")]/parent::td/parent::tr/parent::tbody/parent::table
 //font[contains(text(),"SCHEDULE OF INVESTMENTS")]/parent::div/parent::div/following-sibling::div/child::div/child::table
 //span[contains(text(),"SCHEDULES OF INVESTMENTS")]/parent::div/parent::div/following-sibling::div/child::table
+//b[contains(text(),"CONSOLIDATED SCHEDULES OF INVESTMENTS")]/parent::p/following-sibling::table
