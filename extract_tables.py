@@ -69,12 +69,20 @@ def get_table_date(
 
 def parse_link_element(
     driver:webdriver,
+    timeout:int=1
 )->str:
+    iframe = driver.find_elements(By.CSS_SELECTOR,value='#ixvFrame')
+    time.sleep(1)
+    if iframe:
+        logging.debug(f"IFRAME - {iframe[0]}")
+        driver.switch_to.frame(iframe[0])
     link_element = driver.find_elements(By.ID,value="menu-dropdown-link")
+    logging.debug(f"LINK ELEMENT - {link_element}")
     if not link_element:
         return None
     driver.execute_script("arguments[0].click();", link_element[0]) 
     form_element = driver.find_elements(By.ID,value='form-information-html')
+    logging.debug(f"FORM ELEMENT - {form_element}")
     if not form_element:
         return None
     driver.execute_script("arguments[0].click();", form_element[0])
@@ -122,8 +130,7 @@ def main()->None:
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
     for table_date,url in urls[1:]:
-        # table_date,url = '2017-06-30' ,'https://www.sec.gov/Archives/edgar/data/0001379785/000137978517000060/a2017063010qtcap.htm'
-
+        # table_date,url = '2022-12-31', 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0001418076/000119312523053980/d437884d10k.htm'
         logging.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
@@ -177,27 +184,8 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1490349 --url-txt urls/1490349.txt --x-path xpaths/1490349.txt
     python .\extract_tables.py --cik 1379785 --url-txt urls/1379785.txt --x-path xpaths/1379785.txt
     python .\extract_tables.py --cik 1490927 --url-txt urls/1490927.txt --x-path xpaths/1490927.txt
-
-    /html/body/document/type/sequence/filename/description/text/div[11]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[48]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[16]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[15]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[19]/div/table
+    python .\extract_tables.py --cik 1418076 --url-txt urls/1418076.txt --x-path xpaths/1418076.txt
     
-    
-    1501729
-    /html/body/document/type/sequence/filename/description/text/div[48]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[15]/div/table
-    /html/body/document/type/sequence/filename/description/text/div[19]/div/table
-    
-    1396440
-    //br[contains(text(), "Schedule of Investments")]/parent::b/parent::font/parent::p/following-sibling::div/child::div/child::table
-    //b[contains(text(), "Schedule of Investments")]/parent::font/parent::p/following-sibling::div/child::div/child::table
-    //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::div/child::table
-    //b[contains(text(), "Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::table
-    
-    1490349
-    //b[contains(text(), "Schedule of Investments")]/parent::p/following-sibling::table
     """
     main()
     # test_xpath_elements(
