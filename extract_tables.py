@@ -69,11 +69,10 @@ def get_table_date(
 
 def parse_link_element(
     driver:webdriver,
-    timeout:int=1
 )->str:
     iframe = driver.find_elements(By.CSS_SELECTOR,value='#ixvFrame')
-    time.sleep(1)
     if iframe:
+        time.sleep(1)
         logging.debug(f"IFRAME - {iframe[0]}")
         driver.switch_to.frame(iframe[0])
     link_element = driver.find_elements(By.ID,value="menu-dropdown-link")
