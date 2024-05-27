@@ -1,0 +1,17 @@
+//p[contains(.,"Schedule of Investments")]/following-sibling::div/child::table
+//div[contains(.,"Schedule of Investments")]/following-sibling::table
+//p[contains(.,"Statement of Investments")]/following-sibling::table
+//font[contains(.,"Statement of Investments")]/parent::p/following-sibling::table
+//font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
+//font[contains(.,"Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::table
+//font[contains(.,"Schedule of Investments")]/parent::div/following-sibling::table
+//font[contains(.,"Schedule of Investments")]/parent::div/parent::div/following-sibling::div/child::div/child::table
+//span[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
+/html/body/document/type/sequence/filename/description/text/div[76]/div[2]/table
+/html/body/document/type/sequence/filename/description/text/div[75]/div[2]/table
+//b[contains(.,"December 31, 2015")]/parent::p/following-sibling::table
+//b[contains(.,"Schedule of Investments")]/parent::p/parent::div/following-sibling::div/child::table
+//b[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
+//div[contains(.,"Schedule of Investments")]/following-sibling::div/child::div/child::table
+//div[contains(.,"Schedule of Investments")]/following-sibling::div/child::table
+//div[contains(.,"Schedule of Investments")]/following-sibling::table

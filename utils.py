@@ -109,9 +109,13 @@ def init_logger() -> None:
     logging.getLogger('openai').setLevel(logging.WARNING)
     logging.getLogger('urllib3').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.WARNING)
+
+    
+    logging.basicConfig(level=logging.ERROR)  # Ignore warnings and below
+    logging.getLogger("root").setLevel(logging.ERROR)
     logging.getLogger('root').setLevel(logging.ERROR)
     logging.getLogger("pandas").setLevel(logging.ERROR)
-
+    
     FORMAT = "%(name)s[%(process)d] " + \
         "%(processName)s(%(threadName)s) " + \
         "%(module)s:%(lineno)d  %(message)s"

@@ -185,6 +185,8 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1490927 --url-txt urls/1490927.txt --x-path xpaths/1490927.txt
     python .\extract_tables.py --cik 1418076 --url-txt urls/1418076.txt --x-path xpaths/1418076.txt
     python .\extract_tables.py --cik 1544206 --url-txt urls/1544206.txt --x-path xpaths/1544206.txt
+    python .\extract_tables.py --cik 1370755 --url-txt urls/1370755.txt --x-path xpaths/1370755.txt
+
     
     """
     main()
