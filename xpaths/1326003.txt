@@ -1,0 +1,4 @@
+//span[contains(.,"of Investments")]/parent::p/following-sibling::table
+//p[contains(.,"Schedules of Investments")]/following-sibling::div/child::table
+//b[contains(.,"Schedules of Investments")]/parent::p/following-sibling::table
+//b[contains(.,"Schedules of Investments")]/parent::font/parent::p/following-sibling::table

@@ -106,9 +106,9 @@ def init_logger() -> None:
     logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
     logging.getLogger("PIL.TiffImagePlugin").setLevel(logging.WARNING)
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
-    logging.getLogger('openai').setLevel(logging.WARNING)
     logging.getLogger('urllib3').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.WARNING)
+    logging.getLogger("pandas").setLevel(logging.WARNING)
 
     
     logging.basicConfig(level=logging.ERROR)  # Ignore warnings and below
