@@ -1,6 +1,5 @@
 import os
 import warnings
-import logging
 import time
 import pandas as pd 
 import re
@@ -9,7 +8,7 @@ import datetime
 from collections import Counter
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,9 +25,11 @@ def test_xpath_elements(
 )->list:
     args = arguements()
     options = Options()
-    options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path)\
-        if platform.system() == "Linux" else webdriver.Chrome()
+    # options.binary_location = args.chrome_path
+    options.set_capability('goog:loggerPrefs', {'browser': 'ALL'})
+    options.add_argument("--verbose") 
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options)\
+        if platform.system() == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
     tables = driver.find_elements(By.XPATH,value=xpath)
     tables = sorted(tables, key=lambda table: table.location['y'])
@@ -52,7 +53,7 @@ def get_xpath_elements(
     for path in xpaths:
         tables.extend(driver.find_elements(By.XPATH,value=path))
     # driver.execute('document.querySelectorAll("body > document:nth-child(1) > type:nth-child(1) > sequence:nth-child(1) > filename:nth-child(1) > description:nth-child(1) > text:nth-child(1) > div:nth-child(418) ~ div"')
-    logging.debug(f"GOT ELEMENTS  - {tables}")
+    logger.debug(f"GOT ELEMENTS  - {tables}")
     return tables
 
 
@@ -73,19 +74,19 @@ def parse_link_element(
     iframe = driver.find_elements(By.CSS_SELECTOR,value='#ixvFrame')
     if iframe:
         time.sleep(1)
-        logging.debug(f"IFRAME - {iframe[0]}")
+        logger.debug(f"IFRAME - {iframe[0]}")
         driver.switch_to.frame(iframe[0])
     link_element = driver.find_elements(By.ID,value="menu-dropdown-link")
-    logging.debug(f"LINK ELEMENT - {link_element}")
+    logger.debug(f"LINK ELEMENT - {link_element}")
     if not link_element:
         return None
     driver.execute_script("arguments[0].click();", link_element[0]) 
     form_element = driver.find_elements(By.ID,value='form-information-html')
-    logging.debug(f"FORM ELEMENT - {form_element}")
+    logger.debug(f"FORM ELEMENT - {form_element}")
     if not form_element:
         return None
     driver.execute_script("arguments[0].click();", form_element[0])
-    logging.debug(f"SWITCHING HANDLES - {driver.window_handles[-1]}")
+    logger.debug(f"SWITCHING HANDLES - {driver.window_handles[-1]}")
     time.sleep(1)
     driver.switch_to.window(driver.window_handles[-1])
     return driver.current_url
@@ -120,12 +121,11 @@ def process_pre_element(
 
 def main()->None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
-    init_logger()
-    args = arguements()
     options = Options()
-    options.binary_location = args.chrome_path
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
-        if platform.system() == "Linux" else webdriver.Chrome()
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # options.binary_location = args.chrome_path
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options) \
+        if platform.system() == "Linux" else webdriver.Chrome(options=options)
     table_title = "Schedule of Investments"
     with open(os.path.join(ROOT_PATH,args.url_txt),'r') as f:
         urls = [(*url.split(' '),) for url in f.read().splitlines()]
@@ -133,27 +133,24 @@ def main()->None:
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
     for table_date,url in urls[1:]:
-        table_date,url = '2005-09-30', 'https://www.sec.gov/Archives/edgar/data/0001326003/000134100405000282/brkcc10q.txt'
-        logging.info(f"ACCESSING - {url}")
+        # table_date,url = '2014-03-31', 'https://www.sec.gov/Archives/edgar/data/0001580345/000110465914038691/a14-12163_110q.htm'
+        logger.info(f"ACCESSING - {url}")
         driver.get(url)
-        element = driver.find_element(By.TAG_NAME, 'pre')
-        if element:
-            pass
         inline_url = parse_link_element(driver)
  
-        logging.info(f'FINAL URL - {inline_url}')
+        logger.info(f'FINAL URL - {inline_url}')
         if inline_url is not None:
             time.sleep(1)
             driver.get(inline_url)
             
         html_content = driver.page_source
-        logging.info(f"DATETIMES - {table_date}")
+        logger.info(f"DATETIMES - {table_date}")
         
         out_path,spec_path = os.path.join(ROOT_PATH,args.cik,table_date),os.path.join(ROOT_PATH,args.cik,table_date,'spec_paths.txt')
         if not os.path.exists(out_path):
             os.mkdir(out_path)
             
-        logging.info(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
+        logger.info(f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
         html_to_file = os.path.join(ROOT_PATH,out_path,url.split('/')[-1].replace(".htm","")+".html")
         with open(html_to_file, "w",encoding='utf-8') as file:
             file.write(BeautifulSoup(html_content,'html.parser').prettify())
@@ -165,7 +162,7 @@ def main()->None:
                 xpaths = [line.rstrip() for line in file.readlines()]
                 # spec_paths.extend(xpaths)
             tables = get_xpath_elements(driver,xpaths)
-        logging.debug(f"USING XPATHS - {xpaths}")
+        logger.debug(f"USING XPATHS - {xpaths}")
 
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)      
@@ -175,10 +172,10 @@ def main()->None:
             table = malformed_table(table.get_attribute("outerHTML"))
             dfs = pd.read_html(table.prettify(),displayed_only=False)
             if not dfs:
-                logging.debug(f"NO TABLES - {dfs}")
+                logger.debug(f"NO TABLES - {dfs}")
                 continue
             dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
-        break
+        # break
     driver.close()
     return
 
@@ -194,9 +191,11 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1544206 --url-txt urls/1544206.txt --x-path xpaths/1544206.txt
     python .\extract_tables.py --cik 1370755 --url-txt urls/1370755.txt --x-path xpaths/1370755.txt
     python .\extract_tables.py --cik 1326003 --url-txt urls/1326003.txt --x-path xpaths/1326003.txt
-
+    python .\extract_tables.py --cik 1580345 --url-txt urls/1580345.txt --x-path xpaths/1580345.txt
     
     """
+    args = arguements()
+    logger = init_logger(args.cik)
     main()
     # test_xpath_elements(
     #     url='https://www.sec.gov/Archives/edgar/data/0001501729/000110465921102950/tm2124358-1_10q.htm',

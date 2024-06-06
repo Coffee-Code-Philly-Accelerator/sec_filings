@@ -1,0 +1,6 @@
+/html/body/document/type/sequence/filename/description/text/div[7]/table
+/html/body/document/type/sequence/filename/description/text/div[8]/table
+/html/body/document/type/sequence/filename/description/text/div[9]/table
+/html/body/document/type/sequence/filename/description/text/div[10]/table
+/html/body/document/type/sequence/filename/description/text/div[11]/table
+/html/body/document/type/sequence/filename/description/text/div[12]/table

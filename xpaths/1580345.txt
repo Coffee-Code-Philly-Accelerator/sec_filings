@@ -1,0 +1,8 @@
+//font[contains(.,"Venture Growth Stage Company")]/parent::b/parent::p/parent::td/parent::tr/parent::tbody/parent::table
+//span[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/parent::td/parent::tr/parent::tbody/parent::table
+//span[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/parent::td/parent::tr/parent::tbody/parent::table
+//p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::div/child::table
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::b/parent::p/following-sibling::table

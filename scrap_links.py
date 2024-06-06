@@ -18,6 +18,7 @@ def main()->None:
     url = args.url
     options = Options()
     options.binary_location = args.chrome_path
+    options.add_argument("--log-level=OFF")
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
         if platform.system() == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
@@ -76,8 +77,8 @@ if __name__ == '__main__':
     python .\scrap_links.py --cik 1544206 --url https://www.sec.gov/edgar/browse/?CIK=1544206
     python .\scrap_links.py --cik 1370755 --url https://www.sec.gov/edgar/browse/?CIK=1370755
     python .\scrap_links.py --cik 1326003 --url https://www.sec.gov/edgar/browse/?CIK=1326003
-
-
+    python .\scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
+1580345
    
     """
     main()

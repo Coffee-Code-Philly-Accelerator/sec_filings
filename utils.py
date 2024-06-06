@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import datetime
 import argparse
@@ -100,7 +101,7 @@ def arguements()->argparse.ArgumentParser:
     )
     return parser.parse_args()
 
-def init_logger() -> None:
+def _init_logger() -> None:
     logger = logging.getLogger("rich")
     logger.setLevel(logging.WARNING)
     logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
@@ -112,8 +113,6 @@ def init_logger() -> None:
 
     
     logging.basicConfig(level=logging.ERROR)  # Ignore warnings and below
-    logging.getLogger("root").setLevel(logging.ERROR)
-    logging.getLogger('root').setLevel(logging.ERROR)
     logging.getLogger("pandas").setLevel(logging.ERROR)
     
     FORMAT = "%(name)s[%(process)d] " + \
@@ -135,3 +134,30 @@ def init_logger() -> None:
     logger.addHandler(ch)
 
     logging.info("Initializing ok.")
+    
+def init_logger(
+    cik:int
+)->logging.Logger:
+    # Set up logging
+    logger = logging.getLogger(f"CIK=={cik}")
+    logger.setLevel(logging.DEBUG)
+
+    # Create file handler which logs even debug messages
+    fh = logging.FileHandler('logs/sec_scrapper.log')
+    fh.setLevel(logging.DEBUG)
+
+    # Create console handler with a higher log level
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.INFO)
+
+    # Create formatter and add it to the handlers
+    formatter = logging.Formatter('%(name)s:%(levelname)s:%(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+
+    # Add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    logger.info("Initializing ok.")
+
+    return logger
