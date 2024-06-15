@@ -13,8 +13,8 @@ from utils import arguements,init_logger,ROOT_PATH
 
 
 def main()->None:
-    init_logger()
     args = arguements()
+    init_logger(args.cik)
     url = args.url
     options = Options()
     options.binary_location = args.chrome_path
