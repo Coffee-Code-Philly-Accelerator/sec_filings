@@ -1,4 +1,5 @@
 //b[text()[contains(., "SCHEDULE OF INVESTMENTS")]]/parent::div/following-sibling::div/child::table
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/following-sibling::div/child::table
 //b[text()[contains(., "SCHEDULE OF INVESTMENTS")]]/parent::font/parent::p/following-sibling::div/child::div/child::table
 //b[text()[contains(., "Schedule of Investments")]]/parent::font/parent::p/following-sibling::div/child::div/child::table
 //b[contains(., "Schedule Of Investments")]/parent::font/parent::p/following-sibling::div/child::div/child::table
