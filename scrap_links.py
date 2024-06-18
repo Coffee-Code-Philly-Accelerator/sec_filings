@@ -1,5 +1,4 @@
 import os
-import logging
 import pandas as pd 
 import platform
 from selenium import webdriver
@@ -14,7 +13,7 @@ from utils import arguements,init_logger,ROOT_PATH
 
 def main()->None:
     args = arguements()
-    init_logger(args.cik)
+    logger = init_logger(args.cik)
     url = args.url
     options = Options()
     options.binary_location = args.chrome_path
@@ -47,21 +46,23 @@ def main()->None:
     
     _from = driver.find_elements(By.ID,value='filingDateFrom')
     _to = driver.find_elements(By.ID,value='filingDateTo')
-    _from[0].clear();_to[0].clear()
-    driver.implicitly_wait(10) 
+    driver.implicitly_wait(50) 
+    if _from[0].is_displayed() and _to[0].is_displayed():
+        _from[0].clear();_to[0].clear()
+        _from[0].send_keys("");_to[0].send_keys("")
     
     conditions = '@data-original-title="Open document" and contains(@href, "Archive") and not(contains(@href, "index")) and not(contains(@href, "xml"))'
     table = driver.find_elements(By.CSS_SELECTOR,value='div.dataTables_scroll')
     
     links = table[0].find_elements(By.XPATH,value=f'//td//a[{conditions}]')
-    logging.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
+    logger.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
     df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
     filing_date = df['Reporting date']
-    logging.debug(f"DATES - {len(filing_date)}")
+    logger.debug(f"DATES - {len(filing_date)}")
     with open(os.path.join(ROOT_PATH,'urls',url.split("=")[-1]+".txt"),'w') as url_out:
         for a,date in zip(links,filing_date):
             url_out.write('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
-            logging.debug('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
+            logger.debug('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
 
     driver.close()
 
@@ -78,7 +79,7 @@ if __name__ == '__main__':
     python .\scrap_links.py --cik 1370755 --url https://www.sec.gov/edgar/browse/?CIK=1370755
     python .\scrap_links.py --cik 1326003 --url https://www.sec.gov/edgar/browse/?CIK=1326003
     python .\scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
-1580345
+
    
     """
     main()
