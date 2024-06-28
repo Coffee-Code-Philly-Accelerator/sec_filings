@@ -143,7 +143,7 @@ def init_logger(
     logger.setLevel(logging.DEBUG)
 
     # Create file handler which logs even debug messages
-    fh = logging.FileHandler('logs/sec_scrapper.log')
+    fh = logging.FileHandler(f'../logs/{cik}.log')
     fh.setLevel(logging.DEBUG)
 
     # Create console handler with a higher log level
@@ -151,7 +151,7 @@ def init_logger(
     ch.setLevel(logging.INFO)
 
     # Create formatter and add it to the handlers
-    formatter = logging.Formatter('%(name)s:%(levelname)s:%(message)s')
+    formatter = logging.Formatter('[%(name)s:%(levelname)s] %(message)s')
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
 

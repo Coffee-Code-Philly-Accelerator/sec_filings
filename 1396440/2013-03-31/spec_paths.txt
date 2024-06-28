@@ -11,3 +11,4 @@
 /html/body/document/type/sequence/filename/description/text/div[17]/table
 /html/body/document/type/sequence/filename/description/text/div[18]/table
 /html/body/document/type/sequence/filename/description/text/div[19]/table[1]
+/html/body/document/type/sequence/filename/description/text/div[20]/table[1]

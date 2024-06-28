@@ -17,7 +17,7 @@
 2021-03-31 https://www.sec.gov/Archives/edgar/data/0001490349/000121390021025885/f10q0321_phenixfin.htm
 2020-12-31 https://www.sec.gov/Archives/edgar/data/0001490349/000121390021009274/f10q1220_phenixfincorp.htm
 2021-01-28 https://www.sec.gov/Archives/edgar/data/0001490349/000092242321000007/kl47285_10ka.htm
-2020-12-11 https://www.sec.gov/Archives/edgar/data/0001490349/000149034920000056/a2020medleycapitalcorp.htm
+2020-09-30 https://www.sec.gov/Archives/edgar/data/0001490349/000149034920000056/a2020medleycapitalcorp.htm
 2020-06-30 https://www.sec.gov/Archives/edgar/data/0001490349/000149034920000030/mcc06302010-q.htm
 2020-03-31 https://www.sec.gov/Archives/edgar/data/0001490349/000149034920000017/mcc03312010-q.htm
 2019-12-31 https://www.sec.gov/Archives/edgar/data/0001490349/000149034920000007/mcc12311910-q.htm
