@@ -114,25 +114,22 @@ def remove_duplicate_element(
             unique_elements.append(e)
     return unique_elements
     
-def process_pre_element(
-    element:webdriver.remote.webelement.WebElement
-)->None:
-    element.text
+
 
 def main()->None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
     options = Options()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    # options.binary_location = args.chrome_path
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options) \
         if platform.system() == "Linux" else webdriver.Chrome(options=options)
     table_title = "Schedule of Investments"
-    with open(os.path.join(ROOT_PATH,args.url_txt),'r') as f:
-        urls = [(*url.split(' '),) for url in f.read().splitlines()]
-        
+
+    urls = pd.read_csv(os.path.join(ROOT_PATH,args.url_csv),index_col=False)
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
-    for table_date,url in urls[1:]:
+        
+    for i in range(urls.shape[0]):
+        table_date,url = urls.iloc[i]
         # table_date,url = '2014-03-31', 'https://www.sec.gov/Archives/edgar/data/0001580345/000110465914038691/a14-12163_110q.htm'
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
@@ -181,18 +178,19 @@ def main()->None:
 
 if __name__ == "__main__":
     """
-    python .\extract_tables.py --cik 1501729 --url-txt urls/1501729.txt --x-path xpaths/1501729.txt   
-    python .\extract_tables.py --cik 1396440 --url-txt urls/1396440.txt --x-path xpaths/1396440.txt
-    python .\extract_tables.py --cik 1422183 --url-txt urls/1422183.txt --x-path xpaths/1422183.txt
-    python .\extract_tables.py --cik 1490349 --url-txt urls/1490349.txt --x-path xpaths/1490349.txt
-    python .\extract_tables.py --cik 1379785 --url-txt urls/1379785.txt --x-path xpaths/1379785.txt
-    python .\extract_tables.py --cik 1490927 --url-txt urls/1490927.txt --x-path xpaths/1490927.txt
-    python .\extract_tables.py --cik 1418076 --url-txt urls/1418076.txt --x-path xpaths/1418076.txt
-    python .\extract_tables.py --cik 1544206 --url-txt urls/1544206.txt --x-path xpaths/1544206.txt
-    python .\extract_tables.py --cik 1370755 --url-txt urls/1370755.txt --x-path xpaths/1370755.txt
-    python .\extract_tables.py --cik 1326003 --url-txt urls/1326003.txt --x-path xpaths/1326003.txt
-    python .\extract_tables.py --cik 1580345 --url-txt urls/1580345.txt --x-path xpaths/1580345.txt
-    
+    python .\extract_tables.py --cik 1501729 --url-csv urls/1501729.csv --x-path xpaths/1501729.txt   
+    python .\extract_tables.py --cik 1396440 --url-csv urls/1396440.csv --x-path xpaths/1396440.txt
+    python .\extract_tables.py --cik 1422183 --url-csv urls/1422183.csv --x-path xpaths/1422183.txt
+    python .\extract_tables.py --cik 1490349 --url-csv urls/1490349.csv --x-path xpaths/1490349.txt
+    python .\extract_tables.py --cik 1379785 --url-csv urls/1379785.csv --x-path xpaths/1379785.txt
+    python .\extract_tables.py --cik 1490927 --url-csv urls/1490927.csv --x-path xpaths/1490927.txt
+    python .\extract_tables.py --cik 1418076 --url-csv urls/1418076.csv --x-path xpaths/1418076.txt
+    python .\extract_tables.py --cik 1544206 --url-csv urls/1544206.csv --x-path xpaths/1544206.txt
+    python .\extract_tables.py --cik 1370755 --url-csv urls/1370755.csv --x-path xpaths/1370755.txt
+    python .\extract_tables.py --cik 1326003 --url-csv urls/1326003.csv --x-path xpaths/1326003.txt
+    python .\extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
+    python .\extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
+
     """
     args = arguements()
     logger = init_logger(args.cik)

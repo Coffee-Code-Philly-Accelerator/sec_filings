@@ -70,8 +70,8 @@ def arguements()->argparse.ArgumentParser:
         help='Sec url to get links from'
     )
     parser.add_argument(
-        '--url-txt', type=str, required=False, 
-        default='urls/1422183.txt',
+        '--url-csv', type=str, required=False, 
+        default='urls/1422183.csv',
         help='.txt to get links from'
     )
     parser.add_argument(
@@ -143,7 +143,7 @@ def init_logger(
     logger.setLevel(logging.DEBUG)
 
     # Create file handler which logs even debug messages
-    fh = logging.FileHandler(f'../logs/{cik}.log')
+    fh = logging.FileHandler(f'logs/{cik}.log')
     fh.setLevel(logging.DEBUG)
 
     # Create console handler with a higher log level

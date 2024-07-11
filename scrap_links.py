@@ -1,6 +1,7 @@
 import os
 import pandas as pd 
 import platform
+import csv
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -57,13 +58,15 @@ def main()->None:
     links = table[0].find_elements(By.XPATH,value=f'//td//a[{conditions}]')
     logger.debug(f"LINKS - {len([link.get_attribute('innerHTML') for link in links])}")
     df = pd.read_html(table[0].get_attribute('innerHTML'))[-1]
-    filing_date = df['Reporting date']
+    reporting_date,filing_date = df['Reporting date'],df['Filing date']
     logger.debug(f"DATES - {len(filing_date)}")
-    with open(os.path.join(ROOT_PATH,'urls',url.split("=")[-1]+".txt"),'w') as url_out:
-        for a,date in zip(links,filing_date):
-            url_out.write('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
+    with open(os.path.join(ROOT_PATH,'urls',url.split("=")[-1]+".csv"), 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['date_filed','html_link'])
+        for a,date in zip(links,filing_date,reporting_date):
+            writer.writerow([date.split("View")[0],a.get_attribute('href')])
             logger.debug('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
-
+    
     driver.close()
 
 if __name__ == '__main__':
