@@ -62,10 +62,10 @@ def main()->None:
     logger.debug(f"DATES - {len(filing_date)}")
     with open(os.path.join(ROOT_PATH,'urls',url.split("=")[-1]+".csv"), 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['date_filed','html_link'])
-        for a,date in zip(links,filing_date,reporting_date):
-            writer.writerow([date.split("View")[0],a.get_attribute('href')])
-            logger.debug('\n%s %s' % (date.split("View")[0],a.get_attribute('href')))
+        writer.writerow(['reporting_date','date_filed','html_link'])
+        for a,fd,rd in zip(links,filing_date,reporting_date):
+            writer.writerow([fd.split("View")[0],rd.split("View")[0],a.get_attribute('href')])
+            logger.info('\n%s %s %s' % (rd.split("View")[0],fd.split("View")[0],a.get_attribute('href')))
     
     driver.close()
 
@@ -84,6 +84,8 @@ if __name__ == '__main__':
     python .\scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
     
     python .\scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
+    python .\scrap_links.py --cik 1487918 --url https://www.sec.gov/edgar/browse/?CIK=1487918
+    
    
     """
     main()

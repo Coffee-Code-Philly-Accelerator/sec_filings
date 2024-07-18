@@ -128,8 +128,8 @@ def main()->None:
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
         
-    for i in range(urls.shape[0]):
-        table_date,url = urls.iloc[i]
+    for i in range(1,urls.shape[0]):
+        table_date,_ ,url = urls.iloc[i]
         # table_date,url = '2014-03-31', 'https://www.sec.gov/Archives/edgar/data/0001580345/000110465914038691/a14-12163_110q.htm'
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
@@ -190,6 +190,8 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1326003 --url-csv urls/1326003.csv --x-path xpaths/1326003.txt
     python .\extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
     python .\extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
+
+    python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
 
     """
     args = arguements()

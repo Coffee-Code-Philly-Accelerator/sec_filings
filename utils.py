@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import logging
 import datetime
 import argparse
@@ -141,9 +142,9 @@ def init_logger(
     # Set up logging
     logger = logging.getLogger(f"CIK=={cik}")
     logger.setLevel(logging.DEBUG)
-
+    dir = os.getcwd()
     # Create file handler which logs even debug messages
-    fh = logging.FileHandler(f'logs/{cik}.log')
+    fh = logging.FileHandler(os.path.join(dir,f"{cik}.log"))
     fh.setLevel(logging.DEBUG)
 
     # Create console handler with a higher log level

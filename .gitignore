@@ -6,6 +6,7 @@
 *.html
 sec_windows/*
 sec_windows
+*.docx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
