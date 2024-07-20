@@ -192,6 +192,7 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
 
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
+    python .\extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt
 
     """
     args = arguements()
