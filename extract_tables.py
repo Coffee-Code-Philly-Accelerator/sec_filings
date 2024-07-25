@@ -128,9 +128,10 @@ def main()->None:
     with open(args.x_path) as file:
         gen_paths = [line.rstrip() for line in file.readlines()]
         
-    for i in range(1,urls.shape[0]):
-        table_date,_ ,url = urls.iloc[i]
+    for i in range(urls.shape[0]):
+        _,table_date ,url = urls.iloc[i]
         # table_date,url = '2014-03-31', 'https://www.sec.gov/Archives/edgar/data/0001580345/000110465914038691/a14-12163_110q.htm'
+        logger.info(f"DATETIMES - {table_date}")
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
@@ -141,7 +142,6 @@ def main()->None:
             driver.get(inline_url)
             
         html_content = driver.page_source
-        logger.info(f"DATETIMES - {table_date}")
         
         out_path,spec_path = os.path.join(ROOT_PATH,args.cik,table_date),os.path.join(ROOT_PATH,args.cik,table_date,'spec_paths.txt')
         if not os.path.exists(out_path):
