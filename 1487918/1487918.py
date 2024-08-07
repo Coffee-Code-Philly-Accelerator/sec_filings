@@ -62,7 +62,10 @@ def standard_field_names()->tuple:
     return (
         'Portfolio Company / Type of Investment',
         'Investment Type',
+        'Portfolio Company Investment Type',
         'Net Assets',
+        'Percent of Net Assets',
+        'Percent of  Member’s  Equity',
         'portfolio company',
         'business description',
         'type of investment',

@@ -122,6 +122,7 @@ def main()->None:
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options) \
         if platform.system() == "Linux" else webdriver.Chrome(options=options)
+    driver.set_window_size(1920, 1080)
     table_title = "Schedule of Investments"
 
     urls = pd.read_csv(os.path.join(ROOT_PATH,args.url_csv),index_col=False)
@@ -138,7 +139,7 @@ def main()->None:
  
         logger.info(f'FINAL URL - {inline_url}')
         if inline_url is not None:
-            time.sleep(1)
+            time.sleep(2)
             driver.get(inline_url)
             
         html_content = driver.page_source
@@ -162,11 +163,22 @@ def main()->None:
         logger.debug(f"USING XPATHS - {xpaths}")
 
         tables = sorted(tables, key=lambda table: table.location['y'])
-        tables = remove_duplicate_element(tables)      
+        tables = remove_duplicate_element(tables)
+        if not os.path.exists(args.save_image_path):
+            os.mkdir(args.save_image_path)      
         for i,table in enumerate(tables):
             if os.path.exists(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
+            if not os.path.exists(os.path.join(args.save_image_path,table_date)):
+                os.mkdir(os.path.join(args.save_image_path,table_date))      
+            try:
+                table.screenshot(os.path.join(args.save_image_path,table_date,f"soi_table_{i}.png"))
+                time.sleep(1)
+            except Exception as e:
+                logger.info(e)
+                
             table = malformed_table(table.get_attribute("outerHTML"))
+
             dfs = pd.read_html(table.prettify(),displayed_only=False)
             if not dfs:
                 logger.debug(f"NO TABLES - {dfs}")
@@ -193,6 +205,9 @@ if __name__ == "__main__":
 
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
     python .\extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt
+    python .\extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt --save-image-path table_images/1372807
+
+
 
     """
     args = arguements()

@@ -1,4 +1,6 @@
 # my ignore
+*.png
+*.jpg
 *.xlsx
 *.zip
 *.exe
