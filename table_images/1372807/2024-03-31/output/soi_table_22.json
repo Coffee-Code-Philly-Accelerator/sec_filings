@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4eqM4CqZbqt8WCWi8MkV5o1tI2p",
+    "object": "chat.completion",
+    "created": 1723151300,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"CLO Fund Securities\": [\n    {\n      \"Investment\": \"Catamaran CLO 2014-1 Ltd.\",\n      \"Percentage Ownership\": \"22.2%\",\n      \"Amortized Cost (March 31, 2024)\": 702,\n      \"Fair Value (March 31, 2024)\": 702,\n      \"Amortized Cost (December 31, 2023)\": 1024,\n      \"Fair Value (December 31, 2023)\": 904\n    },\n    {\n      \"Investment\": \"Catamaran CLO 2018-1 Ltd.\",\n      \"Percentage Ownership\": \"24.8%\",\n      \"Amortized Cost (March 31, 2024)\": 3846,\n      \"Fair Value (March 31, 2024)\": 3757,\n      \"Amortized Cost (December 31, 2023)\": 3923,\n      \"Fair Value (December 31, 2023)\": 3923\n    },\n    {\n      \"Investment\": \"Dryden 30 Senior Loan Fund\",\n      \"Percentage Ownership\": \"6.8%\",\n      \"Amortized Cost (March 31, 2024)\": 246,\n      \"Fair Value (March 31, 2024)\": 246,\n      \"Amortized Cost (December 31, 2023)\": 424,\n      \"Fair Value (December 31, 2023)\": 409\n    },\n    {\n      \"Investment\": \"JMP Credit Advisors CLO IV Ltd.\",\n      \"Percentage Ownership\": \"57.2%\",\n      \"Amortized Cost (March 31, 2024)\": 715,\n      \"Fair Value (March 31, 2024)\": 668,\n      \"Amortized Cost (December 31, 2023)\": 683,\n      \"Fair Value (December 31, 2023)\": 683\n    },\n    {\n      \"Investment\": \"JMP Credit Advisors CLO V Ltd.\",\n      \"Percentage Ownership\": \"57.2%\",\n      \"Amortized Cost (March 31, 2024)\": 3253,\n      \"Fair Value (March 31, 2024)\": 3176,\n      \"Amortized Cost (December 31, 2023)\": 3049,\n      \"Fair Value (December 31, 2023)\": 3049\n    }\n  ],\n  \"Total\": {\n    \"Amortized Cost (March 31, 2024)\": 8762,\n    \"Fair Value (March 31, 2024)\": 8549,\n    \"Amortized Cost (December 31, 2023)\": 9103,\n    \"Fair Value (December 31, 2023)\": 8968\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 581,
+        "total_tokens": 26125
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

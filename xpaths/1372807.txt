@@ -1,10 +1,13 @@
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
 //span[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::table
 //font[contains(.,'OF INVESTMENTS')]/parent::p/following-sibling::table
-//font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
 //p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::div/child::table
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
 //td[contains(.,"Portfolio Company/Principal Business")]/parent::tr/parent::tbody/parent::table
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
 //font[contains(.,"SCHEDULE")]/parent::div/following-sibling::div//child::div/table
 //strong[contains(.,"SCHEDULES OF INVESTMENTS")]/parent::font/parent::div/following-sibling::div/child::table
+//strong[contains(.,"SCHEDULE")]/parent::font/parent::div/following-sibling::div/child::table
+//font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/following-sibling::div/child::table
+//font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table

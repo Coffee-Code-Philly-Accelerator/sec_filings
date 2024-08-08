@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4bjgV1ZTWOSK1E5ePwfpEyviRTj",
+    "object": "chat.completion",
+    "created": 1723151107,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Portfolio Companies\": [\n    {\n      \"Company\": \"Catamaran CLO 2014-1 Ltd.\",\n      \"Investment\": \"Subordinated Securities, effective interest 13.7%\",\n      \"Industry\": \"CLO Fund Securities\",\n      \"Maturity\": \"4/20/30\",\n      \"Percentage Ownership\": \"22.2%\",\n      \"Initial Acquisition Date\": \"5/6/14\",\n      \"Cost\": \"$1,024\",\n      \"Fair Value\": \"$904\",\n      \"Footnote Refs\": \"(3)(12)\"\n    },\n    {\n      \"Company\": \"Catamaran CLO 2018-1 Ltd\",\n      \"Investment\": \"Subordinated Securities, effective interest 25%\",\n      \"Industry\": \"CLO Fund Securities\",\n      \"Maturity\": \"10/27/31\",\n      \"Percentage Ownership\": \"24.8%\",\n      \"Initial Acquisition Date\": \"9/27/18\",\n      \"Cost\": \"$3,923\",\n      \"Fair Value\": \"$3,923\",\n      \"Footnote Refs\": \"(3)(12)\"\n    },\n    {\n      \"Company\": \"Dryden 30 Senior Loan Fund\",\n      \"Investment\": \"Subordinated Securities, effective interest 25.4%\",\n      \"Industry\": \"CLO Fund Securities\",\n      \"Maturity\": \"11/1/28\",\n      \"Percentage Ownership\": \"6.8%\",\n      \"Initial Acquisition Date\": \"10/10/13\",\n      \"Cost\": \"$424\",\n      \"Fair Value\": \"$409\",\n      \"Footnote Refs\": \"(3)(12)\"\n    },\n    {\n      \"Company\": \"JMP Credit Advisors CLO IV LTD\",\n      \"Investment\": \"Subordinated Securities, effective interest 19.8%\",\n      \"Industry\": \"CLO Fund Securities\",\n      \"Maturity\": \"7/17/29\",\n      \"Percentage Ownership\": \"57.2%\",\n      \"Initial Acquisition Date\": \"10/22/21\",\n      \"Cost\": \"$683\",\n      \"Fair Value\": \"$633\",\n      \"Footnote Refs\": \"(3)(12)\"\n    },\n    {\n      \"Company\": \"JMP Credit Advisors CLO V Ltd\",\n      \"Investment\": \"Subordinated Securities, effective interest 25.3%\",\n      \"Industry\": \"CLO Fund Securities\",\n      \"Maturity\": \"7/17/30\",\n      \"Percentage Ownership\": \"57.2%\",\n      \"Initial Acquisition Date\": \"10/22/21\",\n      \"Cost\": \"$3,049\",\n      \"Fair Value\": \"$3,049\",\n      \"Footnote Refs\": \"(3)(12)\"\n    }\n  ],\n  \"Total\": {\n    \"CLO Fund Securities\": {\n      \"Total Cost\": \"$9,103\",\n      \"Total Fair Value\": \"$8,968\"\n    }\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 592,
+        "total_tokens": 26136
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

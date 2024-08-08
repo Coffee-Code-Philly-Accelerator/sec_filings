@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4e3QGyJwxFfxZcsqHEz3rSQOU9V",
+    "object": "chat.completion",
+    "created": 1723151251,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\"table\": {\n    \"header\": [\n        \"Security Type\",\n        \"Cost/Amortized Cost (March 31, 2024)\",\n        \"Fair Value (March 31, 2024)\",\n        \"% (March 31, 2024)\",\n        \"Cost/Amortized Cost (December 31, 2023)\",\n        \"Fair Value (December 31, 2023)\",\n        \"% (December 31, 2023)\"\n    ],\n    \"rows\": [\n        {\n            \"Security Type\": \"Senior Secured Loan\",\n            \"Cost/Amortized Cost\": \"$364,981\",\n            \"Fair Value\": \"$349,844\",\n            \"%\": \"74\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$356,358\",\n            \"Fair Value (Dec 31, 2023)\": \"$340,159\",\n            \"% (Dec 31, 2023)\": \"73\"\n        },\n        {\n            \"Security Type\": \"Junior Secured Loan\",\n            \"Cost/Amortized Cost\": \"$52,951\",\n            \"Fair Value\": \"$36,270\",\n            \"%\": \"8\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$53,888\",\n            \"Fair Value (Dec 31, 2023)\": \"$38,875\",\n            \"% (Dec 31, 2023)\": \"8\"\n        },\n        {\n            \"Security Type\": \"Senior Unsecured Bond\",\n            \"Cost/Amortized Cost\": \"$34,077\",\n            \"Fair Value\": \"-\",\n            \"%\": \"5\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$416\",\n            \"Fair Value (Dec 31, 2023)\": \"$43\",\n            \"% (Dec 31, 2023)\": \"0\"\n        },\n        {\n            \"Security Type\": \"Equity Securities\",\n            \"Cost/Amortized Cost\": \"$8,762\",\n            \"Fair Value\": \"$23,428\",\n            \"%\": \"2\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$31,280\",\n            \"Fair Value (Dec 31, 2023)\": \"$20,533\",\n            \"% (Dec 31, 2023)\": \"4\"\n        },\n        {\n            \"Security Type\": \"CLO Fund Securities\",\n            \"Cost/Amortized Cost\": \"$17,791\",\n            \"Fair Value\": \"-\",\n            \"%\": \"-\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$17,791\",\n            \"Fair Value (Dec 31, 2023)\": \"$8,968\",\n            \"% (Dec 31, 2023)\": \"2\"\n        },\n        {\n            \"Security Type\": \"Joint Ventures\",\n            \"Cost/Amortized Cost\": \"$65,008\",\n            \"Fair Value\": \"$53,164\",\n            \"%\": \"11\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$71,415\",\n            \"Fair Value (Dec 31, 2023)\": \"$59,287\",\n            \"% (Dec 31, 2023)\": \"13\"\n        },\n        {\n            \"Security Type\": \"Derivatives\",\n            \"Cost/Amortized Cost\": \"$31\",\n            \"Fair Value\": \"-\",\n            \"%\": \"-\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$31\",\n            \"Fair Value (Dec 31, 2023)\": \"-\",\n            \"% (Dec 31, 2023)\": \"-\"\n        },\n        {\n            \"Security Type\": \"Total\",\n            \"Cost/Amortized Cost\": \"$543,601\",\n            \"Fair Value\": \"$471,255\",\n            \"%\": \"100%\",\n            \"Cost/Amortized Cost (Dec 31, 2023)\": \"$540,282\",\n            \"Fair Value (Dec 31, 2023)\": \"$467,865\",\n            \"% (Dec 31, 2023)\": \"100%\"\n        }\n    ]\n}}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 866,
+        "total_tokens": 26410
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

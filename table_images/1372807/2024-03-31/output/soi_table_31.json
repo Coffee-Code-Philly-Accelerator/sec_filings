@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4gZKOQ3gDLeLmKxDGk556qZRAMu",
+    "object": "chat.completion",
+    "created": 1723151407,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"data\": [\n    {\n      \"date_range\": \"January 1 - March 31, 2024\",\n      \"total_number_of_shares_purchased\": 38735,\n      \"average_price_per_share\": 18.58,\n      \"total_number_of_shares_part_of_plans\": 38735,\n      \"approximate_dollar_value_of_shares_may_yet_be_purchased\": 5600\n    },\n    {\n      \"date_range\": \"February 1 - February 28, 2024\",\n      \"total_number_of_shares_purchased\": 5657,\n      \"average_price_per_share\": 19.01,\n      \"total_number_of_shares_part_of_plans\": 5657,\n      \"approximate_dollar_value_of_shares_may_yet_be_purchased\": 5493\n    },\n    {\n      \"date_range\": \"March 1 - March 31, 2024\",\n      \"total_number_of_shares_purchased\": 6623,\n      \"average_price_per_share\": 18.90,\n      \"total_number_of_shares_part_of_plans\": 6623,\n      \"approximate_dollar_value_of_shares_may_yet_be_purchased\": 9875\n    },\n    {\n      \"date_range\": \"Total, March 31, 2024\",\n      \"total_number_of_shares_purchased\": 51015,\n      \"average_price_per_share\": null,\n      \"total_number_of_shares_part_of_plans\": null,\n      \"approximate_dollar_value_of_shares_may_yet_be_purchased\": null\n    }\n  ]\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 19877,
+        "completion_tokens": 344,
+        "total_tokens": 20221
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

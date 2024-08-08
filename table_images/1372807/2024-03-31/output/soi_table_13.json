@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4bGil3ZJCWF2w8vq7grxgxw8SBj",
+    "object": "chat.completion",
+    "created": 1723151078,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Portfolio_Companies\": [\n    {\n      \"Investment\": \"4L Ultimate Topco Corporation\",\n      \"Industry\": \"Services: Business\",\n      \"Initial_Acquisition_Date\": \"5/29/20\",\n      \"Interest_Rate\": \"$\",\n      \"Par_Shares\": 321,\n      \"Cost\": \"-\",\n      \"Fair_Value\": 493\n    },\n    {\n      \"Investment\": \"AAPC Holdings, LLC\",\n      \"Industry\": \"Healthcare & Pharmaceuticals\",\n      \"Initial_Acquisition_Date\": \"5/18/22\",\n      \"Interest_Rate\": \"$\",\n      \"Par_Shares\": \"-\",\n      \"Cost\": \"216.214\",\n      \"Fair_Value\": 1,   \"Footeote_Refs\": \"(7)(12)(18)\"\n    },\n    {\n      \"Investment\": \"AA Advantage Capital Holdings LLC\",\n      \"Industry\": \"Banking, Finance, Insurance & Real Estate\",\n      \"Initial_Acquisition_Date\": \"3/31/20\",\n      \"Interest_Rate\": \"$\",\n      \"Par_Shares\": 658,\n      \"Cost\": \"-\",\n      \"Fair_Value\": 1,   \". \"\n    \n\n\n   :\n    {\n      \"Investment\": \"Benefit Changes\"\n      },\n      \"Industry\": \"Member Services\",\n      \"Initial_Acquisition_Date\": \"4/14/22\",\n      \"Interest_Rate\": \" 12.5% PIK\",\n      \"Par_Shares\": 164,\n      \"Cost\": 502,\n      \"Fair_Value\": 700\n    },\n    {\n      \"Investment\": \"Anthem Sports & Entertainment Inc.\",\n      \"Industry\": \"Media: Broadcasting & Subscription\",\n      \"Initial_Acquisition_Date\": \"9/19\",\n      \"Interest_Rate\": \" \",\n      \"Par_Shares\": 46,\n      \"Cost\": \"-\",\n      \"Fair_Value\": \" \"\n    },\n    {\n      \"Investment\": \"Anthem Sports & Entertainment Inc.\",\n      \"Industry\": \"Media: Broadcasting & Subscription\",\n      \"Initial_Acquisition_Date\": \"11/15/21\",\n      \"Interest_Rate\": \" \",\n      \"Par_Shares\": 47,\n      \"Cost\": \"-\",\n      \"Fair_Value\": \"-\"\n    },\n    {\n      \"Investment\": \"Aperture Dodge 18 LLC\",\n      \"Industry\": \"Banking, Finance & Insurance & Real Estate\",\n      \"Initial_Acquisition_Date\": \"4/22/22\",\n      \"Interest_Rate\": \" \",\n      \"Par_Shares\": 3,   \",\" \n      : \" \"\n      },\n      \"Industry\" \t\t\n    ,\n    \"Energy: Oil & Gas\"\n    ,\n    \"Initial_Acquisition_Date\" \t\t\t\n    ,\n    \"4/22/22\"\n    ,\n    \"Interest_Rate\" \n    ,\n    \" \"\n    ,\n    \"Par_Shares\" \n    ,\n    \"3,067,908\"\n    ,\n    \"Cost\" \n    ,\n    \"3,068\"\n    ,\n    \"Fair_Value\" \n    ,\n    \"3,237\"\n    \n  ],\n  \"Total_Equities\": {\n    \"Total\": \"49,209\",\n    \"100%\": \"of asset value at fair value\"\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 36878,
+        "completion_tokens": 679,
+        "total_tokens": 37557
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

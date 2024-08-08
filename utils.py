@@ -105,6 +105,7 @@ def arguements()->argparse.ArgumentParser:
         default=r'C:\Users\pysol\Desktop\projects\sec_filings\table_images\1372807',
         help='path to your xpaths.txt that contains the xpaths to the soi tables'
     )
+
     return parser.parse_args()
 
 def _init_logger() -> None:

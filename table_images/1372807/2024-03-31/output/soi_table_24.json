@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4fDDWqVyxmdSOuQMjnn7vTl2Zzc",
+    "object": "chat.completion",
+    "created": 1723151323,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"header\": \"For the Three Months Ended March 31\",\n  \"years\": {\n    \"2024\": {\n      \"Interest from investments in debt excluding accretion\": 12088,\n      \"Purchase discount accounting\": 73,\n      \"PIK Investment Income\": 2006,\n      \"CLO Income\": 555,\n      \"JV Income\": 1653,\n      \"Service Fees\": 151,\n      \"Investment Income\": 16526,\n      \"Less Purchase discount accounting\": -73,\n      \"Core Investment Income\": 16453\n    },\n    \"2023\": {\n      \"Interest from investments in debt excluding accretion\": 14105,\n      \"Purchase discount accounting\": 1042,\n      \"PIK Investment Income\": 1600,\n      \"CLO Income\": 548,\n      \"JV Income\": 2459,\n      \"Service Fees\": 573,\n      \"Investment Income\": 20327,\n      \"Less Purchase discount accounting\": -1042,\n      \"Core Investment Income\": 19285\n    }\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 224,
+        "total_tokens": 25768
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

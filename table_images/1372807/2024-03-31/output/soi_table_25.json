@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4fLeZPdpCfjaWWFEzOLMPGqbm6o",
+    "object": "chat.completion",
+    "created": 1723151331,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Expenses\": {\n    \"Management fees\": {\n      \"2024\": 1729,\n      \"2023\": 1953\n    },\n    \"Performance-based incentive fees\": {\n      \"2024\": 1234,\n      \"2023\": 1808\n    },\n    \"Interest and amortization of debt issuance costs\": {\n      \"2024\": 5725,\n      \"2023\": 6332\n    },\n    \"Professional fees\": {\n      \"2024\": 766,\n      \"2023\": 603\n    },\n    \"Administrative services expense\": {\n      \"2024\": 356,\n      \"2023\": 671\n    },\n    \"Other general and administrative expenses\": {\n      \"2024\": 490,\n      \"2023\": 431\n    },\n    \"Total expenses\": {\n      \"2024\": 10300,\n      \"2023\": 11798\n    }\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 197,
+        "total_tokens": 25741
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

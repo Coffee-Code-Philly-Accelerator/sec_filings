@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4fSuSpB7JuwHm4nr7CvBW6mtowj",
+    "object": "chat.completion",
+    "created": 1723151338,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"title\": \"Unrealized Gains (Losses) On Investments\",\n  \"years\": {\n    \"2024\": {\n      \"non_controlled_non_affiliated_investments\": -659,\n      \"non_controlled_affiliated_investments\": 140,\n      \"controlled_affiliated_investments\": 590,\n      \"total_net_change\": 71\n    },\n    \"2023\": {\n      \"non_controlled_non_affiliated_investments\": -3057,\n      \"non_controlled_affiliated_investments\": -311,\n      \"controlled_affiliated_investments\": -2592,\n      \"total_net_change\": -5960\n    }\n  },\n  \"notes\": {\n    \"currency\": \"thousands\"\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 159,
+        "total_tokens": 25703
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

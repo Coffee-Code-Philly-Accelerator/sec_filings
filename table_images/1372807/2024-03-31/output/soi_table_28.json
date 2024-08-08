@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4fm1s9rOBBrkocQqPTaarieYwy4",
+    "object": "chat.completion",
+    "created": 1723151358,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"2024\": {\n    \"First quarter\": {\n      \"Distribution\": \"$ 0.69\",\n      \"Declaration Date\": \"3/13/2024\",\n      \"Record Date\": \"3/25/2024\",\n      \"Pay Date\": \"4/2/2024\"\n    },\n    \"Total declared in 2024\": \"$ 0.69\"\n  },\n  \"2023\": {\n    \"Fourth quarter\": {\n      \"Distribution\": \"$ 0.69\",\n      \"Declaration Date\": \"11/8/2023\",\n      \"Record Date\": \"8/22/2023\",\n      \"Pay Date\": \"8/31/2023\"\n    },\n    \"Third quarter\": {\n      \"Distribution\": \"$ 0.69\",\n      \"Declaration Date\": \"8/8/2023\",\n      \"Record Date\": \"5/22/2023\",\n      \"Pay Date\": \"5/31/2023\"\n    },\n    \"Second quarter\": {\n      \"Distribution\": \"$ 0.68\",\n      \"Declaration Date\": \"3/9/2023\",\n      \"Record Date\": \"3/20/2023\",\n      \"Pay Date\": \"3/31/2023\"\n    },\n    \"First quarter\": {\n      \"Distribution\": \"$ 2.75\"\n    },\n    \"Total declared in 2023\": \"$ 2.75\"\n  },\n  \"2022\": {\n    \"Fourth quarter\": {\n      \"Distribution\": \"$ 0.67\",\n      \"Declaration Date\": \"11/8/2022\",\n      \"Record Date\": \"11/24/2022\",\n      \"Pay Date\": \"12/13/2022\"\n    },\n    \"Third quarter\": {\n      \"Distribution\": \"$ 0.63\",\n      \"Declaration Date\": \"8/9/2022\",\n      \"Record Date\": \"8/16/2022\",\n      \"Pay Date\": \"9/2/2022\"\n    },\n    \"Second quarter\": {\n      \"Distribution\": \"$ 0.63\",\n      \"Declaration Date\": \"5/10/2022\",\n      \"Record Date\": \"5/24/2022\",\n      \"Pay Date\": \"6/7/2022\"\n    },\n    \"First quarter\": {\n      \"Distribution\": \"$ 0.63\",\n      \"Declaration Date\": \"3/10/2022\",\n      \"Record Date\": \"3/21/2022\",\n      \"Pay Date\": \"3/30/2022\"\n    },\n    \"Total declared in 2022\": \"$ 2.56\"\n  },\n  \"2021\": {\n    \"Fourth quarter\": {\n      \"Distribution\": \"$ 0.62\",\n      \"Declaration Date\": \"11/3/2021\",\n      \"Record Date\": \"11/15/2021\",\n      \"Pay Date\": \"11/30/2021\"\n    },\n    \"Third quarter\": {\n      \"Distribution\": \"$ 0.60\",\n      \"Declaration Date\": \"8/4/2021\",\n      \"Record Date\": \"8/17/2021\",\n      \"Pay Date\": \"8/31/2021\"\n    },\n    \"Second quarter\": {\n      \"Distribution\": \"$ 0.60\",\n      \"Declaration Date\": \"5/6/2021\",\n      \"Record Date\": \"5/19/2021\",\n      \"Pay Date\": \"6/1/2021\"\n    },\n    \"First quarter\": {\n      \"Distribution\": \"$ 0.60\",\n      \"Declaration Date\": \"2/12/2021\"\n    },\n    \"Total declared in 2021\": \"$ 2.42\"\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 48212,
+        "completion_tokens": 770,
+        "total_tokens": 48982
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

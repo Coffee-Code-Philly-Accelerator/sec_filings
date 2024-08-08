@@ -1,4 +1,6 @@
 # my ignore
+ocr/*
+ocr/
 *.png
 *.jpg
 *.xlsx

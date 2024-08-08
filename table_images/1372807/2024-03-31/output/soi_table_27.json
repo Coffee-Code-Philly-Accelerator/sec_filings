@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4favWkqQIwYoD8va4xacTo0SQXP",
+    "object": "chat.completion",
+    "created": 1723151346,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Security Type\": {\n    \"Cash and cash equivalents\": {\n      \"March 31, 2024\": 20829,\n      \"December 31, 2023\": 26912\n    },\n    \"Restricted Cash\": {\n      \"March 31, 2024\": 18775,\n      \"December 31, 2023\": 44652\n    },\n    \"Senior Secured Loan\": {\n      \"March 31, 2024\": 349844,\n      \"December 31, 2023\": 340159\n    },\n    \"Junior Secured Loan\": {\n      \"March 31, 2024\": 36270,\n      \"December 31, 2023\": 38875\n    },\n    \"Senior Unsecured Bond\": {\n      \"March 31, 2024\": 0,\n      \"December 31, 2023\": 43\n    },\n    \"Equity Securities\": {\n      \"March 31, 2024\": 23428,\n      \"December 31, 2023\": 20533\n    },\n    \"CLO Fund Securities\": {\n      \"March 31, 2024\": 8549,\n      \"December 31, 2023\": 8966\n    },\n    \"Asset Manager Affiliates\": {\n      \"March 31, 2024\": 53164,\n      \"December 31, 2023\": 59287\n    },\n    \"Joint Ventures\": {\n      \"March 31, 2024\": 0,\n      \"December 31, 2023\": 0\n    },\n    \"Derivatives\": {\n      \"March 31, 2024\": 0,\n      \"December 31, 2023\": 0\n    },\n    \"Total\": {\n      \"March 31, 2024\": 510859,\n      \"December 31, 2023\": 539429\n    }\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 412,
+        "total_tokens": 25956
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

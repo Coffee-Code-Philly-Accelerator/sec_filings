@@ -118,11 +118,15 @@ def remove_duplicate_element(
 
 def main()->None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
+    # desired_dpi = 2.0
     options = Options()
+    
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # options.add_argument(f"--force-device-scale-factor={desired_dpi}")
+    # options.add_experimental_option("mobileEmulation", {"deviceMetrics": {"width": 1920, "height": 1080, "pixelRatio": 3.0}})
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path,options=options) \
         if platform.system() == "Linux" else webdriver.Chrome(options=options)
-    driver.set_window_size(1920, 1080)
+    # driver.set_window_size(1920, 1080)
     table_title = "Schedule of Investments"
 
     urls = pd.read_csv(os.path.join(ROOT_PATH,args.url_csv),index_col=False)
@@ -161,19 +165,21 @@ def main()->None:
                 # spec_paths.extend(xpaths)
             tables = get_xpath_elements(driver,xpaths)
         logger.debug(f"USING XPATHS - {xpaths}")
+    
 
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)
         if not os.path.exists(args.save_image_path):
-            os.mkdir(args.save_image_path)      
+            os.mkdir(args.save_image_path)
+                
         for i,table in enumerate(tables):
             if os.path.exists(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
             if not os.path.exists(os.path.join(args.save_image_path,table_date)):
-                os.mkdir(os.path.join(args.save_image_path,table_date))      
+                os.mkdir(os.path.join(args.save_image_path,table_date))
+                      
             try:
-                table.screenshot(os.path.join(args.save_image_path,table_date,f"soi_table_{i}.png"))
-                time.sleep(1)
+                ss = table.screenshot(os.path.join(args.save_image_path,table_date,f"soi_table_{i}.png"))
             except Exception as e:
                 logger.info(e)
                 
@@ -184,7 +190,7 @@ def main()->None:
                 logger.debug(f"NO TABLES - {dfs}")
                 continue
             dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
-        # break
+        break
     driver.close()
     return
 

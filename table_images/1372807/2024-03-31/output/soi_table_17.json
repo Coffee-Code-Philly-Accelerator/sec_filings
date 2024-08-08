@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4bvP8prJV9NoMSVsCUkWCi3IKJg",
+    "object": "chat.completion",
+    "created": 1723151119,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Portfolio Companies\": [\n    {\n      \"Company\": \"HDNet Holdco LLC (Anthem)\",\n      \"Investment\": \"Derivatives\",\n      \"Industry\": \"Media: Broadcasting & Subscription\",\n      \"Initial Acquisition Date\": \"9/9/19\",\n      \"Cost\": \"$31\",\n      \"Fair Value\": \"-\",\n      \"Footnote References\": \"(12)(19)\"\n    },\n    {\n      \"Company\": \"Advantage Capital Holdings LLC\",\n      \"Investment\": \"Derivatives\",\n      \"Industry\": \"Banking, Finance, Insurance & Real Estate\",\n      \"Initial Acquisition Date\": \"4/14/22\",\n      \"Cost\": \"-\",\n      \"Fair Value\": \"-\",\n      \"Footnote References\": \"(12)(19)\"\n    }\n  ],\n  \"Total Derivatives\": {\n    \"Value\": \"$31\"\n  },\n  \"Total Investments\": {\n    \"Percentage\": \"219% of net asset value at fair value\",\n    \"Value\": \"$540,252\",\n    \"Footnote References\": \"467,865\"\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 219,
+        "total_tokens": 25763
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4cSyp1LlwPRN9kwOZJQTQJmLJY5",
+    "object": "chat.completion",
+    "created": 1723151152,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"2022\": {\n    \"Fair Value at December 31, 2022\": {\n      \"Debt Securities\": 475165,\n      \"Equity Securities\": 21905,\n      \"CLO Fund Securities\": 20453,\n      \"Joint Ventures\": 58955,\n      \"Total Portfolio\": 576478\n    }\n  },\n  \"2023_Activity\": {\n    \"Purchases / originations / draws\": {\n      \"Debt Securities\": 51061,\n      \"Equity Securities\": 7867,\n      \"CLO Fund Securities\": 0,\n      \"Joint Ventures\": 7564\n    },\n    \"Pay-downs / pay-offs / sales\": {\n      \"Debt Securities\": -144645,\n      \"Equity Securities\": -8770,\n      \"CLO Fund Securities\": -2097,\n      \"Joint Ventures\": -4999\n    },\n    \"Net accretion of interest\": {\n      \"Debt Securities\": 6982,\n      \"Equity Securities\": 0,\n      \"CLO Fund Securities\": 1998,\n      \"Joint Ventures\": 0\n    },\n    \"Net realized gains (losses)\": {\n      \"Debt Securities\": -4784,\n      \"Equity Securities\": 3334,\n      \"CLO Fund Securities\": -25446,\n      \"Joint Ventures\": 14060\n    },\n    \"Increase (decrease) in fair value\": {\n      \"Debt Securities\": -4702,\n      \"Equity Securities\": -3303,\n      \"CLO Fund Securities\": 0,\n      \"Joint Ventures\": -2233\n    }\n  },\n  \"Fair_Value_at_December_31_2023\": {\n    \"Debt Securities\": 379077,\n    \"Equity Securities\": 20533,\n    \"CLO Fund Securities\": 8968,\n    \"Joint Ventures\": 59287,\n    \"Total Portfolio\": 467865\n  },\n  \"2024_Activity\": {\n    \"Purchases / originations / draws\": {\n      \"Debt Securities\": 36283,\n      \"Equity Securities\": 2797,\n      \"CLO Fund Securities\": 0,\n      \"Joint Ventures\": 0\n    },\n    \"Pay-downs / pay-offs / sales\": {\n      \"Debt Securities\": -28137,\n      \"Equity Securities\": -503,\n      \"CLO Fund Securities\": -392,\n      \"Joint Ventures\": -6408\n    },\n    \"Net accretion of interest\": {\n      \"Debt Securities\": 720,\n      \"Equity Securities\": 0,\n      \"CLO Fund Securities\": 356,\n      \"Joint Ventures\": 0\n    },\n    \"Net realized gains (losses)\": {\n      \"Debt Securities\": -1595,\n      \"Equity Securities\": 503,\n      \"CLO Fund Securities\": -503,\n      \"Joint Ventures\": -503\n    },\n    \"Increase (decrease) in fair value\": {\n      \"Debt Securities\": -234,\n      \"Equity Securities\": 98,\n      \"CLO Fund Securities\": -78,\n      \"Joint Ventures\": 288\n    }\n  },\n  \"Fair_Value_at_March_31_2024\": {\n    \"Debt Securities\": 386114,\n    \"Equity Securities\": 23428,\n    \"CLO Fund Securities\": 8549,\n    \"Joint Ventures\": 53164,\n    \"Total Portfolio\": 471255\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 724,
+        "total_tokens": 26268
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

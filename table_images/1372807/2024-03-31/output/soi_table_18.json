@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4c8l0DY9i8w0pNa82C5jQVLjuEZ",
+    "object": "chat.completion",
+    "created": 1723151132,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Per Share Data\": {\n    \"Net asset value, at beginning of period (2024)\": 22.76,\n    \"Net investment income (2024)\": 0.67,\n    \"Net realized gains (losses) from investments (2024)\": -0.22,\n    \"Net change in unrealized (depreciation) appreciation on investments (2024)\": 0.00,\n    \"Tax (provision) benefit on realized and unrealized gains (losses) on investments (2024)\": 0.00,\n    \"Realized gains (losses) from extinguishment of debt (2024)\": -0.02,\n    \"Net (decrease) increase in net assets resulting from operations (2024)\": 0.48,\n    \"Net decrease in net assets resulting from distributions (2024)\": -0.69,\n    \"Accretive effect of common stock repurchases (2024)\": 0.02,\n    \"Net asset value, end of period (2024)\": 22.57,\n    \"Total net asset value return (2024)\": \"2.7%\",\n    \"Total market return (2024)\": \"8.1%\",\n    \"Net asset value, at beginning of period (2023)\": 24.23,\n    \"Net investment income (2023)\": 0.89,\n    \"Net realized gains (losses) from investments (2023)\": -0.32,\n    \"Net change in unrealized (depreciation) appreciation on investments (2023)\": -0.62,\n    \"Tax (provision) benefit on realized and unrealized gains (losses) on investments (2023)\": 0.06,\n    \"Realized gains (losses) from extinguishment of debt (2023)\": 0.01,\n    \"Net (decrease) increase in net assets resulting from operations (2023)\": -0.68,\n    \"Net decrease in net assets resulting from distributions (2023)\": -0.69,\n    \"Accretive effect of common stock repurchases (2023)\": \"-\",\n    \"Net asset value, end of period (2023)\": 23.56,\n    \"Total net asset value return (2023)\": \"0.4%\",\n    \"Total market return (2023)\": \"-7.4%\"\n  },\n  \"Ratio/Supplemental Data\": {\n    \"Per share market value at beginning of period\": 18.19,\n    \"Per share market value at end of period\": 23.00,\n    \"Shares outstanding at end of period\": 9,        \"#39,332,117\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"\u05e8\u05e9\u05d5\u05de\u05d9\u05dd\": 9,  \"Total market return (2023)\": \"-7.4%\"\n}}\n",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 48212,
+        "completion_tokens": 769,
+        "total_tokens": 48981
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

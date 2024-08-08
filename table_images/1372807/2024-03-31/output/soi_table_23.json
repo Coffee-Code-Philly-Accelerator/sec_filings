@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4f4DLYc71ZOBTzoI6T48AoIis9J",
+    "object": "chat.completion",
+    "created": 1723151314,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"Investment_Income\": {\n    \"Interest_Income\": {\n      \"Non-controlled_non-affiliated_investments\": \"$12,621\",\n      \"Non-controlled_affiliated_investments\": \"$95\",\n      \"Total_Interest_Income\": \"$12,716\"\n    },\n    \"Payment_in_kind_Income\": {\n      \"Non-controlled_non-affiliated_investments\": \"$1,894\",\n      \"Non-controlled_affiliated_investments\": \"$112\",\n      \"Total_Payment_in_kind_Income\": \"$2,006\"\n    },\n    \"Dividend_Income\": {\n      \"Non-controlled_affiliated_investments\": \"$1,653\",\n      \"Controlled_affiliated_investments\": \"$-\",\n      \"Total_Dividend_Income\": \"$1,653\"\n    },\n    \"Fees_and_Other_Income\": {\n      \"Non-controlled_non_affiliated_investments\": \"$151\",\n      \"Total_Fees_and_Other_Income\": \"$151\"\n    },\n    \"Total_Investment_Income\": \"$16,526\"\n  },\n  \"Year\": {\n    \"2024\": {},\n    \"2023\": {}\n  }\n}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 25544,
+        "completion_tokens": 239,
+        "total_tokens": 25783
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

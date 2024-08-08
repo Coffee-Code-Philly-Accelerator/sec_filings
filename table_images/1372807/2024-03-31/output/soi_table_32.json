@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4gn0o3CTlsjqz8i05kxLRlvBi1p",
+    "object": "chat.completion",
+    "created": 1723151421,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\n  \"exhibits\": [\n    {\n      \"number\": \"3.1\",\n      \"description\": \"Form of Certificate of Incorporation of Company (incorporated by reference to the Exhibit A included in Pre-Effective Amendment No. 1 on Form N-2, as filed on October 6, 2006).\"\n    },\n    {\n      \"number\": \"3.1.1\",\n      \"description\": \"Certificate of Amendment to Certificate of Incorporation of Portman Ridge Finance Corporation (incorporated by reference to Exhibit 3.1 of the Current Report on Form 8-K, as filed on April 2, 2019).\"\n    },\n    {\n      \"number\": \"3.1.2\",\n      \"description\": \"Certificate of Amendment to Certificate of Incorporation of Portman Ridge Finance Corporation (the Reverse Stock Split Certificate of Amendment) (incorporated by reference to Exhibit 3.1 of the Current Report on Form 8-K filed on August 26, 2021).\"\n    },\n    {\n      \"number\": \"3.1.3\",\n      \"description\": \"Certificate of Amendment to Certificate of Incorporation of Portman Ridge Finance Corporation (the Decrease Shares Certificate of Amendment) (incorporated by reference to Exhibit 3.2 of the Current Report on Form 8-K filed on August 26, 2021).\"\n    },\n    {\n      \"number\": \"3.2\",\n      \"description\": \"Third Amended and Restated Bylaws of Portman Ridge Finance Corporation, dated as of July 21, 2021 (incorporated by reference to Exhibit 3.1 of the Current Report on Form 8-K, as filed on July 21, 2021).\"\n    },\n    {\n      \"number\": \"31.1**\",\n      \"description\": \"",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "content_filter"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 48212,
+        "completion_tokens": 385,
+        "total_tokens": 48597
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}

@@ -1,0 +1,24 @@
+{
+    "id": "chatcmpl-9u4ZpRNpcWAAzsTQj81aQ5lZgjGUA",
+    "object": "chat.completion",
+    "created": 1723150989,
+    "model": "gpt-4o-mini-2024-07-18",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "{\"Portfolio Company\": [\n    {\n        \"Investment\": \"LuminL LLC\",\n        \"Industry\": \"Construction & Building\",\n        \"Interest Rate\": \"12.7% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+7.35%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"4/11/29\",\n        \"Initial Acquisition Date\": \"10/28/20\",\n        \"Par/Shares\": 343,\n        \"Cost\": 343,\n        \"Fair Value\": 343\n    },\n    {\n        \"Investment\": \"MAG DS Corp.\",\n        \"Industry\": \"Aerospace and Defense\",\n        \"Interest Rate\": \"11.0% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+7.50%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"10/12/27\",\n        \"Initial Acquisition Date\": \"10/12/22\",\n        \"Par/Shares\": 3,    \"Cost\": 9,  \"Fair Value\": 3\n    },\n    {\n        \"Investment\": \"Money Transfer Acquisition, Inc.\",\n        \"Industry\": \"IT Consulting & Other Services\",\n        \"Interest Rate\": \"13.7% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+8.00%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"10/26/26\",\n        \"Initial Acquisition Date\": \"10/26/21\",\n        \"Par/Shares\": 2,  \"Cost\": 11,  \"Fair Value\": 2\n    },\n    {\n        \"Investment\": \"Morse Global Corporation\",\n        \"Industry\": \"IT Consulting & Other Services\",\n        \"Interest Rate\": \"0.5% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+6.00%\",\n        \"Floor\": \"2.00%\",\n        \"Maturity\": \"5/29/27\",\n        \"Initial Acquisition Date\": \"5/29/22\",\n        \"Par/Shares\": 2,  \"Cost\": -11,  \"Fair Value\": 2\n    },\n    {\n        \"Investment\": \"NMS Acquisitions, Inc.\",\n        \"Industry\": \"Services: Business Loan\",\n        \"Interest Rate\": \"10.0% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+5.00%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"12/29/24\",\n        \"Initial Acquisition Date\": \"12/29/23\",\n        \"Par/Shares\": 2,  \"Cost\": 2,  \"Fair Value\": 2\n    },\n    {\n        \"Investment\": \"Neptec BidCo US Inc.\",\n        \"Industry\": \"Media: Broadcasting & Communications\",\n        \"Interest Rate\": \"10.5% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+5.00%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"10/12/29\",\n        \"Initial Acquisition Date\": \"6/29/22\",\n        \"Par/Shares\": 3,  \"Cost\": -9,  \"Fair Value\": -3\n    },\n    {\n        \"Investment\": \"Network Corporation\",\n        \"Industry\": \"High Tech Industries\",\n        \"Interest Rate\": \"0.3% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+5.50%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"4/11/27\",\n        \"Initial Acquisition Date\": \"4/11/21\",\n        \"Par/Shares\": 2,  \"Cost\": 2,  \"Fair Value\": 2\n    },\n    {\n        \"Investment\": \"Nexstar Corporation\",\n        \"Industry\": \"High Tech Industries\",\n        \"Interest Rate\": \"1.0% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+5.25%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"7/11/25\",\n        \"Initial Acquisition Date\": \"6/20/22\",\n        \"Par/Shares\": 2,  \"Cost\": 6,  \"Fair Value\": 3\n    },\n    {\n        \"Investment\": \"Nextrend Networks LLC\",\n        \"Industry\": \"Metals & Mining\",\n        \"Interest Rate\": \"12.0% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+4.50%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"8/21/29\",\n        \"Initial Acquisition Date\": \"5/29/21\",\n        \"Par/Shares\": 2,  \"Cost\": -9,  \"Fair Value\": -3\n    },\n    {\n        \"Investment\": \"PlayNet Dermatology LLC\",\n        \"Industry\": \"Healthcare & Pharmaceuticals\",\n        \"Interest Rate\": \"10.0% Cash\",\n        \"Reference Rate and Spread\": \"SOFR+5.00%\",\n        \"Floor\": \"1.00%\",\n        \"Maturity\": \"10/20/29\",\n        \"Initial Acquisition Date\": \"10/20/20\",\n        \"Par/Shares\": 1,  \"Cost\": 6,  \"Fair Value\": 2\n    }\n]}",
+                "refusal": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 36878,
+        "completion_tokens": 1103,
+        "total_tokens": 37981
+    },
+    "system_fingerprint": "fp_507c9469a1"
+}
