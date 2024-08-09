@@ -189,7 +189,7 @@ def main()->None:
             if not dfs:
                 logger.debug(f"NO TABLES - {dfs}")
                 continue
-            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
+            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8',index=False)
         break
     driver.close()
     return

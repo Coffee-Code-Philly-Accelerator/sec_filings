@@ -3,6 +3,8 @@ import json
 import base64
 import requests
 import openai
+import glob
+import pandas as pd
 from PIL import Image
 from dotenv import load_dotenv,find_dotenv
 from utils import arguements,init_logger
@@ -36,11 +38,24 @@ def raise_res(
         logger.info(f"RESIZE:{width} x {height}")
         img_resized.save(os.path.join(resized_path,img_f))
    
-def read_response()->dict:
-    file = 'table_images/1372807/2024-03-31/output/soi_table_0.json'
-    with open(file, 'r') as f:
-        data = json.load(f)
-        print(data['choices'][0]['message']['content'])
+def read_response(
+    cik_dir:str,
+)->dict:
+    infile = f'{cik_dir}/output/*.json'
+    json_files = glob.glob(infile,recursive=True)
+    csv_dir = os.path.join(cik_dir,"csv")
+    if not os.path.exists(csv_dir):
+        os.mkdir(csv_dir)
+    for file in json_files:
+        logger.info(f"Reading {file}")
+        with open(file, 'r') as f:
+            data = json.load(f)
+            data = json.loads(data['choices'][0]['message']['content'])
+            # if len(tuple(data.keys())) == 1:
+            data = data[tuple(data.keys())[0]]
+            logger.info(data)
+            df = pd.DataFrame(data)
+            df.to_csv(os.path.join(csv_dir,f"{file.split('/')[-1].replace('.json','.csv')}"),index=False)
     
 def to_gpt(
     qtr_dir:str,
@@ -114,14 +129,14 @@ def main()->None:
         qtr = '2024-03-31'
         qtr_dir = os.path.join(table_images,qtr)
         logger.info(qtr_dir)
-        raise_res(qtr_dir)
-        to_gpt(os.path.join(qtr_dir,"resized"),api_key)
+        # raise_res(qtr_dir)
+        # to_gpt(os.path.join(qtr_dir,"resized"),api_key)
+        read_response(qtr_dir)
         break
     
 
 if __name__ == '__main__':
     args = arguements()
     logger = init_logger(args.cik)
-    # main()
-    read_response()
+    main()
     
