@@ -1,0 +1,3 @@
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
+/html/body/document/type/sequence/filename/description/text/table[20]
+/html/body/document/type/sequence/filename/description/text/table[21]

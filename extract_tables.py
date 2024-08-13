@@ -135,14 +135,14 @@ def main()->None:
         
     for i in range(urls.shape[0]):
         _,table_date ,url = urls.iloc[i]
-        # table_date,url = '2014-03-31', 'https://www.sec.gov/Archives/edgar/data/0001580345/000110465914038691/a14-12163_110q.htm'
+        table_date,url = '2015-12-31','https://www.sec.gov/Archives/edgar/data/0001372807/000114420416086925/v433537_10k.htm'
         logger.info(f"DATETIMES - {table_date}")
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
  
-        logger.info(f'FINAL URL - {inline_url}')
         if inline_url is not None:
+            logger.info(f'FINAL URL - {inline_url}')
             time.sleep(2)
             driver.get(inline_url)
             
@@ -166,7 +166,6 @@ def main()->None:
             tables = get_xpath_elements(driver,xpaths)
         logger.debug(f"USING XPATHS - {xpaths}")
     
-
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)
         if not os.path.exists(args.save_image_path):
@@ -189,7 +188,7 @@ def main()->None:
             if not dfs:
                 logger.debug(f"NO TABLES - {dfs}")
                 continue
-            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8',index=False)
+            dfs[0].to_csv(os.path.join(ROOT_PATH,args.cik,table_date,f"{table_title.replace(' ','_')}_{i}.csv"),encoding='utf-8')
         break
     driver.close()
     return
@@ -212,9 +211,6 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
     python .\extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt
     python .\extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt --save-image-path table_images/1372807
-
-
-
     """
     args = arguements()
     logger = init_logger(args.cik)

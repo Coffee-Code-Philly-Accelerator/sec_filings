@@ -11,3 +11,4 @@
 //font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
 //font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/following-sibling::div/child::table
 //font[contains(.,"Schedule of Investments")]/parent::p/following-sibling::table
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::td/parent::tr/parent::tbody/parent::table/following-sibling::table
