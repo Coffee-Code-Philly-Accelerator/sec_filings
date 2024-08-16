@@ -257,7 +257,7 @@ def _clean(
     df.replace([r'^\s*$'],np.nan,regex=True,inplace=True) #':','$','%'
     df.dropna(axis=1,how='all',inplace=True)
     
-    columns = (~df.isna()).sum(axis=0) <= 4  if df.shape[0] > 15 else 1
+    columns = (~df.isna()).sum(axis=0) <= 1  if df.shape[0] > 15 else 1
     df.drop(columns=df.columns[columns],inplace=True)
     return df.reset_index(drop=True),merge_pair_idxs
 

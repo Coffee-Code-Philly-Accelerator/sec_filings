@@ -1,5 +1,5 @@
 //span[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/parent::div/following-sibling::div/child::table
 //p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::table
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
-//h1[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::div/child::table
+//h1[contains(.,"SCHEDULE OF INVESTMENTS") and contains(.,"MONROE CAPITAL CORPORATION")]/following-sibling::div/child::table
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
