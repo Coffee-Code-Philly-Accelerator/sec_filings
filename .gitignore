@@ -1,4 +1,6 @@
 # my ignore
+sec/*
+sec/
 ocr/*
 ocr/
 *.png
