@@ -1,0 +1,1 @@
+//h1[contains(.,"SCHEDULE OF INVESTMENTS") and contains(.,"MONROE CAPITAL CORPORATION")]/following-sibling::div/child::table
