@@ -29,8 +29,8 @@ def test_xpath_elements(
     # options.binary_location = args.chrome_path
     options.set_capability('goog:loggerPrefs', {'browser': 'ALL'})
     options.add_argument("--verbose")
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path, options=options)\
-        if platform.system() == "Linux" else webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(executable_path=args.chrome_driver_path, options=options) if platform.system(
+    ) == "Linux" else webdriver.Chrome(options=options)
     driver.get(url)
     tables = driver.find_elements(By.XPATH, value=xpath)
     tables = sorted(tables, key=lambda table: table.location['y'])
@@ -127,7 +127,7 @@ def main() -> None:
     options = Options()
     options.add_argument("--no-sandbox")
     # options.add_argument("--headless")
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # options.add_experimental_option('excludeSwitches', ['enable-logging'])
     # options.add_argument(f"--force-device-scale-factor={desired_dpi}")
     # options.add_experimental_option("mobileEmulation", {"deviceMetrics": {"width": 1920, "height": 1080, "pixelRatio": 3.0}})
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path, options=options) if platform.system(
