@@ -141,7 +141,7 @@ def main() -> None:
 
     for i in range(urls.shape[0]):
         _, table_date, url = urls.iloc[i]
-        # table_date,url = '2017-12-31','https://www.sec.gov/Archives/edgar/data/0001512931/000114420418014651/v487730_10k.htm'
+        table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
 
         logger.info(f"DATETIMES - {table_date}")
         logger.info(f"ACCESSING - {url}")
@@ -205,7 +205,7 @@ def main() -> None:
                 continue
             dfs[0].to_csv(os.path.join(ROOT_PATH, args.cik, table_date,
                           f"{table_title.replace(' ','_')}_{i}.csv"), encoding='utf-8')
-        # break
+        break
     driver.close()
     return
 
