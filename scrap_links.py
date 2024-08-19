@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import platform
 import csv
+import chromedriver_binary
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -97,7 +98,7 @@ if __name__ == '__main__':
 
     python .\scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
     python .\scrap_links.py --cik 1487918 --url https://www.sec.gov/edgar/browse/?CIK=1487918
-    python scrap_links.py --cik 1512931 --url https://www.sec.gov/edgar/browse/?CIK=1512931 --chrome-driver-path /usr/bin/chromedriver
+    python scrap_links.py --cik 1512931 --url https://www.sec.gov/edgar/browse/?CIK=1512931 --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
 
     python .\scrap_links.py --cik 1372807 --url https://www.sec.gov/edgar/browse/?CIK=1372807
     """

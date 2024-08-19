@@ -5,6 +5,7 @@ import pandas as pd
 import re
 import platform
 import datetime
+import chromedriver_binary
 from collections import Counter
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -122,10 +123,11 @@ def remove_duplicate_element(
 
 
 def main() -> None:
+    assert os.path.exists(f"urls/{args.cik}.csv"),"SCRAP LINKS FIRST"
     warnings.simplefilter(action='ignore', category=FutureWarning)
     # desired_dpi = 2.0
     options = Options()
-    options.add_argument("--no-sandbox")
+    # options.add_argument("--no-sandbox")
     # options.add_argument("--headless")
     # options.add_experimental_option('excludeSwitches', ['enable-logging'])
     # options.add_argument(f"--force-device-scale-factor={desired_dpi}")
@@ -141,7 +143,7 @@ def main() -> None:
 
     for i in range(urls.shape[0]):
         _, table_date, url = urls.iloc[i]
-        table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
+        # table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
 
         logger.info(f"DATETIMES - {table_date}")
         logger.info(f"ACCESSING - {url}")
@@ -205,7 +207,7 @@ def main() -> None:
                 continue
             dfs[0].to_csv(os.path.join(ROOT_PATH, args.cik, table_date,
                           f"{table_title.replace(' ','_')}_{i}.csv"), encoding='utf-8')
-        break
+        # break
     driver.close()
     return
 
@@ -226,7 +228,8 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
 
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
-    python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /usr/bin/chromedriver
+    python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
+
     python .\extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt --save-image-path table_images/1372807
 
     sudo apt install chromium-chromedrive

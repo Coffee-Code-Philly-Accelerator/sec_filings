@@ -89,7 +89,8 @@ def arguements() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--chrome-driver-path', type=str, required=False,
-        default="chromedriver_win32/chromedriver.exe",
+        # default="chromedriver_win32/chromedriver.exe",
+
         help='path to your geckodriver.exe'
     )
     parser.add_argument(
