@@ -2,6 +2,5 @@
 //p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::table
 //b[contains(.,"except for shares and units")]/parent::p/following-sibling::table
 //b[contains(.,"in thousands, except for")]/parent::p/following-sibling::table
-//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
 //h1[contains(.,"SCHEDULE OF INVESTMENTS") and contains(.,"MONROE CAPITAL CORPORATION")]/following-sibling::div/child::table
 //font[contains(.,"except for shares and units")]/parent::p/following-sibling::tables
