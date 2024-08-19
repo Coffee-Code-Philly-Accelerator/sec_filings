@@ -228,6 +228,9 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
     python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /usr/bin/chromedriver
     python .\extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt --save-image-path table_images/1372807
+
+    sudo apt install chromium-chromedrive
+    sudo apt-get install chromium-driver  
     """
     args = arguements()
     logger = init_logger(args.cik)
