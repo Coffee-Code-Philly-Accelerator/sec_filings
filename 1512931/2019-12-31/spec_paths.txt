@@ -1,0 +1,1 @@
+//font[contains(.,"except for shares and units")]/parent::p/following-sibling::table

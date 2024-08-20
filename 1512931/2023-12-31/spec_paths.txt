@@ -1,0 +1,1 @@
+//span[contains(.,"except for shares and units")]/parent::div/parent::div/following-sibling::div/child::table

@@ -184,18 +184,19 @@ def main() -> None:
             os.mkdir(args.save_image_path)
 
         for i, table in enumerate(tables):
-
+            if not os.path.exists(os.path.join(args.save_image_path, table_date)):
+                os.mkdir(os.path.join(args.save_image_path, table_date))
+                
             if os.path.exists(os.path.join(ROOT_PATH, args.cik, table_date, f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
 
-            if not os.path.exists(os.path.join(args.save_image_path, table_date)):
-                os.mkdir(os.path.join(args.save_image_path, table_date))
-
+            ss_path = os.path.join(args.save_image_path, table_date, f'soi_table_{i}.png')
+            if os.path.exists(ss_path):
+                continue
             try:
                 logger.info(
-                    f"Taking screenshot {os.path.join(args.save_image_path, table_date, f'soi_table_{i}.png')}")
-                ss = table.screenshot(os.path.join(
-                    args.save_image_path, table_date, f"soi_table_{i}.png"))
+                    f"Taking screenshot {ss_path}")
+                ss = table.screenshot(ss_path)
             except Exception as e:
                 logger.info(e)
 
