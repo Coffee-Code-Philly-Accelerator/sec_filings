@@ -8,3 +8,4 @@
 //font[contains(.,"OF INVESTMENTS")]/parent::div/following-sibling::div//div/table
 //b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
 //strong[contains(.,"OF INVESTMENTS")]/parent::font/parent::div/following-sibling::a/child::div/child::table
+//b[contains(.,"OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
