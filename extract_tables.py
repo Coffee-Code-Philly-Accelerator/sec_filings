@@ -55,6 +55,7 @@ def get_xpath_elements(
 ) -> list:
     tables = []
     for path in xpaths:
+        time.sleep(1)
         tables.extend(driver.find_elements(By.XPATH, value=path))
     # driver.execute('document.querySelectorAll("body > document:nth-child(1) > type:nth-child(1) > sequence:nth-child(1) > filename:nth-child(1) > description:nth-child(1) > text:nth-child(1) > div:nth-child(418) ~ div"')
     logger.debug(f"GOT ELEMENTS  - {tables}")

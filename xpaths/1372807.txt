@@ -1,11 +1,14 @@
 //span[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/parent::div/following-sibling::table
-//font[contains(.,"ULE OF INVESTMENTS")]/parent::p/following-sibling::table
 //p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::div/child::table
-//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
-//font[contains(.,"Portfolio Company")]/parent::td/parent::tr/parent::tbody/parent::table
 //td[contains(.,"Portfolio Company/Principal Business")]/parent::tr/parent::tbody/parent::table
-//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
-//font[contains(.,"OF INVESTMENTS")]/parent::div/following-sibling::div//div/table
-//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
 //strong[contains(.,"OF INVESTMENTS")]/parent::font/parent::div/following-sibling::a/child::div/child::table
+//strong[contains(.,"OF INVESTMENTS")]/parent::font/parent::div/following-sibling::div/child::table
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
+//b[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
 //b[contains(.,"OF INVESTMENTS")]/parent::font/parent::p/following-sibling::table
+//b[contains(.,"Portfolio Company")]/parent::font/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(.,"INVESTMENTS")]/parent::font/parent::div/following-sibling::div//div/table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::div/following-sibling::div/child::table
+//font[contains(.,"Portfolio Company")]/parent::td/parent::tr/parent::tbody/parent::table
+//font[contains(.,"OF INVESTMENTS")]/parent::div/following-sibling::div//div/table
+//font[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::table

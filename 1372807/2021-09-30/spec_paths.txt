@@ -1,2 +1,2 @@
-//font[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::table
+//font[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/following-sibling::table
 /html/body/document/type/sequence/filename/description/text/table[23]
