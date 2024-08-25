@@ -1,4 +1,5 @@
 //span[contains(.,"SCHEDULE OF INVESTMENTS")]/parent::p/parent::div/following-sibling::table
+//span[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::table
 //p[contains(.,"SCHEDULE OF INVESTMENTS")]/following-sibling::div/child::table
 //td[contains(.,"Portfolio Company/Principal Business")]/parent::tr/parent::tbody/parent::table
 //strong[contains(.,"OF INVESTMENTS")]/parent::font/parent::div/following-sibling::a/child::div/child::table
