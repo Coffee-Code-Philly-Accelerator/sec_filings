@@ -5,7 +5,7 @@ import pandas as pd
 import re
 import platform
 import datetime
-import chromedriver_binary
+# import chromedriver_binary
 from collections import Counter
 from bs4 import BeautifulSoup
 from selenium import webdriver

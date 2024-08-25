@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import platform
 import csv
-import chromedriver_binary
+# import chromedriver_binary
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -78,8 +78,9 @@ def main() -> None:
                         0], fd.split("View")[0], a.get_attribute('href')))
 
     driver.close()
-    with open(f'xpaths/{args.cik}.txt', 'w') as file:
-        file.write("")
+    if not os.path.exists(f'xpaths/{args.cik}.txt'):
+        with open(f'xpaths/{args.cik}.txt', 'w') as file:
+            file.write("")
 
 
 if __name__ == '__main__':
