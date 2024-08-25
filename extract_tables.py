@@ -146,7 +146,7 @@ def main() -> None:
     for i in range(urls.shape[0]):
         _, table_date, url = urls.iloc[i]
         # table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
-        if len(glob.glob(f"{table_date}/*.csv")) > 1:
+        if len(glob.glob(f"{args.cik}/{table_date}/*.csv")) > 1:
             continue
         
         logger.info(f"DATETIMES - {table_date}")
@@ -188,15 +188,22 @@ def main() -> None:
             os.mkdir(args.save_image_path)
 
         for i, table in enumerate(tables):
-            if not os.path.exists(os.path.join(args.save_image_path, table_date)):
-                os.mkdir(os.path.join(args.save_image_path, table_date))
-                
             if os.path.exists(os.path.join(ROOT_PATH, args.cik, table_date, f"{table_title.replace(' ','_')}_{i}.csv")):
                 continue
+            table = malformed_table(table.get_attribute("outerHTML"))
+            dfs = pd.read_html(table.prettify(), displayed_only=False)
+            if not dfs:
+                logger.debug(f"NO TABLES - {dfs}")
+                continue
+            
+            dfs[0].to_csv(os.path.join(ROOT_PATH, args.cik, table_date,
+                          f"{table_title.replace(' ','_')}_{i}.csv"), encoding='utf-8')
 
             ss_path = os.path.join(args.save_image_path, table_date, f'soi_table_{i}.png')
-            if os.path.exists(ss_path):
-                continue
+            if os.path.exists(ss_path) or not args.take_sc:
+                continue            
+            if not os.path.exists(os.path.join(args.save_image_path, table_date)):
+                os.mkdir(os.path.join(args.save_image_path, table_date))
             try:
                 logger.info(
                     f"Taking screenshot {ss_path}")
@@ -204,14 +211,7 @@ def main() -> None:
             except Exception as e:
                 logger.info(e)
 
-            table = malformed_table(table.get_attribute("outerHTML"))
-
-            dfs = pd.read_html(table.prettify(), displayed_only=False)
-            if not dfs:
-                logger.debug(f"NO TABLES - {dfs}")
-                continue
-            dfs[0].to_csv(os.path.join(ROOT_PATH, args.cik, table_date,
-                          f"{table_title.replace(' ','_')}_{i}.csv"), encoding='utf-8')
+            
         # break
     driver.close()
     return
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
     python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
 
-    python3 extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
+    python3 extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt 
 
     sudo apt install chromium-chromedrive
     sudo apt-get install chromium-driver  

@@ -66,6 +66,8 @@ def debug_format(
 
 def arguements() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Get filing links and dates')
+    parser.add_argument('--take-sc', action='store_true', help='take screenshots',default=False)
+
     parser.add_argument(
         '--cik',
         type=str,
