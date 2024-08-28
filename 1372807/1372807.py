@@ -149,15 +149,15 @@ def get_key_fields(
 
 def strip_string(
     columns_names:list,
-    standardize:bool=False
+    standardize:bool=False,
 )->tuple:
     # columns = tuple(map(lambda col:re.sub(r'[^a-z]', '', str(col).lower()),columns_names))
     if standardize:
         standard_fields = standard_field_names()
         return tuple(
-            re.sub(r'\s+', '_',get_standard_name(str(col),standard_fields)) for col in columns_names
+            re.sub(r'[^a-zA-Z]', '',get_standard_name(str(col),standard_fields)) for col in columns_names
         )
-    return tuple(re.sub(r'\s+', '_',str(col)) for col in columns_names)
+    return tuple(re.sub(r'[^a-zA-Z]', '',str(col)) for col in columns_names)
 
 
 # Function to extract date and convert to datetime object
@@ -309,11 +309,11 @@ def main()->None:
 
         while index_list_sum == 0:
             logger.info(soi_files[i])
-            merged_pair_idxs = ex.get(soi_files[i],merged_pair_idxs)
+            merged_pair_idxs = ex.get(soi_files[i],{})
             # display(soi_files[i])
 
             # display(merged_pair_idxs)
-            df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs if soi_files[i] not in ex else {})
+            df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs)
             dfs.append(df)
             index_list = df.apply(
                 lambda row:row.astype(str).str.contains(stopping_criterion(qtr), case=False, na=False).any(),
@@ -341,21 +341,21 @@ def main()->None:
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)
     single_truth.drop(columns=single_truth.columns[['Unnamed' in col for col in single_truth.columns]],inplace=True)
-    important_fields = strip_string(get_header_rows(single_truth),standardize=True)#get_key_fields(df)
-    single_truth.columns = important_fields
-    single_truth,_ = merge_duplicate_columns(single_truth,merged_pair_idxs={})
+    # important_fields = strip_string(get_header_rows(single_truth),standardize=True)#get_key_fields(df)
+    # single_truth.columns = important_fields
+    # single_truth,_ = merge_duplicate_columns(single_truth,merged_pair_idxs={})
     single_truth.to_csv(f'{cik}_soi_table.csv',index=False)
     
 
 def exceptions()->dict:
     return {
-        '2006-12-31/Schedule_of_Investments_1.csv':dict(),
-        '2006-12-31/Schedule_of_Investments_3.csv':dict(), 
-        '2008-03-31/Schedule_of_Investments_7.csv':dict(),
-        '2008-03-31/Schedule_of_Investments_8.csv':dict(),
-        '2008-12-31/Schedule_of_Investments_6.csv':dict(),
-        '2008-12-31/Schedule_of_Investments_11.csv':dict(),
-        '2008-12-31/Schedule_of_Investments_13.csv':dict(),
+        # '2006-12-31/Schedule_of_Investments_1.csv':dict(),
+        # '2006-12-31/Schedule_of_Investments_3.csv':dict(), 
+        # '2008-03-31/Schedule_of_Investments_7.csv':dict(),
+        # '2008-03-31/Schedule_of_Investments_8.csv':dict(),
+        # '2008-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2008-12-31/Schedule_of_Investments_11.csv':dict(),
+        # '2008-12-31/Schedule_of_Investments_13.csv':dict(),
         '2008-12-31/Schedule_of_Investments_14.csv': {
                     'Portfolio_Company_/Principal_Business': np.array([ True, False, False, False, False, False, False, False, False,False, False, False, False, False,False]),
                     '': np.array([ True, False,  True, True, False, True,  True, True, False,True,  True, True, False, True,False]),
@@ -364,14 +364,14 @@ def exceptions()->dict:
                     'Cost': np.array([True,  False, False, False, False, False]),
                     'Value': np.array([True,  False, False, False, False, False])
                 },
-        '2009-03-31/Schedule_of_Investments_2.csv':dict(),
-        '2009-03-31/Schedule_of_Investments_5.csv':dict(),
-        '2009-03-31/Schedule_of_Investments_6.csv':dict(),
-        '2009-03-31/Schedule_of_Investments_9.csv':dict(),
-        '2009-09-30/Schedule_of_Investments_8.csv':dict(),
-        '2009-12-31/Schedule_of_Investments_6.csv':dict(),
-        '2009-12-31/Schedule_of_Investments_7.csv':dict(),
-        '2009-12-31/Schedule_of_Investments_7.csv':dict(),
+        # '2009-03-31/Schedule_of_Investments_2.csv':dict(),
+        # '2009-03-31/Schedule_of_Investments_5.csv':dict(),
+        # '2009-03-31/Schedule_of_Investments_6.csv':dict(),
+        # '2009-03-31/Schedule_of_Investments_9.csv':dict(),
+        # '2009-09-30/Schedule_of_Investments_8.csv':dict(),
+        # '2009-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2009-12-31/Schedule_of_Investments_7.csv':dict(),
+        # '2009-12-31/Schedule_of_Investments_7.csv':dict(),
         '2009-12-31/Schedule_of_Investments_12.csv': {
             'Portfolio Company': np.array([ True, False, False, False, False, False, False, False, False,False, False, False, False, False]),
             'Investment /Interest Rate /Maturity': np.array([ False, True, False, False, False, False, False, False, False,False, False, False, False, False]),
@@ -380,16 +380,16 @@ def exceptions()->dict:
             'Value':np.array([False,False,False,False,False,False,True,True,False,False,False,False,False]),
             '':np.array([True]*6 + [False]*6),
         },
-        '2010-03-31/Schedule_of_Investments_7.csv':dict(),
-        '2010-03-31/Schedule_of_Investments_8.csv':dict(),
-        '2010-06-30/Schedule_of_Investments_19.csv':dict(),
-        '2011-06-30/Schedule_of_Investments_4.csv':dict(),
-        '2011-06-30/Schedule_of_Investments_6.csv':dict(),
-        '2011-06-30/Schedule_of_Investments_9.csv':dict(),
-        '2011-12-31/Schedule_of_Investments_9.csv':dict(),
-        '2012-03-31/Schedule_of_Investments_27.csv':dict(),
-        '2018-09-30/Schedule_of_Investments_2.csv':dict(),
-        '2019-03-31/Schedule_of_Investments_14.csv':dict(),
+        # '2010-03-31/Schedule_of_Investments_7.csv':dict(),
+        # '2010-03-31/Schedule_of_Investments_8.csv':dict(),
+        # '2010-06-30/Schedule_of_Investments_19.csv':dict(),
+        # '2011-06-30/Schedule_of_Investments_4.csv':dict(),
+        # '2011-06-30/Schedule_of_Investments_6.csv':dict(),
+        # '2011-06-30/Schedule_of_Investments_9.csv':dict(),
+        # '2011-12-31/Schedule_of_Investments_9.csv':dict(),
+        # '2012-03-31/Schedule_of_Investments_27.csv':dict(),
+        # '2018-09-30/Schedule_of_Investments_2.csv':dict(),
+        # '2019-03-31/Schedule_of_Investments_14.csv':dict(),
         '2020-12-31/Schedule_of_Investments_16.csv':{
             'Investment':np.array([True,False,False,False,False,False,False,False,False,False,False,False,False,False,False]),
             'Cost':np.array([False,False,False,False,False,False,False,False,True,False,False,False,False,False,False]),
@@ -416,43 +416,43 @@ def exceptions()->dict:
             'Value':np.array([False,False,False,False,False,False,False,False,False,False,False,True,False,False,False]),
             '':np.array([False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]),
         },
-        '2022-03-31/Schedule_of_Investments_5.csv':dict(),
-        '2022-03-31/Schedule_of_Investments_6.csv':dict(),
-        '2022-06-30/Schedule_of_Investments_4.csv':dict(),
-        '2022-06-30/Schedule_of_Investments_6.csv':dict(),
-        '2022-06-30/Schedule_of_Investments_7.csv':dict(),
-        '2022-09-30/Schedule_of_Investments_4.csv':dict(),
-        '2022-09-30/Schedule_of_Investments_5.csv':dict(),
-        '2022-09-30/Schedule_of_Investments_6.csv':dict(),
-        '2022-09-30/Schedule_of_Investments_9.csv':dict(),
-        '2022-09-30/Schedule_of_Investments_14.csv':dict(),
-        '2022-12-31/Schedule_of_Investments_4.csv':dict(),
-        '2022-12-31/Schedule_of_Investments_5.csv':dict(),
-        '2022-12-31/Schedule_of_Investments_6.csv':dict(),
-        '2023-03-31/Schedule_of_Investments_4.csv':dict(),
-        '2023-03-31/Schedule_of_Investments_5.csv':dict(),
-        '2023-03-31/Schedule_of_Investments_6.csv':dict(),
-        '2023-06-30/Schedule_of_Investments_4.csv':dict(),
-        '2023-06-30/Schedule_of_Investments_5.csv':dict(),
-        '2023-06-30/Schedule_of_Investments_6.csv':dict(),
-        '2023-09-30/Schedule_of_Investments_4.csv':dict(),
-        '2023-09-30/Schedule_of_Investments_5.csv':dict(),
-        '2023-09-30/Schedule_of_Investments_6.csv':dict(),
-        '2023-12-31/Schedule_of_Investments_4.csv':dict(),
-        '2023-12-31/Schedule_of_Investments_5.csv':dict(),
-        '2023-12-31/Schedule_of_Investments_6.csv':dict(),
-        '2024-03-31/Schedule_of_Investments_1.csv':dict(),
-        '2024-03-31/Schedule_of_Investments_4.csv':dict(),
-        '2024-03-31/Schedule_of_Investments_5.csv':dict(),
-        '2024-03-31/Schedule_of_Investments_6.csv':dict(),
-        '2009-12-31/Schedule_of_Investments_6.csv':dict(),
-        '2009-06-30/Schedule_of_Investments_29.csv':dict(),
-        '2009-06-30/Schedule_of_Investments_33.csv':dict(),
-        '2009-06-30/Schedule_of_Investments_35.csv':dict(),
-        '2009-06-30/Schedule_of_Investments_38.csv':dict(),
-        '2009-06-30/Schedule_of_Investments_14.csv':dict(),
-        '2021-12-31/Schedule_of_Investments_5.csv':dict(),
-        '2021-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2022-03-31/Schedule_of_Investments_5.csv':dict(),
+        # '2022-03-31/Schedule_of_Investments_6.csv':dict(),
+        # '2022-06-30/Schedule_of_Investments_4.csv':dict(),
+        # '2022-06-30/Schedule_of_Investments_6.csv':dict(),
+        # '2022-06-30/Schedule_of_Investments_7.csv':dict(),
+        # '2022-09-30/Schedule_of_Investments_4.csv':dict(),
+        # '2022-09-30/Schedule_of_Investments_5.csv':dict(),
+        # '2022-09-30/Schedule_of_Investments_6.csv':dict(),
+        # '2022-09-30/Schedule_of_Investments_9.csv':dict(),
+        # '2022-09-30/Schedule_of_Investments_14.csv':dict(),
+        # '2022-12-31/Schedule_of_Investments_4.csv':dict(),
+        # '2022-12-31/Schedule_of_Investments_5.csv':dict(),
+        # '2022-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2023-03-31/Schedule_of_Investments_4.csv':dict(),
+        # '2023-03-31/Schedule_of_Investments_5.csv':dict(),
+        # '2023-03-31/Schedule_of_Investments_6.csv':dict(),
+        # '2023-06-30/Schedule_of_Investments_4.csv':dict(),
+        # '2023-06-30/Schedule_of_Investments_5.csv':dict(),
+        # '2023-06-30/Schedule_of_Investments_6.csv':dict(),
+        # '2023-09-30/Schedule_of_Investments_4.csv':dict(),
+        # '2023-09-30/Schedule_of_Investments_5.csv':dict(),
+        # '2023-09-30/Schedule_of_Investments_6.csv':dict(),
+        # '2023-12-31/Schedule_of_Investments_4.csv':dict(),
+        # '2023-12-31/Schedule_of_Investments_5.csv':dict(),
+        # '2023-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2024-03-31/Schedule_of_Investments_1.csv':dict(),
+        # '2024-03-31/Schedule_of_Investments_4.csv':dict(),
+        # '2024-03-31/Schedule_of_Investments_5.csv':dict(),
+        # '2024-03-31/Schedule_of_Investments_6.csv':dict(),
+        # '2009-12-31/Schedule_of_Investments_6.csv':dict(),
+        # '2009-06-30/Schedule_of_Investments_29.csv':dict(),
+        # '2009-06-30/Schedule_of_Investments_33.csv':dict(),
+        # '2009-06-30/Schedule_of_Investments_35.csv':dict(),
+        # '2009-06-30/Schedule_of_Investments_38.csv':dict(),
+        # '2009-06-30/Schedule_of_Investments_14.csv':dict(),
+        # '2021-12-31/Schedule_of_Investments_5.csv':dict(),
+        # '2021-12-31/Schedule_of_Investments_6.csv':dict(),
         '2007-06-30/Schedule_of_Investments_0.csv':{
             'Portfolio Company': np.array([ True]+[False]*8),
             'Investment_/_interest_Rate_/_Maturity': np.array([False,True]+[False]*7),
