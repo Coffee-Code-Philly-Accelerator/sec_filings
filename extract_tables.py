@@ -146,10 +146,10 @@ def main() -> None:
     for i in range(urls.shape[0]):
         _, table_date, url = urls.iloc[i]
         # table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
-        if len(glob.glob(f"{args.cik}/{table_date}/*.csv")) > 1:
+        logger.info(f"DATETIMES - {table_date}")
+        if len(glob.glob(f"{args.cik}/{table_date}/*.csv")) > 0:
             continue
         
-        logger.info(f"DATETIMES - {table_date}")
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)

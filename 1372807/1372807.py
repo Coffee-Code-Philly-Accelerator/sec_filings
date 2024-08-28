@@ -283,7 +283,7 @@ def main()->None:
     ex = exceptions()
     ex_rows = '|'.join(except_rows())
     for qtr in qtrs:
-        if '.csv' in qtr or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
+        if '.csv' in qtr or os.path.exists(os.path.join(qtr,'output',f"{qtr}.csv")) or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
             continue
         # qtr = '2007-06-30'
         logger.info(qtr)
@@ -341,6 +341,9 @@ def main()->None:
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)
     single_truth.drop(columns=single_truth.columns[['Unnamed' in col for col in single_truth.columns]],inplace=True)
+    important_fields = strip_string(get_header_rows(single_truth),standardize=True)#get_key_fields(df)
+    single_truth.columns = important_fields
+    single_truth,_ = merge_duplicate_columns(single_truth,merged_pair_idxs={})
     single_truth.to_csv(f'{cik}_soi_table.csv',index=False)
     
 
