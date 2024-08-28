@@ -211,7 +211,6 @@ def main() -> None:
             except Exception as e:
                 logger.info(e)
 
-            
         # break
     driver.close()
     return
