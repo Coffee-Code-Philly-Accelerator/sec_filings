@@ -110,7 +110,7 @@ def company_control_headers()->tuple:
 
 def except_rows()->tuple:
     return (
-        'asdf',
+        'Debt_Securities_and_Bond_Portfolio',
     )
 
 # https://www.sec.gov/robots.txt
@@ -269,10 +269,11 @@ def _clean(
 def get_header_rows(
     df_cur:pd.DataFrame,
 )->tuple:
-    for idx,row in df_cur.iterrows():
+    for idx,row in df_cur.reset_index().iterrows():
         found = any(str(v).replace("$",'').replace("%",'').isnumeric() for v in row)
         if found:
-            out = df_cur.iloc[:idx - 1,:].apply(lambda row: ' '.join(row[row.notna()].values), axis=0)
+            # print(df_cur.iloc[:idx + 1,:])
+            out = df_cur.iloc[:idx + 1,:].apply(lambda row: ' '.join(row[row.notna()].values), axis=0)
             return out
     
     return strip_string(df_cur.iloc[0].tolist())
@@ -285,7 +286,7 @@ def main()->None:
     for qtr in qtrs:
         if '.csv' in qtr or os.path.exists(os.path.join(qtr,'output',f"{qtr}.csv")) or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
             continue
-        # qtr = '2007-06-30'
+        # qtr = '2017-06-30'
         logger.info(qtr)
         index_list_sum = i = 0
         soi_files = sorted([
@@ -459,6 +460,22 @@ def exceptions()->dict:
             'Principal':np.array([False,False,True]+[False]*6),
             'Cost':np.array([False,False,False,True]+[False]*5),
             'Value':np.array([False]*4+[True]+[False]*4)
+        },
+        '2017-06-30/Schedule_of_Investments_19.csv': {
+            'Portfolio Company': np.array([ True]+[False]*14),
+            'Investment_/_interest_Rate_/_Maturity': np.array([False,True]+[False]*13),
+            'Principal':np.array([False,False,False,True]+[False]*11),
+            'Cost':np.array([False]*6+[True]+[False]*8),
+            'Value':np.array([False]*9+[True]+[False]*5)
+        },
+        '2019-12-31/Schedule_of_Investments_6.csv':{
+            'Portfolio Company': np.array([ True]+[False]*16),
+            'Investment': np.array([False,True]+[False]*15),
+            'Maturity Date':np.array([False]*2+[True]+[False]*14),
+            'Principal':np.array([False,False,False,False,True]+[False]*12),
+            'Cost':np.array([False]*7+[True]+[False]*9),
+            'Value':np.array([False]*10+[True]+[False]*6),
+            '':np.array([True]+[False]*16)
         }
     }
     
