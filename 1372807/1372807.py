@@ -291,7 +291,7 @@ def main()->None:
     for qtr in qtrs:
         if '.csv' in qtr or os.path.exists(os.path.join(qtr,'output',f"{qtr}.csv")) or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
             continue
-        # qtr = '2012-12-31'
+        # qtr = '2008-06-30'
         logger.info(qtr)
         index_list_sum = i = 0
         soi_files = sorted([
@@ -338,7 +338,7 @@ def main()->None:
             os.makedirs(os.path.join(qtr,'output'))
         columns_to_drop = date_final.notna().sum() <= 2
         date_final.drop(columns=columns_to_drop[columns_to_drop].index)
-        print(date_final.columns)
+        # print(date_final.columns)
         date_final.to_csv(os.path.join(qtr,'output',f'{qtr}.csv'),index=False)
         # break
     
@@ -356,29 +356,49 @@ def main()->None:
 
 def exceptions()->dict:
     return {
-        # '2006-12-31/Schedule_of_Investments_1.csv':dict(),
-        # '2006-12-31/Schedule_of_Investments_3.csv':dict(), 
-        # '2008-03-31/Schedule_of_Investments_7.csv':dict(),
-        # '2008-03-31/Schedule_of_Investments_8.csv':dict(),
-        # '2008-12-31/Schedule_of_Investments_6.csv':dict(),
-        # '2008-12-31/Schedule_of_Investments_11.csv':dict(),
-        # '2008-12-31/Schedule_of_Investments_13.csv':dict(),
+        '2008-06-30/Schedule_of_Investments_6.csv':{
+            'PortfolioCompany': np.array([True]+[False]*13),
+            'Investment': np.array([False,False,True]+[False]*11),
+            'Principal':np.array([False]*4+[True]+[False]*9),
+            'Cost':np.array([False]*6+[True]+[False]*7),
+            'Value':np.array([False]*8+[True]+[False]*5),
+        },
+        '2008-06-30/Schedule_of_Investments_7.csv':{
+            'PortfolioCompany': np.array([True]+[False]*13),
+            'Investment': np.array([False,False,True]+[False]*11),
+            'Principal':np.array([False]*4+[True]+[False]*9),
+            'Cost':np.array([False]*6+[True]+[False]*7),
+            'Value':np.array([False]*8+[True]+[False]*5),
+        },
+        '2008-06-30/Schedule_of_Investments_8.csv':{
+            'PortfolioCompany': np.array([True]+[False]*13),
+            'Investment': np.array([False,False,True]+[False]*11),
+            'Principal':np.array([False]*4+[True]+[False]*9),
+            'Cost':np.array([False]*6+[True]+[False]*7),
+            'Value':np.array([False]*8+[True]+[False]*5),
+        },
+        '2008-06-30/Schedule_of_Investments_9.csv':{
+            'PortfolioCompany': np.array([True]+[False]*13),
+            'Investment': np.array([False,False,True]+[False]*11),
+            'Principal':np.array([False]*4+[True]+[False]*9),
+            'Cost':np.array([False]*6+[True]+[False]*7),
+            'Value':np.array([False]*8+[True]+[False]*5),
+        },
+        '2008-06-30/Schedule_of_Investments_10.csv':{
+            'PortfolioCompany': np.array([True]+[False]*13),
+            'Investment': np.array([False,False,True]+[False]*11),
+            'Principal':np.array([False]*4+[True]+[False]*9),
+            'Cost':np.array([False]*6+[True]+[False]*7),
+            'Value':np.array([False]*8+[True]+[False]*5),
+        },
         '2008-12-31/Schedule_of_Investments_14.csv': {
-                    'PortfolioCompany': np.array([ True, False, False, False, False, False, False, False, False,False, False, False, False, False,False]),
-                    '': np.array([ True, False,  True, True, False, True,  True, True, False,True,  True, True, False, True,False]),
-                    'Investment': np.array([ True, False, False, False, False, False]),
-                    'Percent_of_Interests_Held': np.array([ True,  False,  False, False, False, False]),
-                    'Cost': np.array([True,  False, False, False, False, False]),
-                    'Value': np.array([True,  False, False, False, False, False])
-                },
-        # '2009-03-31/Schedule_of_Investments_2.csv':dict(),
-        # '2009-03-31/Schedule_of_Investments_5.csv':dict(),
-        # '2009-03-31/Schedule_of_Investments_6.csv':dict(),
-        # '2009-03-31/Schedule_of_Investments_9.csv':dict(),
-        # '2009-09-30/Schedule_of_Investments_8.csv':dict(),
-        # '2009-12-31/Schedule_of_Investments_6.csv':dict(),
-        # '2009-12-31/Schedule_of_Investments_7.csv':dict(),
-        # '2009-12-31/Schedule_of_Investments_7.csv':dict(),
+            'PortfolioCompany': np.array([ True, False, False, False, False, False, False, False, False,False, False, False, False, False,False]),
+            '': np.array([ True, False,  True, True, False, True,  True, True, False,True,  True, True, False, True,False]),
+            'Investment': np.array([ True, False, False, False, False, False]),
+            'Percent_of_Interests_Held': np.array([ True,  False,  False, False, False, False]),
+            'Cost': np.array([True,  False, False, False, False, False]),
+            'Value': np.array([True,  False, False, False, False, False])
+        },
         '2009-12-31/Schedule_of_Investments_12.csv': {
             'PortfolioCompany': np.array([ True, False, False, False, False, False, False, False, False,False, False, False, False, False]),
             'Investment /Interest Rate /Maturity': np.array([ False, True, False, False, False, False, False, False, False,False, False, False, False, False]),
@@ -387,16 +407,13 @@ def exceptions()->dict:
             'Value':np.array([False,False,False,False,False,False,True,True,False,False,False,False,False]),
             '':np.array([True]*6 + [False]*6),
         },
-        # '2010-03-31/Schedule_of_Investments_7.csv':dict(),
-        # '2010-03-31/Schedule_of_Investments_8.csv':dict(),
-        # '2010-06-30/Schedule_of_Investments_19.csv':dict(),
-        # '2011-06-30/Schedule_of_Investments_4.csv':dict(),
-        # '2011-06-30/Schedule_of_Investments_6.csv':dict(),
-        # '2011-06-30/Schedule_of_Investments_9.csv':dict(),
-        # '2011-12-31/Schedule_of_Investments_9.csv':dict(),
-        # '2012-03-31/Schedule_of_Investments_27.csv':dict(),
-        # '2018-09-30/Schedule_of_Investments_2.csv':dict(),
-        # '2019-03-31/Schedule_of_Investments_14.csv':dict(),
+        '2015-06-30/Schedule_of_Investments_30.csv':{
+            'PortfolioCompany': np.array([True]+[False]*14),
+            'Investment': np.array([False,True]+[False]*13),
+            'Percentage Ownership/Shares':np.array([False]*3+[True]+[False]*11),
+            'Cost':np.array([False]*6+[True]+[False]*8),
+            'Value':np.array([False]*9+[True]+[False]*5),
+        },
         '2020-12-31/Schedule_of_Investments_16.csv':{
             'Investment':np.array([True,False,False,False,False,False,False,False,False,False,False,False,False,False,False]),
             'Cost':np.array([False,False,False,False,False,False,False,False,True,False,False,False,False,False,False]),
@@ -423,43 +440,6 @@ def exceptions()->dict:
             'Value':np.array([False,False,False,False,False,False,False,False,False,False,False,True,False,False,False]),
             '':np.array([False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]),
         },
-        # '2022-03-31/Schedule_of_Investments_5.csv':dict(),
-        # '2022-03-31/Schedule_of_Investments_6.csv':dict(),
-        # '2022-06-30/Schedule_of_Investments_4.csv':dict(),
-        # '2022-06-30/Schedule_of_Investments_6.csv':dict(),
-        # '2022-06-30/Schedule_of_Investments_7.csv':dict(),
-        # '2022-09-30/Schedule_of_Investments_4.csv':dict(),
-        # '2022-09-30/Schedule_of_Investments_5.csv':dict(),
-        # '2022-09-30/Schedule_of_Investments_6.csv':dict(),
-        # '2022-09-30/Schedule_of_Investments_9.csv':dict(),
-        # '2022-09-30/Schedule_of_Investments_14.csv':dict(),
-        # '2022-12-31/Schedule_of_Investments_4.csv':dict(),
-        # '2022-12-31/Schedule_of_Investments_5.csv':dict(),
-        # '2022-12-31/Schedule_of_Investments_6.csv':dict(),
-        # '2023-03-31/Schedule_of_Investments_4.csv':dict(),
-        # '2023-03-31/Schedule_of_Investments_5.csv':dict(),
-        # '2023-03-31/Schedule_of_Investments_6.csv':dict(),
-        # '2023-06-30/Schedule_of_Investments_4.csv':dict(),
-        # '2023-06-30/Schedule_of_Investments_5.csv':dict(),
-        # '2023-06-30/Schedule_of_Investments_6.csv':dict(),
-        # '2023-09-30/Schedule_of_Investments_4.csv':dict(),
-        # '2023-09-30/Schedule_of_Investments_5.csv':dict(),
-        # '2023-09-30/Schedule_of_Investments_6.csv':dict(),
-        # '2023-12-31/Schedule_of_Investments_4.csv':dict(),
-        # '2023-12-31/Schedule_of_Investments_5.csv':dict(),
-        # '2023-12-31/Schedule_of_Investments_6.csv':dict(),
-        # '2024-03-31/Schedule_of_Investments_1.csv':dict(),
-        # '2024-03-31/Schedule_of_Investments_4.csv':dict(),
-        # '2024-03-31/Schedule_of_Investments_5.csv':dict(),
-        # '2024-03-31/Schedule_of_Investments_6.csv':dict(),
-        # '2009-12-31/Schedule_of_Investments_6.csv':dict(),
-        # '2009-06-30/Schedule_of_Investments_29.csv':dict(),
-        # '2009-06-30/Schedule_of_Investments_33.csv':dict(),
-        # '2009-06-30/Schedule_of_Investments_35.csv':dict(),
-        # '2009-06-30/Schedule_of_Investments_38.csv':dict(),
-        # '2009-06-30/Schedule_of_Investments_14.csv':dict(),
-        # '2021-12-31/Schedule_of_Investments_5.csv':dict(),
-        # '2021-12-31/Schedule_of_Investments_6.csv':dict(),
         '2007-06-30/Schedule_of_Investments_0.csv':{
             'PortfolioCompany': np.array([ True]+[False]*8),
             'Investment_/_interest_Rate_/_Maturity': np.array([False,True]+[False]*7),
