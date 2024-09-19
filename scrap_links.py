@@ -102,5 +102,6 @@ if __name__ == '__main__':
     python scrap_links.py --cik 1512931 --url https://www.sec.gov/edgar/browse/?CIK=1512931 --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
 
     python3 scrap_links.py --cik 1372807 --url https://www.sec.gov/edgar/browse/?CIK=1372807 --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
+    python3 scrap_links.py --cik 1675033 --url https://www.sec.gov/edgar/browse/?CIK=1675033
     """
     main()

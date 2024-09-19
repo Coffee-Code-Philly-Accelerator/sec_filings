@@ -235,6 +235,8 @@ if __name__ == "__main__":
     python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
 
     python3 extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt 
+    python3 extract_tables.py --cik 1675033 --url-csv urls/1675033.csv --x-path xpaths/1675033.txt 
+
 
     sudo apt install chromium-chromedrive
     sudo apt-get install chromium-driver  
