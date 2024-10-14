@@ -291,13 +291,13 @@ def main()->None:
     for qtr in qtrs:
         if '.csv' in qtr or os.path.exists(os.path.join(qtr,'output',f"{qtr}.csv")) or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
             continue
-        # qtr = '2008-06-30'
+        # qtr = '2018-12-31'
         logger.info(qtr)
         index_list_sum = i = 0
         soi_files = sorted([
             os.path.join(qtr,file) 
             for file in os.listdir(qtr)
-            if file.endswith('.csv')
+            if file.endswith('.csv') and os.path.join(qtr,file) not in ['2018-12-31/Schedule_of_Investments_0.csv', '2018-12-31/Schedule_of_Investments_1.csv']
         ],key=lambda f: int(f.split('_')[-1].split('.')[0]))
         # soi_files = [f for f in soi_files] # if f not in ex]
         if len(soi_files) == 0:
