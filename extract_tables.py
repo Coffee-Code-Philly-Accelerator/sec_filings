@@ -236,6 +236,8 @@ if __name__ == "__main__":
 
     python3 extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt 
     python3 extract_tables.py --cik 1675033 --url-csv urls/1675033.csv --x-path xpaths/1675033.txt 
+    python3 extract_tables.py --cik 3906 --url-csv urls/3906.csv --x-path xpaths/3906.txt 
+
 
 
     sudo apt install chromium-chromedrive

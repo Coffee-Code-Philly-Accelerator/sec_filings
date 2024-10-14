@@ -45,9 +45,11 @@ def read_table(
     reporting_date, filing_date = df['Reporting date'], df['Filing date']
     logger.debug(f"DATES - {len(filing_date)}")
 
+    headers = ['reporting_date', 'date_filed', 'html_link'] if not os.path.exists(os.path.join(ROOT_PATH, 'urls', url.split("=")[-1]+".csv")) else ''
     with open(os.path.join(ROOT_PATH, 'urls', url.split("=")[-1]+".csv"), 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['reporting_date', 'date_filed', 'html_link'])
+        
+        writer.writerow(headers)
         for a, fd, rd in zip(links, filing_date, reporting_date):
             writer.writerow([fd.split("View")[0], rd.split(
                 "View")[0], a.get_attribute('href')])
