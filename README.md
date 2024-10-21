@@ -1,80 +1,70 @@
 # SEC filing automated scraper
-* Updated 10/8/2023
 ## Introduction
-The below is an overview of the [github](https://github.com/Tony363/sec_filings) repository's deliverables. After running all the programs, there should be a ```urls/``` and ```csv/``` directory created with all the BDC quarter dates, raw data tables, cleaned data tables for each quarter, the merged 2nd tier normalized table of all quarters and the totals aggregates for each quarter in one table.
-The script should also automatically run unit tests to assert whether the scraped aggregate totals match the totals statistic available in each quarter.
+The below is an overview of the [github](https://github.com/Tony363/sec_filings) repository's deliverables.
 
-![](https://hackmd.io/_uploads/ryiURCeWp.png)
+### Purpose & Benefits
+Running the program in the [github repository](https://github.com/Tony363/sec_filings) would automate extraction of Business Development Company data from the sec.gov's EDGAR Application Programming Interface. The main data gained are;
 
-* The program extracts Schedule of investment data tables from BDCs publically available from sec.gov 
-* The current script uses the [selenium](https://selenium-python.readthedocs.io/installation.html#introduction) webdriver to extract and collect web data that is dynamically displayed in the disorganized DOM hierarchy 
-* Relevant url links are scraped into urls/1422183.txt file
-* Currently, 15149 observations are collected from BDC CIK=1422183.The csv folder contains the;
-    * Downloaded html file of each BDC quarter 
-    * Raw scraped data from all BDC quarters
-    * Cleaned and standardized data tables for each quarter
-    * 2nd tier normalized aggregates from all quarters into 1 table
-    * "Totals" aggregates for each BDC quarter into 1 table
-* For CIK=1379785, obervations are aggregated into an excel document, each quarter in its separate sheet in the excel document.
-
-![](https://hackmd.io/_uploads/HkTB0Ag-a.png)
+#### Table 1. Example output of 2nd stage normalized single source of truth for BDC SOI tables
+![Table 1](https://hackmd.io/_uploads/ryiURCeWp.png)
 
 
-## Packages & Dependencies
-* Most of the code is written in python
-* [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) 
-* [Python installation guide](https://www.python.org/downloads/)
+
+## Prerequisites
+The assumptions of this readme guide is that the individual who finds the programs in this repository useful would have a computer and have access to the internet. 
+
+This readme guide is intended for individuals who have the ability to read official documentation from the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) or  [Python installation guide](https://www.python.org/downloads/) and be able to google potential solutions to the issues the individual face when running the programs in this github repository. Otherwise, if all things work well, there shouldn't be major learning hurdles.
+
+### Packages & Dependencies
+* Python needs to be installed. Please reference the official documentation below
+    * [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) 
+    * [Python installation guide](https://www.python.org/downloads/)
 * List of packages and dependencies are listed in the **requirements.txt** file if you are using pip or the **environment.yml** if you are using conda
 
-## Warnings & Caveats
-* program works only on version selenium==3.141.0
-* program works using a chrome driver
-* selenium==3.141.0 works for chrome version 114 or below
-    * [Download links of .deb files](http://mirror.cs.uchicago.edu/google-chrome/pool/main/g/google-chrome-stable/) for different chrome versions from U Chicago
-    * the chrome driver version should start with the same first 3 digits of your chrome version
-        * i.e. chrome driver version 114.0.5735.90 supports chrome version 114
-* You need to know where your chrome binaries and chrome drivers are located on your computer
 
-## Program Arguement Variables
-* [environment_name] is what ever you want to name your environment
-* [url] = the url of where your BDCs investment docuemnts are archived
-* [chrome_path] = the path of where your chrome binaries are located
-    * i.e. windows -> ```C:\Program Files\Google\Chrome\Application\chrome.exe```
-* [chrome_driver_path] = path to where your chrome driver is
-    * i.e. windows - > ```C:\Users\pysol\Desktop\projects\sec_filings\chromedriver_win32\chromedriver.exe```
+### Program Arguement Variables
+python3 scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
+python3 extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
+python3 sec_filings/1580345/1580345.py
+* [--cik] = cik number to scrap data from
+* [--url-csv] = csv of where cik 10q, 10k will be saved or acccessed from
+* [--x-path] = .txt of xpath used for specific cik, typically xpaths/{cik}.txt
+* [container_id] = id of the container that can be viewed via ```docker ps -a```
+
+## Using Docker Container to run code 
+
+If setting up virtual environments in the inviduals local computer proves too complicated, a containerized virtualization of all the programs required in this reporsitory can be setup using the Docker technology. Please reference the [Docker Official Documentation](https://www.docker.com/) for further information about the technology. Otherwise skip to section *Getting Started*
+* [Install](https://docs.docker.com/engine/install/) docker on your local computer and create an account on [dockerhub signup](https://hub.docker.com/signup)
+* Then authenticate your docker credentials with ```docker login```
+* Run command ```docker run -it -u root pysolver33/sec-filings:10.21.2024/home/seluser/sec_filings/run.sh```
+* Confirm that docker pulled container image and ran the container id with ```docker ps -a```
+* Use container id to cp file to local computer, ```docker cp [container_id]:/home/seluser/sec_filings/csv/{cik}_soi_table.csv .```
+
+* One can also access the docker container environment from the terminal via the command below or alternatively via vscode once the container is running;
+    * ```docker run -it -u root pysolver33/sec-filings:10.21.2024 /bin/bash/```
+    * [Guide](https://chatgpt.com/share/6716b6d0-be48-800e-b130-904efc43f327) to attach vscode IDE to docker container
 
 ## Getting Started
-Future updates will have the setup installation automated in a bashscript .sh file
-#### Using Docker run 
-* [Install](https://docs.docker.com/desktop/install/windows-install/) docker on your windows machine and create an account on dockerhub
-* first authenticate your docker credentials with ```docker login```
-* run command ```docker run -it -u root pysolver33/sec-filings:10.21.2023.2 /home/seluser/sec_filings/run.sh```
-* check out container id with ```docker ps -a```
-* use container id to cp file to local machine, ```docker cp [container_id]:/home/seluser/sec_filings/csv/soi_table_all_possible_merges.csv .```
-#### 1a. Conda steps to run
-* to setup dependencies via conda for your operating system, follow the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html)
-* once conda is setup, cd to "sec_filings" 
-* run```conda env create --name [environment_name] --file environment.yml```
 
-#### 1b. Pip steps to run
-* to setup dependencies via pip, reference the [Python installation guide](https://www.python.org/downloads/) from python.org
-* run ```python3 -m venv [environment_name]```
-* cd to sec_filings
-* run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
+#### 1a. Installing conda software dependency programs to run code
+* To setup dependencies via conda for your operating system, follow the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html)
+* Change directory(```cd```) to *sec_filings* directory
+* Run```conda env create --name [environment_name] --file environment.yml```
 
-#### 2. After dependencies have been setup
+#### 1b. Installing pip software dependency programs to run code
+* To setup dependencies via pip, reference the [Python installation guide](https://www.python.org/downloads/) from python.org
+* Run ```python3 -m venv [environment_name]```
+* Change directory(```cd```) to *sec_filings* directory
+* Run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
+
+#### 2. Below are steps to run the programs in this repository
 * Download the selenium chrome driver for chrome version 114 or below specific to your operating system from [this website](https://sites.google.com/chromium.org/driver/downloads?authuser=0)
-* make sure your chrome browser version is 114 or below
-* run ```python3 scrap_links --url [url] --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-* run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-* run ```python3 consolidate_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-#### 3. To scrap data from CIK=1379785,
-* cd to ```bbdc_extraction/``` directory
-* run ```python3 BBDC_Extraction.py```
+* Make sure your chrome browser version is 114 or below
+* Run ```python3 scrap_links.py --cik {cik} --url https://www.sec.gov/edgar/browse/?CIK={cik}```
+* Run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
+* Run ```python3 extract_tables.py --cik {cik} --url-csv urls/{cik}.csv --x-path xpaths/{cik}.txt
+```
 
 ## FAQ
-There are currently no known issues with the programs. For any future issues or trouble shoot necessary, do not hesitate the open an issue in this github repository. I will reply as soon as I can.
-
-
-
-
+There are currently no known issues with the programs. Do not hesitate to open an *issues* in this github repository. The *issues* tab is on the top left of the github repository web inferface. I will reply as soon as I can.
+![Screenshot 2023-12-06 190510](https://hackmd.io/_uploads/SyD22KAHT.png)
