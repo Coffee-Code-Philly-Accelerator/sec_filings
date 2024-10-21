@@ -1,1 +1,2 @@
 //b[contains(.,"PRIVATE FINANCE")]/parent::td/parent::tr/parent::tbody/parent::table
+//b[contains(.,"Private Finance")]/parent::td/parent::tr/parent::tbody/parent::table

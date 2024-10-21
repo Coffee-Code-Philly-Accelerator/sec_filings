@@ -83,6 +83,7 @@ def parse_link_element(
         time.sleep(1)
         logger.debug(f"IFRAME - {iframe[0]}")
         driver.switch_to.frame(iframe[0])
+    time.sleep(1)
     link_element = driver.find_elements(By.ID, value="menu-dropdown-link")
     logger.debug(f"LINK ELEMENT - {link_element}")
     if not link_element:

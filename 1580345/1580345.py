@@ -305,7 +305,8 @@ def main()->None:
         i += 1
         cols = df.columns.tolist()
         while index_list_sum == 0:
-            if '\\'.join(soi_files[i].split('\\')[-2:]) in exceptions():
+            logger.info(f"WTF {soi_files[i]}")
+            if soi_files[i] in exceptions():
                 i += 1
                 continue
             logger.info(soi_files[i])
