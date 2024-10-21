@@ -59,8 +59,7 @@ If setting up virtual environments in the inviduals local computer proves too co
 * Make sure your chrome browser version is 114 or below
 * Run ```python3 scrap_links.py --cik {cik} --url https://www.sec.gov/edgar/browse/?CIK={cik}```
 * Run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-* Run ```python3 extract_tables.py --cik {cik} --url-csv urls/{cik}.csv --x-path xpaths/{cik}.txt
-```
+* Run ```python3 extract_tables.py --cik {cik} --url-csv urls/{cik}.csv --x-path xpaths/{cik}.txt```
 
 ## FAQ
 There are currently no known issues with the programs. Do not hesitate to open an *issues* in this github repository. The *issues* tab is on the top left of the github repository web inferface. I will reply as soon as I can.
