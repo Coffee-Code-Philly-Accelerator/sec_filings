@@ -23,9 +23,6 @@ This readme guide is intended for individuals who have the ability to read offic
 
 
 ### Program Arguement Variables
-python3 scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
-python3 extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
-python3 sec_filings/1580345/1580345.py
 * [--cik] = cik number to scrap data from
 * [--url-csv] = csv of where cik 10q, 10k will be saved or acccessed from
 * [--x-path] = .txt of xpath used for specific cik, typically xpaths/{cik}.txt
@@ -42,7 +39,7 @@ If setting up virtual environments in the inviduals local computer proves too co
 
 * One can also access the docker container environment from the terminal via the command below or alternatively via vscode once the container is running;
     * ```docker run -it -u root pysolver33/sec-filings:10.21.2024 /bin/bash/```
-    * [Guide](https://chatgpt.com/share/6716b6d0-be48-800e-b130-904efc43f327) to attach vscode IDE to docker container
+    * [Guide](https://chatgpt.com/share/6716b6d0-be48-800e-b130-904efc43f327) to attach vscode IDE to docker container for debugging or development purposes
 
 ## Getting Started
 
@@ -68,3 +65,8 @@ If setting up virtual environments in the inviduals local computer proves too co
 ## FAQ
 There are currently no known issues with the programs. Do not hesitate to open an *issues* in this github repository. The *issues* tab is on the top left of the github repository web inferface. I will reply as soon as I can.
 ![Screenshot 2023-12-06 190510](https://hackmd.io/_uploads/SyD22KAHT.png)
+
+
+
+
+
