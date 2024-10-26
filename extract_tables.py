@@ -130,8 +130,10 @@ def main() -> None:
     warnings.simplefilter(action='ignore', category=FutureWarning)
     # desired_dpi = 2.0
     options = Options()
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
     # options.add_experimental_option('excludeSwitches', ['enable-logging'])
     # options.add_argument(f"--force-device-scale-factor={desired_dpi}")
     # options.add_experimental_option("mobileEmulation", {"deviceMetrics": {"width": 1920, "height": 1080, "pixelRatio": 3.0}})

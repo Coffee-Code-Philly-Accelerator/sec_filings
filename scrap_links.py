@@ -76,6 +76,10 @@ def main() -> None:
     options = Options()
     options.binary_location = args.chrome_path
     options.add_argument("--log-level=OFF")
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
+    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
     driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
         if platform.system() == "Linux" \
         else webdriver.Chrome(options=options)
