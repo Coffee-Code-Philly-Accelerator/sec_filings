@@ -15,9 +15,9 @@
 # conda activate sec
 
 # run scripts
-python3 scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
-python3 extract_tables.py --cik 1535778 --url-csv urls/1580345.csv --x-path xpaths/1535778.txt
-cd 1535778/
-python3 1535778.py
+python3 scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
+python3 extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
+cd 1580345/
+python3 1580345.py
 
 
