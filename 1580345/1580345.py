@@ -275,8 +275,8 @@ def md_parse(
 
 def exceptions()->tuple:
     return (
-        '2015-03-31\Schedule_of_Investments_4.csv',
-        '2014-12-31\Schedule_of_Investments_5.csv'
+        '2015-03-31/Schedule_of_Investments_4.csv',
+        '2014-12-31/Schedule_of_Investments_5.csv'
     )
 
 cik = 1580345
@@ -327,7 +327,7 @@ def main()->None:
         # date_final = extract_subheaders(date_final,control=True)
         # date_final = extract_subheaders(date_final,control=False)
 
-        date_final['qtr'] = qtr.split('\\')[-1]
+        date_final['qtr'] = qtr.split('/')[-1]
         if not os.path.exists(os.path.join(qtr,'output')):
             os.makedirs(os.path.join(qtr,'output'))
         columns_to_drop = date_final.notna().sum() <= 2

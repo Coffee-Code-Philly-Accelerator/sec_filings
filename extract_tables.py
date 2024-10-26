@@ -230,10 +230,10 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1370755 --url-csv urls/1370755.csv --x-path xpaths/1370755.txt
     python .\extract_tables.py --cik 1326003 --url-csv urls/1326003.csv --x-path xpaths/1326003.txt
     python .\extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
-    python .\extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
+    python3 extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
 
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt
-    python extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt --chrome-driver-path /home/tony/Desktop/My_repos/sec_filings/sec/lib/python3.7/site-packages/chromedriver_binary/chromedriver
+    python3 extract_tables.py --cik 1512931 --url-csv urls/1512931.csv --x-path xpaths/1512931.txt 
 
     python3 extract_tables.py --cik 1372807 --url-csv urls/1372807.csv --x-path xpaths/1372807.txt 
     python3 extract_tables.py --cik 1675033 --url-csv urls/1675033.csv --x-path xpaths/1675033.txt 
