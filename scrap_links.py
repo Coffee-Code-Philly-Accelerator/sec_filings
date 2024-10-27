@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 # from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 from utils import arguements, init_logger, ROOT_PATH
 
@@ -80,9 +81,8 @@ def main() -> None:
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
     options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path) \
-        if platform.system() == "Linux" \
-        else webdriver.Chrome(options=options)
+    service = Service(executable_path='/usr/bin/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
     if not os.path.exists(f'xpaths/{args.cik}.txt'):
         with open(f'xpaths/{args.cik}.txt', 'w') as file:
             file.write("")

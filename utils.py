@@ -101,7 +101,7 @@ def arguements() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         '--chrome-path', type=str, required=False,
-        default=r'C:\Program Files\Google\Chrome\Application\chrome.exe',
+        default='/usr/bin/google-chrome',
         help='path to your chrome.exe'
     )
     parser.add_argument(
