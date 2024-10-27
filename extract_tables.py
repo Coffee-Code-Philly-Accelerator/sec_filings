@@ -129,17 +129,18 @@ def main() -> None:
     assert os.path.exists(f"urls/{args.cik}.csv"),"SCRAP LINKS FIRST"
     warnings.simplefilter(action='ignore', category=FutureWarning)
     # desired_dpi = 2.0
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
-    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    # options = Options()
+    # options.add_argument("--headless")
+    # options.add_argument("--disable-gpu")
+    # options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
+    # options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
     # options.add_experimental_option('excludeSwitches', ['enable-logging'])
     # options.add_argument(f"--force-device-scale-factor={desired_dpi}")
     # options.add_experimental_option("mobileEmulation", {"deviceMetrics": {"width": 1920, "height": 1080, "pixelRatio": 3.0}})
-    driver = webdriver.Chrome(executable_path=args.chrome_driver_path, options=options) if platform.system(
-    ) == "Linux" else webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome(executable_path=args.chrome_driver_path, options=options) if platform.system(
+    # ) == "Linux" else webdriver.Chrome(options=options)
     # driver.set_window_size(1920, 1080)
+    driver = webdriver.Firefox()
     table_title = "Schedule of Investments"
 
     urls = pd.read_csv(os.path.join(ROOT_PATH, args.url_csv), index_col=False)
@@ -231,7 +232,7 @@ if __name__ == "__main__":
     python .\extract_tables.py --cik 1544206 --url-csv urls/1544206.csv --x-path xpaths/1544206.txt
     python .\extract_tables.py --cik 1370755 --url-csv urls/1370755.csv --x-path xpaths/1370755.txt
     python .\extract_tables.py --cik 1326003 --url-csv urls/1326003.csv --x-path xpaths/1326003.txt
-    python .\extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
+    python3 extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
     python3 extract_tables.py --cik 1535778 --url-csv urls/1535778.csv --x-path xpaths/1535778.txt
 
     python .\extract_tables.py --cik 1487918 --url-csv urls/1487918.csv --x-path xpaths/1487918.txt

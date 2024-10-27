@@ -74,15 +74,17 @@ def main() -> None:
     args = arguements()
 
     url = args.url
-    options = Options()
-    options.binary_location = args.chrome_path
-    options.add_argument("--log-level=OFF")
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
-    options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
-    service = Service(executable_path='/usr/bin/chromedriver')
-    driver = webdriver.Chrome(service=service, options=options)
+    # driver = webdriver.Chrome()
+    # options = Options()
+    # options.binary_location = args.chrome_path
+    # options.add_argument("--log-level=OFF")
+    # options.add_argument("--headless")
+    # options.add_argument("--disable-gpu")
+    # options.add_argument("--no-sandbox")  # Bypass OS security model, required in some environments
+    # options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+    # service = Service(executable_path='/usr/bin/chromedriver')
+    # driver = webdriver.Chrome( options=options)
+    driver = webdriver.Firefox()
     if not os.path.exists(f'xpaths/{args.cik}.txt'):
         with open(f'xpaths/{args.cik}.txt', 'w') as file:
             file.write("")
@@ -116,7 +118,7 @@ def main() -> None:
             break
 
     xpath = '//button[text()="View all 10-Ks and 10-Qs"]'
-    element = WebDriverWait(driver, 3).until(
+    element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.XPATH, xpath)))
     driver.execute_script("arguments[0].click();", element)
     clear_form(driver)
@@ -137,7 +139,7 @@ if __name__ == '__main__':
     python .\scrap_links.py --cik 1544206 --url https://www.sec.gov/edgar/browse/?CIK=1544206
     python .\scrap_links.py --cik 1370755 --url https://www.sec.gov/edgar/browse/?CIK=1370755
     python3 scrap_links.py --cik 1326003 --url https://www.sec.gov/edgar/browse/?CIK=1326003
-    python .\scrap_links.py --cik 1580345 --url https://www.sec.gov/edgar/browse/?CIK=1580345
+    python3 scrap_links.py --cik 1580345 --url "https://www.sec.gov/edgar/browse/?CIK=1580345"
 
     python .\scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
     python .\scrap_links.py --cik 1487918 --url https://www.sec.gov/edgar/browse/?CIK=1487918
