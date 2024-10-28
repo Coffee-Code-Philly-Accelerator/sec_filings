@@ -131,18 +131,18 @@ if __name__ == '__main__':
     """
     docker run -v $(pwd)/sec_filings/run.sh:/script.sh ubuntu:latest /run.sh
     python3 scrap_links --url [url] --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]
-    python .\scrap_links.py --cik 1396440 --url https://www.sec.gov/edgar/browse/?CIK=1396440
-    python .\scrap_links.py --cik 1490927 --url https://www.sec.gov/edgar/browse/?CIK=1490927
-    python .\scrap_links.py --cik 1490349 --url https://www.sec.gov/edgar/browse/?CIK=1490349
-    python .\scrap_links.py --cik 1379785 --url https://www.sec.gov/edgar/browse/?CIK=1379785
-    python .\scrap_links.py --cik 1418076 --url https://www.sec.gov/edgar/browse/?CIK=1418076
-    python .\scrap_links.py --cik 1544206 --url https://www.sec.gov/edgar/browse/?CIK=1544206
-    python .\scrap_links.py --cik 1370755 --url https://www.sec.gov/edgar/browse/?CIK=1370755
+    python3 scrap_links.py --cik 1396440 --url https://www.sec.gov/edgar/browse/?CIK=1396440
+    python3 scrap_links.py --cik 1490927 --url https://www.sec.gov/edgar/browse/?CIK=1490927
+    python3 scrap_links.py --cik 1490349 --url https://www.sec.gov/edgar/browse/?CIK=1490349
+    python3 scrap_links.py --cik 1379785 --url https://www.sec.gov/edgar/browse/?CIK=1379785
+    python3 scrap_links.py --cik 1418076 --url https://www.sec.gov/edgar/browse/?CIK=1418076
+    python3 scrap_links.py --cik 1544206 --url https://www.sec.gov/edgar/browse/?CIK=1544206
+    python3 scrap_links.py --cik 1370755 --url https://www.sec.gov/edgar/browse/?CIK=1370755
     python3 scrap_links.py --cik 1326003 --url https://www.sec.gov/edgar/browse/?CIK=1326003
     python3 scrap_links.py --cik 1580345 --url "https://www.sec.gov/edgar/browse/?CIK=1580345"
 
-    python .\scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
-    python .\scrap_links.py --cik 1487918 --url https://www.sec.gov/edgar/browse/?CIK=1487918
+    python3 scrap_links.py --cik 1535778 --url https://www.sec.gov/edgar/browse/?CIK=1535778
+    python3 scrap_links.py --cik 1487918 --url https://www.sec.gov/edgar/browse/?CIK=1487918
     python3 scrap_links.py --cik 1512931 --url https://www.sec.gov/edgar/browse/?CIK=1512931 
 
     python3 scrap_links.py --cik 1372807 --url https://www.sec.gov/edgar/browse/?CIK=1372807 

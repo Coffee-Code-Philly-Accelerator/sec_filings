@@ -56,6 +56,7 @@ If setting up virtual environments in the inviduals local computer proves too co
 * Run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
 
 #### 2. Below are steps to run the programs in this repository
+* For windows Get the [geckodriver here](https://github.com/mozilla/geckodriver/releases) and add an additional arguement```---firefox-driver-path [geckodriver file location]``` when running your scripts
 * Download the selenium chrome driver for chrome version 114 or below specific to your operating system from [this website](https://sites.google.com/chromium.org/driver/downloads?authuser=0)
 * Make sure your chrome browser version is 114 or below
   * or alternatively use [this docker image](https://hub.docker.com/r/selenium/standalone-chrome) with everything preinstalled
