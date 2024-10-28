@@ -27,18 +27,19 @@ This readme guide is intended for individuals who have the ability to read offic
 * [--url-csv] = csv of where cik 10q, 10k will be saved or acccessed from
 * [--x-path] = .txt of xpath used for specific cik, typically xpaths/{cik}.txt
 * [container_id] = id of the container that can be viewed via ```docker ps -a```
+* [environment name] = arbitrary name you would like to call your virtual environment
 
 ## Using Docker Container to run code 
 
 If setting up virtual environments in the inviduals local computer proves too complicated, a containerized virtualization of all the programs required in this reporsitory can be setup using the Docker technology. Please reference the [Docker Official Documentation](https://www.docker.com/) for further information about the technology. Otherwise skip to section *Getting Started*
 * [Install](https://docs.docker.com/engine/install/) docker on your local computer and create an account on [dockerhub signup](https://hub.docker.com/signup)
-* Then authenticate your docker credentials with ```docker login```
-* Run command ```docker run -it -u root pysolver33/sec-filings:10.21.2024/home/seluser/sec_filings/run.sh```
+* Then authenticate your docker credentials with ```docker login -u [your dockerhub username]``` and enter your password
+* Run command ```docker run -it -u root pysolver33/sec-filings:10.27.2024/home/seluser/sec_filings/run.sh```
 * Confirm that docker pulled container image and ran the container id with ```docker ps -a```
 * Use container id to cp file to local computer, ```docker cp [container_id]:/home/seluser/sec_filings/csv/{cik}_soi_table.csv .```
 
 * One can also access the docker container environment from the terminal via the command below or alternatively via vscode once the container is running;
-    * ```docker run -it -u root pysolver33/sec-filings:10.21.2024 /bin/bash/```
+    * ```docker run -it -u root pysolver33/sec-filings:10.27.2024 /bin/bash/```
     * [Guide](https://chatgpt.com/share/6716b6d0-be48-800e-b130-904efc43f327) to attach vscode IDE to docker container for debugging or development purposes
 
 ## Getting Started
@@ -57,6 +58,7 @@ If setting up virtual environments in the inviduals local computer proves too co
 #### 2. Below are steps to run the programs in this repository
 * Download the selenium chrome driver for chrome version 114 or below specific to your operating system from [this website](https://sites.google.com/chromium.org/driver/downloads?authuser=0)
 * Make sure your chrome browser version is 114 or below
+  * or alternatively use [this docker image](https://hub.docker.com/r/selenium/standalone-chrome) with everything preinstalled
 * Run ```python3 scrap_links.py --cik {cik} --url https://www.sec.gov/edgar/browse/?CIK={cik}```
 * Run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
 * Run ```python3 extract_tables.py --cik {cik} --url-csv urls/{cik}.csv --x-path xpaths/{cik}.txt```

@@ -159,8 +159,11 @@ def init_logger(
     logger = logging.getLogger(f"CIK=={cik}")
     logger.setLevel(logging.DEBUG)
     dir = os.getcwd()
+
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
     # Create file handler which logs even debug messages
-    fh = logging.FileHandler(os.path.join(dir, f"{cik}.log"))
+    fh = logging.FileHandler(os.path.join(dir, f"logs/{cik}.log"))
     fh.setLevel(logging.DEBUG)
 
     # Create console handler with a higher log level
