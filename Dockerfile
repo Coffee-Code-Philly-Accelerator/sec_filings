@@ -1,24 +1,20 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+FROM ubuntu:latest
 
-# Set the working directory in the container
+# Install Firefox and prerequisites for running GUI
+RUN apt-get update && apt-get install -y firefox dbus-x11
+
+# Set up environment variables to enable GUI support
+ENV DISPLAY=host.docker.internal:0
+
 WORKDIR /usr/src/app
 
-# Install Firefox
-RUN apt-get update && apt-get install -y wget xvfb firefox-esr
-
-# Install Geckodriver
-RUN GECKODRIVER_VERSION=$(wget --no-verbose -O - "https://api.github.com/repos/mozilla/geckodriver/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/') \
-    && wget -q --no-verbose -O geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz" \
-    && tar -xzf geckodriver.tar.gz -C /usr/local/bin \
-    && rm geckodriver.tar.gz
-
 # Install Selenium
-RUN pip install selenium
+RUN apt-get install -y python3-pip
+#RUN pip3 install selenium
 
-# Copy the current directory contents into the container at /usr/src/app
+# Copy the Selenium script into the container
 COPY . .
 
-# Run when the container launches
-CMD ["python", "script.py"]
+# Command to run when starting the container
+#CMD ["python3", "script.py"]
 
