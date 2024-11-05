@@ -209,19 +209,6 @@ def remove_row_duplicates(row:pd.Series)->pd.Series:
             out.append(v)
     return pd.Series(out)
 
-def remove_regex(qtr:str)->tuple:
-    if qtr == "2019-12-31":
-        return re.compile(r"TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\(in thousands\)\s+(?:\(unaudited\)\s+)?As of\s+\w+\s+\d{1,2},?\s+\d{4}")
-    if qtr == '2020-12-31':
-        return re.compile(r"TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\(dollars in thousands\)\s+As of\s+\w+\s+\d{1,2},?\s+\d{4}")
-    if qtr == "2021-12-31":
-        return re.compile(r"TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\(dollars in thousands\)\s+As of\s+\w+\s+\d{1,2},?\s+\d{4}")
-    if qtr == '2022-12-31':
-        return re.compile(r"TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\(dollars in thousands\)\s+(?:\(unaudited\)\s+)?As of\s+\w+\s+\d{1,2},?\s+\d{4}")
-    if qtr in ['2023-06-30','2023-09-30','2023-12-31']:
-        return re.compile(r"TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\(dollars in thousands\)\s+(\(unaudited\)\s+)?As of\s+\w+\s+\d{1,2},\s+\d{4}")
-    return re.compile(r"^TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\((unaudited|dollars in thousands|in thousands)\)\s+\((unaudited|dollars in thousands|in thousands)\)?\s+As of (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}$|TRIPLEPOINT\s+VENTURE\s+GROWTH\s+BDC\s+CORP\.\s+AND\s+SUBSIDIARIES\s+CONSOLIDATED\s+SCHEDULE\s+OF\s+INVESTMENTS\s+\(dollars\s+in\s+thousands\)\s+\(unaudited\)\s+As\s+of\s+March\s+31,\s+2023|TRIPLEPOINT\s+VENTURE\s+GROWTH\s+BDC\s+CORP\.\s+AND\s+SUBSIDIARIES\s+CONSOLIDATED\s+SCHEDULE\s+OF\s+INVESTMENTS\s+\(unaudited\)\s+\(dollars\s+in\s+thousands\)\s+As\s+of\s+March\s+31,\s+2024")
- 
 def get_header_rows(
     df_cur:pd.DataFrame,
 )->tuple:
@@ -240,7 +227,6 @@ def _clean(
     file_path:str,
     except_rows:str,
     merged_pair_idxs:dict={},
-    regex_pattern:str=r"^TRIPLEPOINT VENTURE GROWTH BDC CORP\. AND SUBSIDIARIES\s+CONSOLIDATED SCHEDULE OF INVESTMENTS\s+\((unaudited|dollars in thousands|in thousands)\)\s+\((unaudited|dollars in thousands|in thousands)\)?\s+As of (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}$|TRIPLEPOINT\s+VENTURE\s+GROWTH\s+BDC\s+CORP\.\s+AND\s+SUBSIDIARIES\s+CONSOLIDATED\s+SCHEDULE\s+OF\s+INVESTMENTS\s+\(dollars\s+in\s+thousands\)\s+\(unaudited\)\s+As\s+of\s+March\s+31,\s+2023|TRIPLEPOINT\s+VENTURE\s+GROWTH\s+BDC\s+CORP\.\s+AND\s+SUBSIDIARIES\s+CONSOLIDATED\s+SCHEDULE\s+OF\s+INVESTMENTS\s+\(unaudited\)\s+\(dollars\s+in\s+thousands\)\s+As\s+of\s+March\s+31,\s+2024"
 )->pd.DataFrame:
     df = pd.read_csv(file_path,index_col=0,na_values=[' ', ''])
     # df = df[~df.apply(lambda row:row.astype(str).str.match(regex_pattern).all(),axis=1)]
@@ -326,23 +312,27 @@ def _exceptions()->dict:
     return {}
 
 def main()->None:
-    qtrs = os.listdir('.')
+    cik = os.getcwd().split('/')[-1]
+    qtrs = os.listdir(f'{cik}')
     ex = _exceptions()
     ex_rows = '|'.join(except_rows())
+    
     for qtr in qtrs:
-        if '.csv' in qtr or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
+        if '.csv' in qtr or\
+              not os.path.exists(os.path.join(cik,qtr,f'Schedule_of_Investments_0.csv')) or\
+                  os.path.exists(os.path.join(cik,qtr,'output',f'{qtr}.csv')):
             continue
         # qtr = '2024-06-30'
-        print(qtr)
+        logger.info(f"PROCESSING - {qtr}")
 
         index_list_sum = i = 0
         soi_files = sorted([
-            os.path.join(qtr,file) 
-            for file in os.listdir(os.path.join(qtr))
+            os.path.join(cik,qtr,file) 
+            for file in os.listdir(os.path.join(cik,qtr))
             if '.csv' in file
         ],key=lambda f: int(f.split('_')[-1].split('.')[0]))
         merged_pair_idxs = ex.get(soi_files[i],{})
-        df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs,regex_pattern=remove_regex(qtr))
+        df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs)
         index_list = df.apply(
             lambda row:row.astype(str).str.contains(stopping_criterion(qtr), case=False, na=False).any(),
             axis=1
@@ -352,12 +342,12 @@ def main()->None:
         i += 1
         cols = df.columns.tolist()
         while index_list_sum == 0:
-            if '\\'.join(soi_files[i].split('\\')[-2:]) in exceptions():
+            if '/'.join(soi_files[i].split('/')[-2:]) in exceptions():
                 i += 1
                 continue
-            print(soi_files[i])
+            logger.info(soi_files[i])
             merged_pair_idxs = ex.get(soi_files[i],{})
-            df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs,regex_pattern=remove_regex(qtr))
+            df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs=merged_pair_idxs)
             if set(list(range(10))) >= set(df.columns.tolist()):
                 df.columns = cols
             dfs.append(df)
@@ -374,29 +364,29 @@ def main()->None:
         # date_final = extract_subheaders(date_final,control=True)
         # date_final = extract_subheaders(date_final,control=False)
 
-        date_final['qtr'] = qtr.split('\\')[-1]
-        if not os.path.exists(os.path.join(qtr,'output')):
-            os.makedirs(os.path.join(qtr,'output'))
+        date_final['qtr'] = qtr.split('/')[-1]
+        if not os.path.exists(os.path.join(cik,qtr,'output')):
+            os.makedirs(os.path.join(cik,qtr,'output'))
         columns_to_drop = date_final.notna().sum() <= 2
         date_final.drop(columns=columns_to_drop[columns_to_drop].index)
-        date_final.to_csv(os.path.join(qtr,'output',f'{qtr}.csv'),index=False)
+        date_final.to_csv(os.path.join(cik,qtr,'output',f'{qtr}.csv'),index=False)
         # break
-    
+
     # Use glob to find files
-    files = sorted(glob.glob(f'*/output/*.csv'), key=extract_date)
+    files = sorted(glob.glob(f'{cik}/*/output/*.csv'), key=extract_date)
     single_truth = pd.concat([
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)
     single_truth.drop(columns=single_truth.columns[['Unnamed' in col for col in single_truth.columns]],inplace=True)
     single_truth.to_csv(f'{cik}_soi_table.csv',index=False)
-    
+    logger.info(f"COMPLETED - {cik}")
     
 if __name__ == "__main__":
     warnings.simplefilter(action='ignore', category=FutureWarning)
-    cik = os.path.basename(__file__).split('.py')[0]
-    if os.path.exists(f"../logs/{cik}.log"):
-        os.remove(f"../logs/{cik}.log")
-    logger = init_logger(cik)
-    logger.info(cik)
+    program = os.path.basename(__file__).split('.py')[0]
+    if os.path.exists(f"logs/{program}.log"):
+        os.remove(f"logs/{program}.log")
+    logger = init_logger(program)
+    logger.info(program)
     
     main()
