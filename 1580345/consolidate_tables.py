@@ -303,16 +303,16 @@ def except_rows()->tuple:
     
 def exceptions()->tuple:
     return (
-        '2015-03-31/Schedule_of_Investments_4.csv',
-        '2014-12-31/Schedule_of_Investments_5.csv',
-        '2015-03-31/Schedule_of_Investments_4.csv',
+        os.path.join('2015-03-31','Schedule_of_Investments_4.csv'),
+        os.path.join('2014-12-31','Schedule_of_Investments_5.csv'),
+        os.path.join('2015-03-31','Schedule_of_Investments_4.csv'),
     )
 
 def _exceptions()->dict:
     return {}
 
 def main()->None:
-    cik = os.getcwd().split('/')[-1]
+    cik = os.getcwd().split(os.sep)[-1]
     qtrs = os.listdir(f'{cik}')
     ex = _exceptions()
     ex_rows = '|'.join(except_rows())
@@ -342,7 +342,7 @@ def main()->None:
         i += 1
         cols = df.columns.tolist()
         while index_list_sum == 0:
-            if '/'.join(soi_files[i].split('/')[-2:]) in exceptions():
+            if str(os.sep).join(soi_files[i].split(os.sep)[-2:]) in exceptions():
                 i += 1
                 continue
             logger.info(soi_files[i])
@@ -364,16 +364,16 @@ def main()->None:
         # date_final = extract_subheaders(date_final,control=True)
         # date_final = extract_subheaders(date_final,control=False)
 
-        date_final['qtr'] = qtr.split('/')[-1]
+        date_final['qtr'] = qtr.split(os.sep)[-1]
         if not os.path.exists(os.path.join(cik,qtr,'output')):
             os.makedirs(os.path.join(cik,qtr,'output'))
         columns_to_drop = date_final.notna().sum() <= 2
         date_final.drop(columns=columns_to_drop[columns_to_drop].index)
         date_final.to_csv(os.path.join(cik,qtr,'output',f'{qtr}.csv'),index=False)
         # break
-
+    os.path.join(cik,'*','output','*.csv')
     # Use glob to find files
-    files = sorted(glob.glob(f'{cik}/*/output/*.csv'), key=extract_date)
+    files = sorted(glob.glob(os.path.join(cik,'*','output','*.csv')), key=extract_date)
     single_truth = pd.concat([
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)

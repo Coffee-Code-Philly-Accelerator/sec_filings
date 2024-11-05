@@ -126,7 +126,7 @@ def remove_duplicate_element(
 
 
 def main() -> None:
-    assert os.path.exists(f"urls/{args.cik}.csv"),"SCRAP LINKS FIRST"
+    assert os.path.exists(os.path.join('urls',f"{args.cik}.csv")),"SCRAP LINKS FIRST"
     warnings.simplefilter(action='ignore', category=FutureWarning)
     # desired_dpi = 2.0
     # options = Options()
@@ -151,9 +151,8 @@ def main() -> None:
         _, table_date, url = urls.iloc[i]
         # table_date, url = '2018-12-31', 'https://www.sec.gov/Archives/edgar/data/0001512931/000114420419012276/tv514438_10k.htm'
         logger.info(f"DATETIMES - {table_date}")
-        if len(glob.glob(f"{args.cik}/{table_date}/*.csv")) > 0:
+        if len(glob.glob(os.path.join(args.cik,table_date,"*.csv"))) > 0:
             continue
-        
         logger.info(f"ACCESSING - {url}")
         driver.get(url)
         inline_url = parse_link_element(driver)
@@ -171,9 +170,8 @@ def main() -> None:
             os.mkdir(out_path)
 
         logger.info(
-            f'SAVE FILE - {url.split("/")[-1].replace(".htm","")+".html"}')
-        html_to_file = os.path.join(ROOT_PATH, out_path, url.split(
-            '/')[-1].replace(".htm", "")+".html")
+            f'SAVE FILE - {url.split(os.sep)[-1].replace(".htm","")+".html"}')
+        html_to_file = os.path.join(ROOT_PATH, out_path, url.split(os.sep)[-1].replace(".htm", "")+".html")
         with open(html_to_file, "w", encoding='utf-8') as file:
             file.write(BeautifulSoup(html_content, 'html.parser').prettify())
 

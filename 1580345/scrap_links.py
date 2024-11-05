@@ -71,7 +71,6 @@ def clear_form(
 
 def main() -> None:
     args = arguements()
-
     url = args.url
     # driver = webdriver.Chrome()
     # options = Options()
@@ -89,8 +88,8 @@ def main() -> None:
     if not os.path.exists(os.path.join(ROOT_PATH, 'xpaths')):
         os.mkdir(os.path.join(ROOT_PATH, 'xpaths'))
         
-    if not os.path.exists(f'xpaths/{args.cik}.txt'):
-        with open(f'xpaths/{args.cik}.txt', 'w') as file:
+    if not os.path.exists(os.path.join('xpaths',f"{args.cik}.txt")):
+        with open(os.path.join('xpaths',f"{args.cik}.txt"), 'w') as file:
             file.write("")
     driver.get(url)
     html_content = driver.page_source

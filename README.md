@@ -1,9 +1,7 @@
 # SEC filing automated scraper
-## Introduction
-The below is an overview of the [github](https://github.com/Tony363/sec_filings) repository's deliverables.
 
 ### Purpose & Benefits
-Running the program in the [github repository](https://github.com/Tony363/sec_filings) would automate extraction of Business Development Company data from the sec.gov's EDGAR Application Programming Interface. The main data gained are;
+Running the program in the [github repository](https://github.com/Tony363/sec_filings) would automate extraction of Business Development Company data from the sec.gov's EDGAR Application Programming Interface. 
 
 #### Table 1. Example output of 2nd stage normalized single source of truth for BDC SOI tables
 ![Table 1](https://hackmd.io/_uploads/ryiURCeWp.png)
@@ -11,10 +9,7 @@ Running the program in the [github repository](https://github.com/Tony363/sec_fi
 
 
 ## Prerequisites
-The assumptions of this readme guide is that the individual who finds the programs in this repository useful would have a computer and have access to the internet. 
-
-This readme guide is intended for individuals who have the ability to read official documentation from the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) or  [Python installation guide](https://www.python.org/downloads/) and be able to google potential solutions to the issues the individual face when running the programs in this github repository. Otherwise, if all things work well, there shouldn't be major learning hurdles.
-
+Refer to installation of python from [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) or  [Python installation guide](https://www.python.org/downloads/).
 ### Packages & Dependencies
 * Python needs to be installed. Please reference the official documentation below
     * [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html) 
@@ -62,7 +57,8 @@ If setting up virtual environments in the inviduals local computer proves too co
   * or alternatively use [this docker image](https://hub.docker.com/r/selenium/standalone-chrome) with everything preinstalled
 * Run ```python3 scrap_links.py --cik {cik} --url https://www.sec.gov/edgar/browse/?CIK={cik}```
 * Run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-* Run ```python3 extract_tables.py --cik {cik} --url-csv urls/{cik}.csv --x-path xpaths/{cik}.txt```
+* Run ```cd {cik}/```
+* then run `python3 consolidate_tables.py`
 
 ## FAQ
 There are currently no known issues with the programs. Do not hesitate to open an *issues* in this github repository. The *issues* tab is on the top left of the github repository web inferface. I will reply as soon as I can.
