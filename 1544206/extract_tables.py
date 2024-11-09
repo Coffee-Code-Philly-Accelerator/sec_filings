@@ -149,6 +149,7 @@ def main() -> None:
 
     for i in range(urls.shape[0]):
         _, table_date, url = urls.iloc[i]
+        # table_date, url = '2013-09-30', 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0001580345/000158034522000032/tpvg-20220930.htm'
         logger.info(f"DATETIMES - {table_date}")
         if len(glob.glob(os.path.join(args.cik,table_date,"*.csv"))) > 0:
             continue
@@ -181,7 +182,7 @@ def main() -> None:
                 xpaths = [line.rstrip() for line in file.readlines()]
                 # spec_paths.extend(xpaths)
             tables = get_xpath_elements(driver, xpaths)
-        logger.debug(f"USING XPATHS - {xpaths}")
+        logger.info(f"USING XPATHS - {xpaths}")
 
         tables = sorted(tables, key=lambda table: table.location['y'])
         tables = remove_duplicate_element(tables)
