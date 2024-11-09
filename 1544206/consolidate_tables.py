@@ -371,7 +371,7 @@ def main()->None:
         date_final.drop(columns=columns_to_drop[columns_to_drop].index)
         date_final.to_csv(os.path.join(cik,qtr,'output',f'{qtr}.csv'),index=False)
         # break
-    os.path.join(cik,'*','output','*.csv')
+        
     # Use glob to find files
     files = sorted(glob.glob(os.path.join(cik,'*','output','*.csv')), key=extract_date)
     single_truth = pd.concat([

@@ -112,9 +112,9 @@ def company_control_headers()->tuple:
         )
     ))
 
-def exceptions()->list:
+def exceptions(cik: str)->list:
     return [
-        '2022-09-30\Schedule_of_Investments_0.csv'
+        os.path.join(cik,'2022-09-30','Schedule_of_Investments_0.csv')
     ]
 
 def except_rows()->list:
@@ -239,32 +239,37 @@ def _clean(
     for i,flag in enumerate(duplicate_idx):
         if not flag:
             continue
-        df.iloc[i,:] = clean_rows.loc[j,:]
+        df.iloc[i,:] = clean_rows.loc[j,:].tolist()
         j += 1
-    df.replace([r'^\s*$'],np.nan,regex=True,inplace=True) #':','$','%'
+    df.replace([''],np.nan,regex=True,inplace=True) #':','$','%'
     df.dropna(axis=1,how='all',inplace=True)
-    
-    columns = (~df.isna()).sum(axis=0) <= 3 
-    df.drop(columns=df.columns[columns],inplace=True)
+    # columns = (~df.isna()).sum(axis=0) < (6 if df.shape[0] > 10 else 2 if df.shape[0] <= 4 else 0)
+    columns = [col.isdigit() or col == '' for col in df.columns.tolist()]
+    df = df.drop(columns=df.columns[columns])
     return df.reset_index(drop=True),merge_pair_idxs
     
 def main()->None:
-    qtrs = os.listdir('.')
-    ex = exceptions()
+    cik = os.getcwd().split(os.sep)[-1]
+    qtrs = os.listdir(f'{cik}')
+    ex = exceptions(cik)
     ex_rows = '|'.join(except_rows())
     for qtr in qtrs:
-        if '.csv' in qtr or not os.path.exists(os.path.join(qtr,f'Schedule_of_Investments_0.csv')):
+        if '.csv' in qtr or\
+              not os.path.exists(os.path.join(cik,qtr,f'Schedule_of_Investments_0.csv')) or\
+                  os.path.exists(os.path.join(cik,qtr,'output',f'{qtr}.csv')):
+            logger.info(f"PROCESSED - {qtr}")
             continue
         # qtr = '2016-06-30'
-        logger.info(qtr)
+        logger.info(f"PROCESSING - {qtr}")
 
         index_list_sum = i = 0
         soi_files = sorted([
-            os.path.join(qtr,file) 
-            for file in os.listdir(qtr)
-            if file.endswith('.csv')
+            os.path.join(cik,qtr,file) 
+            for file in os.listdir(os.path.join(cik,qtr))
+            if '.csv' in file
         ],key=lambda f: int(f.split('_')[-1].split('.')[0]))
         soi_files = [f for f in soi_files if f not in ex]
+
         df,merged_pair_idxs = _clean(soi_files[i],except_rows=ex_rows,merged_pair_idxs={})
         index_list = df.apply(
             lambda row:row.astype(str).str.contains(stopping_criterion(qtr), case=False, na=False).any(),
@@ -290,16 +295,16 @@ def main()->None:
         # date_final = extract_subheaders(date_final,control=True)
         # date_final = extract_subheaders(date_final,control=False)
 
-        date_final['qtr'] = qtr.split('\\')[-1]
-        if not os.path.exists(os.path.join(qtr,'output')):
-            os.makedirs(os.path.join(qtr,'output'))
+        date_final['qtr'] = qtr.split(os.sep)[-1]
+        if not os.path.exists(os.path.join(cik,qtr,'output')):
+            os.makedirs(os.path.join(cik,qtr,'output'))
         columns_to_drop = date_final.notna().sum() <= 2
         date_final.drop(columns=columns_to_drop[columns_to_drop].index)
-        date_final.to_csv(os.path.join(qtr,'output',f'{qtr}.csv'),index=False)
+        date_final.to_csv(os.path.join(cik,qtr,'output',f'{qtr}.csv'),index=False)
         # break
     
     # Use glob to find files
-    files = sorted(glob.glob(f'*/output/*.csv'), key=extract_date)
+    files = sorted(glob.glob(os.path.join(cik,'*','output','*.csv')), key=extract_date)
     single_truth = pd.concat([
         pd.read_csv(df) for df in files
     ],axis=0,ignore_index=True)
@@ -309,8 +314,8 @@ def main()->None:
 if __name__ == "__main__":
     warnings.simplefilter(action='ignore', category=FutureWarning)
     cik = os.path.basename(__file__).split('.py')[0]
-    if os.path.exists(f"../logs/{cik}.log"):
-        os.remove(f"../logs/{cik}.log")
+    if os.path.exists(f"logs/{cik}.log"):
+        os.remove(f"logs/{cik}.log")
     logger = init_logger(cik)
     logger.info(cik)
     
