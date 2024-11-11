@@ -1,0 +1,4 @@
+//b[contains(.,"PRIVATE FINANCE")]/parent::td/parent::tr/parent::tbody/parent::table
+//b[contains(.,"Private Finance")]/parent::td/parent::tr/parent::tbody/parent::table
+//b[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::center/child::table
+//font[contains(.,"INVESTMENTS")]/parent::b/parent::p/following-sibling::center/child::table
