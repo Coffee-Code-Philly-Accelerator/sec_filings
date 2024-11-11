@@ -1,11 +1,6 @@
 # SEC filing automated scraper
 
-### Purpose & Benefits
 Running the program in the [github repository](https://github.com/Tony363/sec_filings) would automate extraction of Business Development Company data from the sec.gov's EDGAR Application Programming Interface. 
-
-#### Table 1. Example output of 2nd stage normalized single source of truth for BDC SOI tables
-![Table 1](https://hackmd.io/_uploads/ryiURCeWp.png)
-
 
 
 ## Prerequisites
@@ -24,6 +19,22 @@ Refer to installation of python from [Anaconda installation guide](https://docs.
 * [container_id] = id of the container that can be viewed via ```docker ps -a```
 * [environment name] = arbitrary name you would like to call your virtual environment
 
+## Getting Started
+
+#### Using conda to setup virtual environment
+* To setup dependencies via conda for your operating system, follow the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html)
+* Change directory(```cd```) to *sec_filings* directory
+* Run```conda env create --name [environment_name] --file environment.yml```
+
+
+#### Using pip to setup virtual environment
+* To setup dependencies via pip, reference the [Python installation guide](https://www.python.org/downloads/) from python.org
+* Run ```python3 -m venv [environment_name]```
+* Change directory(```cd```) to *sec_filings* directory
+* If linux run `source {env name}/bin/activate` else if windows run `{env name}\Scripts\activate`
+* Then run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
+
+
 ## Using Docker Container to run code 
 
 If setting up virtual environments in the inviduals local computer proves too complicated, a containerized virtualization of all the programs required in this reporsitory can be setup using the Docker technology. Please reference the [Docker Official Documentation](https://www.docker.com/) for further information about the technology. Otherwise skip to section *Getting Started*
@@ -37,28 +48,8 @@ If setting up virtual environments in the inviduals local computer proves too co
     * ```docker run -it -u root pysolver33/sec-filings:10.27.2024 /bin/bash/```
     * [Guide](https://chatgpt.com/share/6716b6d0-be48-800e-b130-904efc43f327) to attach vscode IDE to docker container for debugging or development purposes
 
-## Getting Started
-
-#### 1a. Installing conda software dependency programs to run code
-* To setup dependencies via conda for your operating system, follow the [Anaconda installation guide](https://docs.anaconda.com/free/anaconda/install/index.html)
-* Change directory(```cd```) to *sec_filings* directory
-* Run```conda env create --name [environment_name] --file environment.yml```
-
-#### 1b. Installing pip software dependency programs to run code
-* To setup dependencies via pip, reference the [Python installation guide](https://www.python.org/downloads/) from python.org
-* Run ```python3 -m venv [environment_name]```
-* Change directory(```cd```) to *sec_filings* directory
-* Run ```pip install -r requirements_windows_dev.txt``` to install all the python dependencies to run the scraping scripts
-
-#### 2. Below are steps to run the programs in this repository
-* For windows Get the [geckodriver here](https://github.com/mozilla/geckodriver/releases) and add an additional arguement```---firefox-driver-path [geckodriver file location]``` when running your scripts
-* Download the selenium chrome driver for chrome version 114 or below specific to your operating system from [this website](https://sites.google.com/chromium.org/driver/downloads?authuser=0)
-* Make sure your chrome browser version is 114 or below
-  * or alternatively use [this docker image](https://hub.docker.com/r/selenium/standalone-chrome) with everything preinstalled
-* Run ```python3 scrap_links.py --cik {cik} --url https://www.sec.gov/edgar/browse/?CIK={cik}```
-* Run ```python3 extract_tables.py --chrome_path [chrome_path] --chrome_driver_path [chrome_driver_path]```
-* Run ```cd {cik}/```
-* then run `python3 consolidate_tables.py`
+#### Table 1. Example output of 2nd stage normalized single source of truth for BDC SOI tables
+![Table 1](https://hackmd.io/_uploads/ryiURCeWp.png)
 
 ## FAQ
 There are currently no known issues with the programs. Do not hesitate to open an *issues* in this github repository. The *issues* tab is on the top left of the github repository web inferface. I will reply as soon as I can.
