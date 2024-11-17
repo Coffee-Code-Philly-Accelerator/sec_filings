@@ -1,0 +1,1 @@
+//div[contains(.,"Portfolio Company")]/parent::td/parent::tr/parent::tbody/parent::table

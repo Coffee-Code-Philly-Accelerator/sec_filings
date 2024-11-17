@@ -1,0 +1,1 @@
+//font[contains(.,"OF INVESTMENTS")]/parent::p/following-sibling::table

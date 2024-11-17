@@ -1,0 +1,9 @@
+/html/body/document/type/sequence/filename/description/text/div/div[235]/div/table
+/html/body/document/type/sequence/filename/description/text/div/div[238]/div/table
+/html/body/document/type/sequence/filename/description/text/div/div[241]/div/table
+/html/body/document/type/sequence/filename/description/text/div/div[244]/div/table
+/html/body/document/type/sequence/filename/description/text/div/div[247]/div/table
+/html/body/document/type/sequence/filename/description/text/div/div[250]/div[1]/table
+/html/body/document/type/sequence/filename/description/text/div/div[250]/div[2]/table
+/html/body/document/type/sequence/filename/description/text/div/div[250]/div[3]/table
+/html/body/document/type/sequence/filename/description/text/div/div[253]/div/table

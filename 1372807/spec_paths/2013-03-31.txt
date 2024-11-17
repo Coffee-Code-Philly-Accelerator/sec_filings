@@ -1,0 +1,1 @@
+//td[contains(.,"Portfolio Company") or contains(.,"Money Market Accounts")]/parent::tr/parent::tbody/parent::table
