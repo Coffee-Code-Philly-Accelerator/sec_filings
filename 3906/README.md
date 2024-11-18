@@ -28,8 +28,8 @@ python3 consolidate_tables.py
 ### If windows
 Run the below one by one in the cmd terminal.
 ```
-python3 scrap_links.py --cik 1580345 --url "https://www.sec.gov/edgar/browse/?CIK=1580345"
-python3 extract_tables.py --cik 1580345 --url-csv urls/1580345.csv --x-path xpaths/1580345.txt
+python3 scrap_links.py --cik 3906 --url "https://www.sec.gov/edgar/browse/?CIK=3906"
+python3 extract_tables.py --cik 3906 --url-csv urls/3906.csv --x-path xpaths/3906.txt
 python3 consolidate_tables.py
 ```
 

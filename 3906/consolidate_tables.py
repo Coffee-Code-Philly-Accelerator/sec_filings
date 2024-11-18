@@ -2,6 +2,7 @@
 import os
 import re
 import glob
+import json
 import datetime
 import warnings
 import pandas as pd
@@ -340,10 +341,17 @@ def md_parse(
         data.append(row)   
     df = pd.DataFrame(data,columns=columns).dropna(axis=1,how='all')
     return df
+
 def main()->None:
     cik = os.getcwd().split(os.sep)[-1]
     qtrs = os.listdir(f'{cik}')
-    ex = exceptions()
+    # ex = exceptions()
+    if os.path.exists("manual_mask.json"):
+        with open("manual_mask.json", 'r') as f:
+            ex = json.load(f)
+        for e in ex:
+            ex[e] = {c:np.array(mask) for c,mask in ex[e].items()}
+    
     ex_rows = '|'.join(except_rows())
     md = to_parse()
     for qtr in qtrs:
@@ -396,7 +404,7 @@ def main()->None:
             i += 1
         date_final = dfs[0]
         if len(dfs) > 1:
-            date_final = pd.concat(dfs,axis=0,ignore_index=True)#pd.DataFrame(concat(*dfs))
+            date_final = pd.concat(dfs,axis=0,ignore_index=True)
         # date_final = extract_subheaders(date_final,control=True)
         # date_final = extract_subheaders(date_final,control=False)
 
